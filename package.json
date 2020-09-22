@@ -1,11 +1,11 @@
 {
   "name": "safety-certificate",
   "version": "1.0.0",
-  "description": "安全认证测试工程",
+  "description": "统一平台",
   "author": "xubaodian <472784995@qq.com>",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "dev": "webpack-dev-server --inline --host 0.0.0.0 --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
     "e2e": "node test/e2e/runner.js",
@@ -13,6 +13,13 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.19.2",
+    "babel-polyfill": "^6.26.0",
+    "bcryptjs": "^2.4.3",
+    "echarts": "^4.9.0",
+    "el-tree-transfer": "^2.2.9",
+    "element-ui": "^2.13.1",
+    "jsencrypt": "^3.0.0-rc.1",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
