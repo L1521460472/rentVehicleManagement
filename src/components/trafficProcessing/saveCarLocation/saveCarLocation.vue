@@ -202,7 +202,7 @@ export default {
         });
     },
     handleSelectionChange(val) {
-      console.log(val)
+      // console.log(val)
       this.multipleSelection = val;
       this.isDisable = this.multipleSelection.length < 1 ? true : false;
     },

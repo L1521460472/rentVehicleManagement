@@ -167,7 +167,8 @@
             @current-change="handleCurrentChange"
             :current-page="currentPage"
             :page-sizes="[10, 20, 30, 40]"
-            :page-size="100"
+            :page-size="pageSize"
+            :pager-count="5"
             layout="total, sizes, prev, pager, next ,jumper"
             :total="total"
           ></el-pagination>

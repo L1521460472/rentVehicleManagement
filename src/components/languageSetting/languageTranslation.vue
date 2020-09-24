@@ -108,7 +108,8 @@
                     @current-change="handleCurrentChange"
                     :current-page="currentPage"
                     :page-sizes="[10, 20, 30, 40]"
-                    :page-size="100"
+                    :page-size="pageSize"
+                    :pager-count="5"
                     layout="total, sizes, prev, pager, next, jumper"
                     :total="total"
                 >
@@ -369,7 +370,7 @@ export default {
     margin-top: 15px;
     float: left;
     color: #368CFE !important;
-    background: rgba(54,140,254,0.1);
+    background: rgba(54,140,254,0.1) !important;
     border-color: #b3d8ff;
 }
 .search:hover {

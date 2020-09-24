@@ -533,7 +533,7 @@ export default {
         });
     },
     handleRemove0(file, fileList) {
-      console.log(file, fileList);
+      // console.log(file, fileList);
       // console.log(this.form.efileIdCode)
       var index = this.imgIdList0.indexOf(
         file.response ? file.response.data.id : file.id
@@ -581,7 +581,7 @@ export default {
       });
     },
     handleRemove1(file, fileList) {
-      console.log(file, fileList);
+      // console.log(file, fileList);
       // console.log(this.form.efileIdCode)
       var index = this.imgIdList1.indexOf(
         file.response ? file.response.data.id : file.id
@@ -629,7 +629,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.form.brand = result.data.data.brandTypeName;
             this.form.vehicleNo = result.data.data.vehicleNo;
@@ -653,8 +653,8 @@ export default {
     },
   },
   mounted() {
+    this.initData();
     if (this.$route.query.form == "add" || this.$route.query.form == "addInsurance") {
-      this.initData();
       this.showButton = true;
       this.isShow = false;
       this.showMsg = "新增保险记录";
@@ -685,7 +685,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.form.policyNo0 = result.data.data.policyNo0;
             this.form.companyName0 = result.data.data.companyName0;
@@ -739,7 +739,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.form.policyNo0 = result.data.data.policyNo0;
             this.form.companyName0 = result.data.data.companyName0;

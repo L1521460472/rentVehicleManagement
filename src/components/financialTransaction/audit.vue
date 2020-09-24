@@ -295,7 +295,7 @@ export default {
             data: this.formAudit,
           })
             .then((result) => {
-              console.log(result.data);
+              // console.log(result.data);
               this.$store.commit("changeIsStatus", true);
               if (result.data.status === 0) {
                 this.$message({
@@ -411,7 +411,7 @@ export default {
     changeCompany(val){
       getFeeAccount({ id: val }, this.headers).then(res=>{
         this.collectionList = res.data
-        console.log('执行力')
+        // console.log('执行力')
         this.form.collectionAccount = ''
       }).catch(err=>{console.log(err)})
 
@@ -424,7 +424,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status == 0) {
             this.form.contractCode = result.data.data.leaseContractCurrentBillVO.contractCode; //合同编号
             this.form.customerName = result.data.data.leaseContractCurrentBillVO.customerName; //承租方姓名

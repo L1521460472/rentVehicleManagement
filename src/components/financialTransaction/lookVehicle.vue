@@ -177,7 +177,7 @@ export default {
             data: this.formBackVehicle,
           })
             .then((result) => {
-              console.log(result.data);
+              // console.log(result.data);
               this.$store.commit("changeIsStatus", true);
               if (result.data.status === 0) {
                 this.$message({
@@ -214,7 +214,7 @@ export default {
     },
     handleLook(index,row) {
       //实时监控
-      console.log(row)
+      // console.log(row)
       this.$router.push({
         path: "/vehicleMonitoring",
         query: { form: "vehicleMonitoring",vehicleNo:row.vehicleNo },
@@ -222,7 +222,7 @@ export default {
     },
     handleBack(index,row) {
       //轨迹回放
-      console.log(row)
+      // console.log(row)
       // this.$store.commit("changeIsStatus", false);
       this.$router.push({
         path: "/backLookVehicle",
@@ -244,7 +244,7 @@ export default {
             },
           })
             .then((result) => {
-              console.log(result.data);
+              // console.log(result.data);
               if (result.data.status === 0) {
                 this.dataList = result.data.data;
               } else {
@@ -271,7 +271,7 @@ export default {
             },
           })
             .then((result) => {
-              console.log(result.data);
+              // console.log(result.data);
               if (result.data.status === 0) {
                 this.dataList2 = result.data.data;
               } else {
@@ -292,7 +292,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.vehicleNoOptions = result.data.data;
           } else {
@@ -322,7 +322,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             row.id = result.data.data[0].id;
             row.vehicleId = result.data.data[0].id;
@@ -349,7 +349,7 @@ export default {
         });
     },
     lookFeilAction(row) {
-        console.log(row)
+        // console.log(row)
       let params = {
         idCode: row.efileIdCode,
       };
@@ -386,7 +386,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.data = result.data.data.leaseContractVehicleInfoVOList;
             this.dataList1 = result.data.data.leaseContractVehicleInfoVOList;

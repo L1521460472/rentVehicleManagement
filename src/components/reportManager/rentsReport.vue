@@ -14,7 +14,7 @@
         <div class="nav illegalTime">
           <span class="demonstration">合同时段</span>
           <el-date-picker
-            unlink-panels='true'
+            :unlink-panels='true'
             size="small"
             v-model="dateValue"
             type="daterange"
@@ -414,6 +414,7 @@ export default {
           item.notReceivedMoney=this.formatJE(item.notReceivedMoney);
           item.totalDeposit=this.formatJE(item.totalDeposit);
           item.lateFee=this.formatJE(item.lateFee);
+          item.currentPeriods=item.currentPeriods==0?'押金':item.currentPeriods
         }
       }
     }

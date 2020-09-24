@@ -471,7 +471,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.vehicleNoOptions = result.data.data;
           } else {
@@ -529,7 +529,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.vehicleTypeId = result.data.data.vehicleTypeId;
             this.getVehicle();

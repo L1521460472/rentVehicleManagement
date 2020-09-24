@@ -719,7 +719,7 @@ export default {
             data: this.formBackVehicle,
           })
             .then((result) => {
-              console.log(result.data);
+              // console.log(result.data);
               this.$store.commit("changeIsStatus", true);
               if (result.data.status === 0) {
                 this.$message({
@@ -755,7 +755,7 @@ export default {
       this.$router.back();
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
+      // console.log(file, fileList);
       // console.log(this.form.efileIdCode)
       //   var newArr = this.form.efileIdCode.split(",");
       //   var index = newArr.indexOf(file.response ? file.response.data.id:file.id);
@@ -1051,7 +1051,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.vehicleTypeId =
               result.data.data.leaseContractRentRecordVO.vehicleTypeId;

@@ -986,7 +986,7 @@ export default {
   },
   methods: {
     handleRemove(file, fileList) {
-      console.log(file, fileList);
+      // console.log(file, fileList);
       let index = this.imgIdList.indexOf(
         file.response ? file.response.data.id : file.id
       );
@@ -998,7 +998,7 @@ export default {
       this.dialogVisible = true;
     },
     handleSuccess(response, file, fileList) {
-      console.log(response, file, fileList);
+      // console.log(response, file, fileList);
       this.imgIdList.push(response.data.id);
       this.formVeInformation.efileIdCode = this.imgIdList.join(",");
     },
@@ -1024,20 +1024,20 @@ export default {
       });
     },
     cardHandleRemove(file, fileList) {
-      console.log(file, fileList);
+      // console.log(file, fileList);
       let index = this.imgCardIdList.indexOf(
         file.response ? file.response.data.id : file.id
       );
       this.imgCardIdList.splice(index, 1);
       this.formVehicleCard.efileIdCode = this.imgCardIdList.join(",");
-      console.log(this.imgCardIdList);
+      // console.log(this.imgCardIdList);
     },
     cardHandlePreview(file) {
       this.dialogImageUrlCard = file.url;
       this.dialogVisibleCard = true;
     },
     cardHandleSuccess(response, file, fileList) {
-      console.log(response, file, fileList);
+      // console.log(response, file, fileList);
       this.imgCardIdList.push(response.data.id);
       this.formVehicleCard.efileIdCode = this.imgCardIdList.join(",");
     },
@@ -1134,7 +1134,7 @@ export default {
             data: this.formVeInformation,
           })
             .then((result) => {
-              console.log(result.data.data)
+              // console.log(result.data.data)
               if (result.data.status == 0) {
                 this.vehicleId = JSON.parse(result.data.data).id;
                 this.$message({
@@ -1166,10 +1166,27 @@ export default {
     },
     editVehicleInfo(){
       //修改车辆
-      if (
-        this.formVehicleType.brandName == "" ||
-        this.formVehicleType.vehicleTypeName == ""
-      ) {
+      if( this.formVeInformation.vehicleNo == "" || this.formVeInformation.vehicleNo == null)
+      {
+        this.$message({
+          message: "请输入车牌号码",
+          center: true,
+          type: "error",
+        }); 
+        return;
+      }
+      if( this.formVeInformation.vinNo == "" || this.formVeInformation.vinNo == null )
+      {
+        this.$message({
+          message: "请输入车架号",
+          center: true,
+          type: "error",
+        }); 
+        return;       
+      }
+      if (this.formVehicleType.vehicleTypeName == "" ||
+        this.formVehicleType.brandName == ""
+        ) {
         this.$message({
           message: "请输入车型信息",
           center: true,
@@ -1177,9 +1194,31 @@ export default {
         });
         return;
       }
+
+      if (this.formVeInformation.enterpriseId == "" || this.formVeInformation.enterpriseId == null ) {
+        this.$message({
+          message: "请输入所属门店",
+          center: true,
+          type: "error",
+        });
+        return;
+      }
+
+      var time1 = new Date(this.formVeInformation.exFactoryDate).getTime();
+      var time2 = new Date(this.formVeInformation.saleDate).getTime();
+
+      if( time1 > time2 )
+      {
+        this.$message({
+          message: "出厂日期大于运营日期",
+          center: true,
+          type: "error",
+        }); 
+        return;
+      }
       this.formVeInformation.id = this.$route.query.id;
-      this.$refs.formVeInformation.validate((valid) => {
-        if (valid) {
+      // this.$refs.formVeInformation.validate((valid) => {
+      //   if (valid) {
           axios({
             method: "post",
             url: "/vehicle-service/vehicleInfo/modifyVehicle",
@@ -1187,7 +1226,7 @@ export default {
             data: this.formVeInformation,
           })
             .then((result) => {
-              console.log(result.data);
+              // console.log(result.data);
               this.isOperation = true;
               if (result.data.status === 0) {
                 this.$message({
@@ -1211,11 +1250,11 @@ export default {
                 type: "error",
               });
             });
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
+      //   } else {
+      //     console.log("error submit!!");
+      //     return false;
+      //   }
+      // });
     },
     getVehicleType() {
       //获取车型
@@ -1227,7 +1266,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           this.vehicleTypeNameOptions = result.data.data;
           this.formVehicleType.vehicleTypeName = "";
           this.formVehicleType.vehicleLength = "";
@@ -1268,7 +1307,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             // this.$store.commit("changeIsStatus", true);
             this.formVehicleType.brandId = result.data.data.brandId;
@@ -1332,7 +1371,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           this.companyOptions = result.data.data;
         })
         .catch((err) => {
@@ -1357,6 +1396,7 @@ export default {
         },
       })
         .then((result) => {
+          // console.log(result.data.data.records)
           this.vehiclePlaceOptions = result.data.data.records;
         })
         .catch((err) => {
@@ -1376,7 +1416,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           this.salesmanOptions = result.data.data;
         })
         .catch((err) => {
@@ -1404,7 +1444,7 @@ export default {
       //   return;     
       // }
 
-      console.log(this.vehicleId)
+      // console.log(this.vehicleId)
       this.formVehicleCard.vehicleId = this.vehicleId;
       this.$refs.formVehicleCard.validate((valid) => {
           if (valid) {
@@ -1423,7 +1463,7 @@ export default {
         data: this.formVehicleCard,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.isVehicleCard = true;
             this.$message({
@@ -1475,7 +1515,7 @@ export default {
         data: this.formVehicleCard,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           this.isVehicleCard = true;
           if (result.data.status === 0) {
             this.$message({
@@ -1502,7 +1542,7 @@ export default {
     },
     addSchedule() {
       //新增保养计划表
-      console.log(this.scheduleTableData[0].id)
+      // console.log(this.scheduleTableData[0].id)
       for (var i = 0; i < this.scheduleTableData.length; ++i) {
         if (
           (this.scheduleTableData[0].date == null &&
@@ -1526,7 +1566,7 @@ export default {
         },
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           this.isVehicleSchedule = true;
           if (result.data.status === 0) {
             this.getScheduleData();
@@ -1577,7 +1617,7 @@ export default {
         },
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           this.isVehicleSchedule = true;
           if (result.data.status === 0) {
             this.$message({
@@ -1612,7 +1652,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if(result.data.data.length == 0){
             (this.scheduleTableData = [
         //车辆保养计划表
@@ -1772,7 +1812,7 @@ export default {
     // },
     handleLook(index, row) {
       //查看年检记录
-      console.log(row);
+      // console.log(row);
       this.$router.push({
         path: "/addAS",
         // query: { form: "add",vehicleNo: this.formVeInformation.vehicleNo,brand:this.formVehicleType.brandName},
@@ -1781,7 +1821,7 @@ export default {
     },
     handleEdit(index, row) {
       //修改年检记录
-      console.log(row)
+      // console.log(row)
       this.$router.push({
         path: "/addAS",
         // query: { form: "add",vehicleNo: this.formVeInformation.vehicleNo,brand:this.formVehicleType.brandName},
@@ -1797,7 +1837,7 @@ export default {
     },
     handleEdits(index, row) {
       //修改保险记录
-      console.log(row);
+      // console.log(row);
       this.$router.push({
         path: "/addInsurance",
         query: { form: "edit", id: row.vehicleId },
@@ -1915,7 +1955,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.vehicleId = this.$route.query.id;
             this.formVeInformation.id = this.$route.query.id;
@@ -2003,7 +2043,7 @@ export default {
       headers: this.headers,
     })
       .then((result) => {
-        console.log(result.data);
+        // console.log(result.data);
         this.brandNameOptions = result.data.data;
       })
       .catch((err) => {

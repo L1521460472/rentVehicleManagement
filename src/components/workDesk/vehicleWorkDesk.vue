@@ -119,7 +119,7 @@
         <hr class="panel-divider">
         <div class="panel-content">
           <div class="searchbtn">
-            <el-input id="searchin" class="searchin" size="small" placeholder="请输入合同编号/车牌号/客户手机号/业务员姓名 搜索相关合同" v-model="searchVal">
+            <el-input id="searchin" class="searchin" size="small" placeholder="请输入车牌号 搜索相关合同" v-model="searchVal">
             </el-input>
             <el-button slot="append" size="small" icon="el-icon-search"></el-button>
           </div>

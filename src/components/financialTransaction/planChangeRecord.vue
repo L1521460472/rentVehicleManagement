@@ -72,8 +72,10 @@
             <el-table-column prop="contractCode" width="150" label="合同编号"></el-table-column>
             <el-table-column prop="vehicleNo" width="100" label="车牌号"></el-table-column>
             <el-table-column prop="changeTypeStr" width="100" label="变更项"></el-table-column>
-            <el-table-column prop="beforeChange" width="150" label="变更前"></el-table-column>
-            <el-table-column prop="afterChange" width="190" label="变更后"></el-table-column>
+            <el-table-column prop="beforeChange" width="150" label="变更前">
+            </el-table-column>
+            <el-table-column prop="afterChange" width="190" label="变更后">
+            </el-table-column>
             <el-table-column prop="auditSuggestion" width="100" label="审核意见"></el-table-column>
             <el-table-column prop="auditUserName" width="100" label="审核操作人"></el-table-column>
             <el-table-column prop="auditTimeStr" min-width="120" label="操作时间"></el-table-column>
@@ -158,7 +160,15 @@ export default {
         .then((result) => {
           this.loading = false
           if (result.data.status == 0) {
-            this.dataList = result.data.data.records;
+            this.dataList = result.data.data.records.map((item)=>{
+              if(item.beforeChange.substring(0,3) == '第0期'){
+                item.beforeChange = item.beforeChange.replace('第0期','押金')
+              }
+              if(item.afterChange.substring(0,3) == '第0期'){
+                item.afterChange = item.afterChange.replace('第0期','押金')
+              }
+              return item;
+            });
             this.total = result.data.data.total;
             this.currentPage = result.data.data.current;
             this.pageSize = result.data.data.size;
@@ -198,8 +208,17 @@ export default {
       })
         .then((result) => {
           this.loading = false
+          // console.log(result.data.data)
           if (result.data.status == 0) {
-            this.dataList = result.data.data.records;
+            this.dataList = result.data.data.records.map((item)=>{
+              if(item.beforeChange.substring(0,3) == '第0期'){
+                item.beforeChange = item.beforeChange.replace('第0期','押金')
+              }
+              if(item.afterChange.substring(0,3) == '第0期'){
+                item.afterChange = item.afterChange.replace('第0期','押金')
+              }
+              return item;
+            });
             this.total = result.data.data.total;
             this.currentPage = result.data.data.current;
             this.pageSize = result.data.data.size;
@@ -221,7 +240,7 @@ export default {
         });
     },
     handleSelectionChange(val) {
-      console.log(val);
+      // console.log(val);
       this.multipleSelection = val;
       this.isDisable = this.multipleSelection.length < 1 ? true : false;
     },
@@ -245,7 +264,15 @@ export default {
         .then((result) => {
           this.loading = false
           if (result.data.status == 0) {
-            this.dataList = result.data.data.records;
+            this.dataList = result.data.data.records.map((item)=>{
+              if(item.beforeChange.substring(0,3) == '第0期'){
+                item.beforeChange = item.beforeChange.replace('第0期','押金')
+              }
+              if(item.afterChange.substring(0,3) == '第0期'){
+                item.beforeChange = item.afterChange.replace('第0期','押金')
+              }
+              return item;
+            });
             this.total = result.data.data.total;
             this.currentPage = result.data.data.current;
             this.pageSize = result.data.data.size;
@@ -292,7 +319,7 @@ export default {
         responseType: 'blob'
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.type === "application/json") {
               this.$message({
                 type: "error",
@@ -344,7 +371,15 @@ export default {
         .then((result) => {
           this.loading = false
           if (result.data.status == 0) {
-            this.dataList = result.data.data.records;
+            this.dataList = result.data.data.records.map((item)=>{
+              if(item.beforeChange.substring(0,3) == '第0期'){
+                item.beforeChange = item.beforeChange.replace('第0期','押金')
+              }
+              if(item.afterChange.substring(0,3) == '第0期'){
+                item.afterChange = item.afterChange.replace('第0期','押金')
+              }
+              return item;
+            });
             this.total = result.data.data.total;
             this.currentPage = result.data.data.current;
             this.pageSize = result.data.data.size;

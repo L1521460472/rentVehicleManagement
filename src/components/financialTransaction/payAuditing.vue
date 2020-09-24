@@ -135,7 +135,12 @@
             <el-table-column prop="contractCode" width="140" label="合同编号" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="customerContacts" width="110" label="联系人姓名" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="contactsPhoneNumber" label="联系人手机号" width="120" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="billPeriods" width="110" label="当期期数" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="billPeriods" width="110" label="当期期数" :show-overflow-tooltip="true">
+              <template slot-scope="scope">
+                <span v-if="scope.row.billPeriods == 0">押金</span>
+                <span v-else>{{scope.row.billPeriods}}</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="collectionCode" width="130" label="缴费记录编号" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="auditStatusStr" width="100" label="审核状态" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="payTypeStr" width="80" label="缴费渠道" :show-overflow-tooltip="true"></el-table-column>
@@ -347,7 +352,7 @@ export default {
         });
     },
     handleSelectionChange(val) {
-      console.log(val);
+      // console.log(val);
       this.multipleSelection = val;
       this.isDisable = this.multipleSelection.length < 1 ? true : false;
     },
@@ -524,7 +529,7 @@ export default {
       headers: this.headers,
     })
       .then((result) => {
-        console.log(result.data);
+        // console.log(result.data);
         this.userIdOptions = result.data.data;
       })
       .catch((err) => {

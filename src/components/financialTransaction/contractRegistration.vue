@@ -147,21 +147,26 @@
             </el-table-column>
             <el-table-column prop="orderNo" width="140" label="订单编号" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="brandName" width="110" label="品牌" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="vehicleTypeName" width="110" label="车型"></el-table-column>
-            <el-table-column prop="userName" width="80" label="业务员"></el-table-column>
-            <el-table-column prop="contractCode" width="150" label="合同编号"></el-table-column>
-            <el-table-column prop="customerName" width="100" label="承租方"></el-table-column>
-            <el-table-column prop="customerContacts" width="100" label="联系人姓名"></el-table-column>
-            <el-table-column prop="rentStartDateStr" width="100" label="租赁开始日"></el-table-column>
-            <el-table-column prop="rentEndDateStr" width="100" label="租赁到期日"></el-table-column>
+            <el-table-column prop="vehicleTypeName" width="110" label="车型" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="userName" width="80" label="业务员" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="contractCode" width="150" label="合同编号" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="customerName" width="100" label="承租方" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="customerContacts" width="100" label="联系人姓名" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="rentStartDateStr" width="100" label="租赁开始日" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="rentEndDateStr" width="100" label="租赁到期日" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="rentMonths" width="80" label="租赁月数"></el-table-column>
             <el-table-column prop="vehicleNum" width="80" label="车辆数"></el-table-column>
             <el-table-column prop="chargingPileNum" width="80" label="充电桩数"></el-table-column>
             <el-table-column prop="deposit" width="110" label="合同总押金"></el-table-column>
             <el-table-column prop="vehicleRent" width="110" label="合同月租(汇总)"></el-table-column>
-            <el-table-column prop="billPeriods" width="80" label="当前期数"></el-table-column>
-            <el-table-column prop="contractStatusStr" min-width="100" label="合同状态"></el-table-column>
-            <el-table-column prop="auditStatusStr" min-width="110" label="审核状态"></el-table-column>
+            <el-table-column prop="billPeriods" width="80" label="当前期数">
+              <template slot-scope="scope">
+                <span v-if="scope.row.billPeriods == 0">押金</span>
+                <span v-else>{{scope.row.billPeriods}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="contractStatusStr" min-width="100" label="合同状态" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="auditStatusStr" min-width="110" label="审核状态" :show-overflow-tooltip="true"></el-table-column>
           </el-table>
         </div>
         <div class="footer_page">
@@ -598,7 +603,7 @@ export default {
         responseType: 'blob'
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.type === "application/json") {
               this.$message({
                 type: "error",
@@ -614,7 +619,7 @@ export default {
                 let evt = document.createEvent("HTMLEvents");
                 evt.initEvent("click", false, false);
                 link.href = URL.createObjectURL(blob); 
-                link.download = "合同收租信息.xls";
+                link.download = "合同登记信息.xls";
                 link.style.display = "none";
                 document.body.appendChild(link);
                 link.click();
@@ -694,7 +699,7 @@ export default {
       headers: this.headers,
     })
       .then((result) => {
-        console.log(result.data);
+        // console.log(result.data);
         this.userIdOptions = result.data.data;
       })
       .catch((err) => {

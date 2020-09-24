@@ -410,7 +410,8 @@ export default {
           if (res.type === "application/json") {
             this.$message({
               type: "error",
-              message: "下载失败，文件不存在或权限不足",
+              message: "导出失败",
+              center:true
             });
           } else {
             let blob = new Blob([res]);
@@ -421,7 +422,7 @@ export default {
               let evt = document.createEvent("HTMLEvents");
               evt.initEvent("click", false, false);
               link.href = URL.createObjectURL(blob);
-              link.download = "合同信息.xls";
+              link.download = "合同收租信息.xls";
               link.style.display = "none";
               document.body.appendChild(link);
               link.click();

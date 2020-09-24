@@ -414,7 +414,7 @@ margin-left:10px ;
 }
 .reset {
   color: #368CFE !important;
-  background: rgba(54,140,254,0.1);
+  background: rgba(54,140,254,0.1) !important;
     border-color: #b3d8ff;
 
 }

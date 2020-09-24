@@ -90,7 +90,12 @@
             <el-table-column prop="contractCode" label="合同编号" width="120" show-overflow-tooltip></el-table-column>
             <el-table-column prop="customerContacts" label="联系人姓名" width="120" show-overflow-tooltip></el-table-column>
             <el-table-column prop="contactsPhoneNumber" label="联系人手机号" width="120" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="billPeriods" label="当期期数" width="80" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="billPeriods" label="当期期数" width="80" show-overflow-tooltip>
+              <template slot-scope="scope">
+                <span v-if="scope.row.billPeriods == 0">押金</span>
+                <span v-else>{{scope.row.billPeriods}}</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="collectionCode" label="缴费记录编号" width="160" show-overflow-tooltip></el-table-column>
             <el-table-column prop="auditStatusStr" label="审核状态" width="100" show-overflow-tooltip></el-table-column>
             <el-table-column prop="rentTimeStr" label="缴费时间" width="120" show-overflow-tooltip></el-table-column>

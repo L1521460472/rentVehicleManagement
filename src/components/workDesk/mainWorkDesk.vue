@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="box">
-      <el-input class="searchin" size="small" placeholder="请输入合同编号/车牌号/客户手机号/业务员姓名 搜索相关合同" v-model="searchVal"
+      <el-input class="searchin" size="small" placeholder="请输入车牌号 搜索相关合同" v-model="searchVal"
         clearable>
       </el-input>
       <el-button class="searchbtn" type="primary" size="small">查询</el-button>

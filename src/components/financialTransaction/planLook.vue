@@ -389,7 +389,7 @@
                 disabled
                 maxlength="100"
                 v-model="formContract.vehicleDeposit"
-              ></el-input>元/辆/月
+              ></el-input>元/辆
             </el-form-item>
             <el-form-item
               label="充电桩押金"
@@ -402,7 +402,7 @@
                 disabled
                 maxlength="100"
                 v-model="formContract.chargingPileDeposit"
-              ></el-input>元/个/月
+              ></el-input>元/个
             </el-form-item>
             <el-form-item
               label="合同总押金"
@@ -757,7 +757,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.vehicleNoOptions = result.data.data;
           } else {
@@ -791,7 +791,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.orderValue = result.data.data.leaseContractOrderVO.orderNumber;
             this.vehicleTypeId = result.data.data.vehicleTypeId;
@@ -868,7 +868,7 @@ export default {
             this.formContract.leaseContractGenerateTableVO =
               result.data.data.leaseContractGenerateTableVO; //汇总,单车
             this.formContract.leaseContractGenerateTableVO.aggregation[0].billPeriods = '押金';
-            console.log(this.formContract.leaseContractGenerateTableVO.aggregation[0].billPeriods)
+            // console.log(this.formContract.leaseContractGenerateTableVO.aggregation[0].billPeriods)
             Object.keys(this.formContract.leaseContractGenerateTableVO.vehicleMap).forEach((key) => {
               this.formContract.leaseContractGenerateTableVO.vehicleMap[key][0].billPeriods = '押金';
             });

@@ -374,7 +374,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.form.brand = result.data.data.brandTypeName;
             this.form.vehicleNo = result.data.data.vehicleNo;
@@ -424,7 +424,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.form.vehicleNo = result.data.data.vehicleNo;
             this.form.vehicleId = result.data.data.vehicleId;
@@ -466,7 +466,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.form.vehicleNo = result.data.data.vehicleNo;
             this.form.vehicleId = result.data.data.vehicleId;

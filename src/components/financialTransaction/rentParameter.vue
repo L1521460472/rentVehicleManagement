@@ -166,7 +166,12 @@
             <el-table-column prop="chargingPileNum" width="80" label="充电桩数"></el-table-column>
             <el-table-column prop="deposit" width="90" label="合同总押金"></el-table-column>
             <el-table-column prop="vehicleRent" width="110" label="合同月租(汇总)"></el-table-column>
-            <el-table-column prop="billPeriods" width="80" label="当前期数"></el-table-column>
+            <el-table-column prop="billPeriods" width="80" label="当前期数">
+              <template slot-scope="scope">
+                <span v-if="scope.row.billPeriods == 0">押金</span>
+                <span v-else>{{scope.row.billPeriods}}</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="contractStatusStr" min-width="100" label="合同状态"></el-table-column>
             <!-- <el-table-column prop="collectionStatusStr" width="100" label="当期状态"></el-table-column> -->
             <el-table-column prop="auditLockStatusStr" width="100" label="锁车审核状态"></el-table-column>
@@ -385,7 +390,7 @@ export default {
         });
     },
     handleSelectionChange(val) {
-      console.log(val);
+      // console.log(val);
       this.multipleSelection = val;
       this.isDisable = this.multipleSelection.length < 1 ? true : false;
     },
@@ -657,7 +662,7 @@ export default {
       headers: this.headers,
     })
       .then((result) => {
-        console.log(result.data);
+        // console.log(result.data);
         this.userIdOptions = result.data.data;
       })
       .catch((err) => {

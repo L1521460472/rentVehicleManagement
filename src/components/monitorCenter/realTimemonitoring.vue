@@ -429,8 +429,8 @@ export default {
     },
     onLogin() {
       //初始化WebSocket连接
-      var url = "ws://172.18.11.68:8888/conver-service";
-      // var url = "ws://172.18.11.154:8888/conver-service";
+      // var url = "ws://172.18.11.68:8888/conver-service";//测试地址
+      var url = "ws://183.63.53.106:8074/conver-service";//线上地址
       var fullUrl = url;
       var this_ = this;
       if ("WebSocket" in window) {
@@ -544,6 +544,7 @@ export default {
         return marker.setLabel(label);
       })
       this.tableDataList = this.pointList;
+      this.map.removeOverlay(this.point)
       this.map.panTo(this.point);
     },
     addClickHandler(title, content, marker) {

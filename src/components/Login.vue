@@ -8,11 +8,11 @@
     </div>
     <div class="main">
       <img src="../assets/logo_bg.jpg" alt />
-      <div class="left">
+      <!-- <div class="left">
         <img src="../assets/qrcode.png" alt="">
         <p>扫码下载最新App</p>
         <p class="remark">(支持IOS/Android)</p>
-      </div>
+      </div> -->
       <div class="center">
         <img src="../assets/phone2.png" alt="">
       </div>
@@ -21,14 +21,14 @@
           <div class="loginHeader">欢迎登录/USER LOGIN</div>
           <div class="username">
             <!-- <span class="demonstration">名称</span> -->
-            <el-input v-model="username" maxlength="100" placeholder="请输入用户名称">
+            <el-input v-model="username" maxlength="100" placeholder="请输入用户名称" @input="changeInfo">
               <i slot="prefix" class="el-input__icon"></i>
             </el-input>
             <img src="../assets/Frame@1x.png" alt />
           </div>
           <div class="password">
             <!-- <span class="demonstration">密码</span> -->
-            <el-input type="password" v-model="password" maxlength="8" placeholder="请输入登录密码">
+            <el-input type="password" v-model="password" maxlength="8" placeholder="请输入登录密码" @input="changeInfo">
               <i slot="prefix" class="el-input__icon"></i>
             </el-input>
             <img src="../assets/Frame@1x-1.png" alt />
@@ -69,6 +69,11 @@ export default {
       if(!val){
         this.password =''
       }
+    },
+    //修改输入框清空cookie
+    changeInfo(){
+      removeCookie('HTuserName');
+      removeCookie('HTpassWord');
     },
     login() {
       this.logining = true

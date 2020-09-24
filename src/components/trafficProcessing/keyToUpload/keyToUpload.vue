@@ -44,9 +44,9 @@
         <el-date-picker
           size="small"
           v-model="unloadTime"
-          type="daterange"
-          format="yyyy-MM-dd"
-          value-format="yyyy-MM-dd"
+          type="datetimerange"
+          format="yyyy-MM-dd HH:mm:ss"
+          value-format="yyyy-MM-dd HH:mm:ss"
           range-separator="~"
           start-placeholder=''
           clearable
@@ -58,7 +58,7 @@
     </div>
     <div class="footer">
       <div class="top">
-        <el-button size="small" v-if="dealWithBtn" :class="{ 'active': !isDisable }" :disabled="isDisable" @click="editAction">
+        <el-button size="small" v-if="dealWithBtn" :class="{ 'active': !isDisable }" :disabled="isDisable" @click="dealWithAction">
           <i class="iconfont icon-chuli"></i>
           处理
         </el-button>
@@ -76,17 +76,23 @@
             style="width: 100%; height: 100%;"
           >
             <el-table-column type="selection" align="center" width="60"></el-table-column>
-            <el-table-column prop="enterpriseName" label="上传时间" width="120" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="vehicleNo" label="上传类型" width="90" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="contractCode" label="合同编号" width="140" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="userName" label="车牌号" width="100" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="violationTimeStr" label="合同号" width="120" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="violationStatusStr" label="处理状态" width="90" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="violationPlace" label="用户账号/手机号" width="140" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="violationType" label="用户姓名" width="120" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="customerContacts" label="上传信息" width="90" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="violators" label="上传附件" width="90" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="handlers" label="处理备注" width="90" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="reportTime" label="上传时间" width="140" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="reportType" label="上传类型" width="90" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="vehicleNo" label="车牌号" width="100" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="contractCode" label="合同号" width="120" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="feedBackStatus" label="处理状态" width="80" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="phoneNumber" label="用户账号/手机号" width="120" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="userName" label="用户姓名" width="110" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="reportInfo" label="上传信息" width="90" show-overflow-tooltip></el-table-column>
+            <el-table-column prop="violators" label="上传附件" width="140" show-overflow-tooltip>
+              <template slot-scope="scope">
+                <el-image v-for="item in scope.row.pefileUrls" :key='item.id' style="width: 16px; height: 16px" :src="item.efileAddr" :preview-src-list="[item.efileAddr]"></el-image>
+                <!-- <el-image v-for="item in scope.row.pefileUrls" @click="lookImageAction(item.efileAddr)" :key='item.id' style="width: 16px; height: 16px" :src="item.efileAddr" ></el-image> -->
+                <img v-for="item in scope.row.mefileUrls" @click="lookVideoAction(item.efileAddr)" :key='item.id' style="width: 16px; height: 16px" src="../../../assets/start.png" >
+                <!-- <el-image v-for="item in scope.row.mefileUrls" @click="lookVideoAction(item.efileAddr)" :key='item.id' style="width: 16px; height: 16px" src="../../../assets/start.png" ></el-image> -->
+              </template>
+            </el-table-column>
+            <el-table-column prop="remark" label="处理备注" min-width="90" show-overflow-tooltip></el-table-column>
           </el-table>
         </div>
         <div class="footer_page">
@@ -95,35 +101,34 @@
             @current-change="handleCurrentChange"
             :current-page="currentPage"
             :page-sizes="[10, 20, 30, 40]"
-            :page-size="100"
+            :page-size="pageSize"
+            :pager-count="5"
             layout="total, sizes, prev, pager, next, jumper"
             :total="total"
           ></el-pagination>
         </div>
         <!-- 处理 -->
         <el-dialog class="dealWithToast" :visible.sync="dealWithToast" width="500px" title="处理备注">
-            <el-input type="textarea" :autosize="{ minRows: 5, maxRows: 7}" placeholder="输入处理备注" v-model="processingNote"></el-input>
-            <span slot="footer" class="dialog-footer">
-                <el-button size="small" @click="dealWithToast = false">取 消</el-button>
-                <el-button size="small" type="primary" >确 定</el-button>
-            </span>
+          <el-input type="textarea" :autosize="{ minRows: 5, maxRows: 7}" placeholder="输入处理备注" v-model="processingNote"></el-input>
+          <span slot="footer" class="dialog-footer">
+              <el-button size="small" @click="dealWithToast = false">取 消</el-button>
+              <el-button size="small" type="primary" @click="dealWithConfirm">确 定</el-button>
+          </span>
         </el-dialog>
 
         <!-- 查看附件 -->
-        <el-dialog :visible.sync="dialogVisible" width="500px">
-          <el-carousel trigger="click" height="400px" >
-            <el-carousel-item v-for="item in imageUrlList" :key="item.id">
-              <img class="imgList" :src="item.efileAddr" alt="" srcset="">
-            </el-carousel-item>
-          </el-carousel>        
-        </el-dialog>
+        <!-- <div class="lookImage">
+          <el-dialog :visible.sync="dialogVisible" width="500px">
+            <el-image class="imgList"  fit="scale-down" :src="imageUrl" ></el-image>
+          </el-dialog>
+        </div> -->
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import {getIllegalData,getImgsrcList} from '../../../api/trafficProcessing/api'
+import {keyToUploadData,keyToUploadHandle} from '../../../api/trafficProcessing/api'
 import {getCookie,setCookie,removeCookie,getMenuBtnList} from "../../../public";
 export default {
   name: "keyToUpload",
@@ -144,37 +149,38 @@ export default {
       processingNote:null,//处理备注
       uploadTypeList:[
           {
-              id:0,
+              id:1,
               value:'故障登记'
           },
           {
-              id:1,
+              id:2,
               value:'事故登记'
           },
           {
-              id:2,
+              id:3,
               value:'公司保养预约'
           },
           {
-              id:3,
+              id:4,
               value:'自行保养登记'
           },
       ],//上传类型
       feedbackList:[
           {
-              id:0,
-              value:'已处理'
-          },
-          {
               id:1,
               value:'待处理'
           },
+          {
+              id:2,
+              value:'已处理'
+          },
+
       ],//反馈状态
       tableData: [], //表格数据
       selectData:[],//选中表格的数据
       dealWithToast:false,//处理弹窗
       dialogVisible:false,
-      imageUrlList:[],
+      imageUrl:'',
       searchBtn:false,//查询按钮是否有权限显示
       dealWithBtn:false,//处理按钮是否有权限显示
       tableHeight: window.innerHeight - 400 +'',
@@ -186,21 +192,20 @@ export default {
   },
   methods: {
     getDataList(){
-    //   this.loading = true
+      this.loading = true
       let params = {
-        contractCode: this.contractNumber,
-        enterpriseIdList:this.belongCompany != '' ? [this.belongCompany]:[] ,
-        processingTime: this.handleTime,
-        userId: this.merchandiser,
-        vehicleNo: this.idCar,
-        violationSource: this.handleSource,
-        violationStatus: this.handleStatus,
-        violationTimeEndStr:this.illegalTime[1] ? this.illegalTime[1] : '',
-        violationTimeStartStr:this.illegalTime[0] ? this.illegalTime[0] : '',
-        currentPage: this.currentPage,
+        contractCode: this.contractCode,
+        endTime: this.unloadTime ? this.unloadTime[1] :null,
+        startTime: this.unloadTime ? this.unloadTime[0] :null ,
+        feedBackStatus: this.feedback,
+        phoneNumber: this.userPhone,
+        reportType: this.uploadType,
+        userName: this.userName,
+        vehicleNo: this.vehicleNo,
+        currentPage:this.currentPage,
         pageSize: this.pageSize
       }
-      getIllegalData(params,this.headers).then(res=>{
+      keyToUploadData(params,this.headers).then(res=>{
         this.loading = false
         if(res.status == 0){
           this.total = res.data.total
@@ -222,21 +227,19 @@ export default {
     },
     // 重置
     resetAction(){
-        this.contractNumber = ''
-        this.belongCompany = '' ,
-        this.handleTime = '',
-        this.merchandiser = '',
-        this.idCar = '',
-        this.handleSource = '',
-        this.handleStatus = '',
-        this.illegalTime = '',
-        this.illegalTime = '',
-        this.currentPage = 1,
-        this.pageSize = 10
-        this.getDataList()
+      this.contractCode = null,
+      this.unloadTime = null,
+      this.feedback = null,
+      this.userPhone = null,
+      this.uploadType = null,
+      this.userName = null,
+      this.vehicleNo = null,
+      this.currentPage = 1,
+      this.pageSize = 10
+      this.getDataList()
     },
-    // 编辑
-    editAction(){
+    // 处理
+    dealWithAction(){
       if(this.selectData.length > 1){
           this.$message.warning({
               message:'处理不能多选',
@@ -244,39 +247,51 @@ export default {
           })
           return
       }
-    //   if(this.selectData[0].violationStatus != 0){
-    //       this.$message.warning({
-    //           message:'已处理,不可再操作！',
-    //           center:true
-    //       })
-    //       return
-    //   }
+      if(this.selectData[0].feedBackStatusCode != 1){
+          this.$message.warning({
+              message:'已处理,不可再操作！',
+              center:true
+          })
+          return
+      }
         this.processingNote = null
         this.dealWithToast = true
     },
-    // 查看附件
-    lookFeilAction(imgCode){
-      let params = {
-        idCode:imgCode
+    // 处理确认
+    dealWithConfirm(){
+      let params ={
+        id:this.selectData[0].id,
+        remark:this.processingNote
       }
-      getImgsrcList(params,this.headers).then(res=>{
+      keyToUploadHandle(params,this.headers).then(res=>{
+        this.dealWithToast = false
         if(res.status == 0){
-          this.imageUrlList =res.data
-          if(this.imageUrlList<1){
-            this.$message.warning({
-              message:'暂无附件',
-              center:true
-            })
-          }else{
-            this.dialogVisible =true
-          }
+          this.$message.success({
+            message:'处理成功',
+            center:true
+          })
+          this.getDataList()
         }else{
           this.$message.error({
             message:res.message,
             center:true
           })
         }
-      }).catch(err=>{console.log(err)})
+      }).catch(err=>{
+        this.$message.error({
+          message:err,
+          center:true
+        })
+      })
+    },
+    // 查看图片
+    lookImageAction(url){
+      this.imageUrl = url
+      this.dialogVisible =true
+    },
+    // 查看视频
+    lookVideoAction(url){
+       window.open(url, '_blank');
     },
     //   表格选择则
     handleSelectionChange(val) {
@@ -359,10 +374,13 @@ export default {
   width: 160px;
 }
 .illegalTime >>> .el-input__icon{
-  display: none;
+  display: none !important;
 }
 .illegalTime .el-input__inner {
-  width: 210px;
+  width: 290px;
+}
+.illegalTime >>>  .el-range-input{
+  width: 45% !important;
 }
 .search {
   margin-left: 20px;
@@ -441,27 +459,27 @@ export default {
 .dealWithToast >>> .el-dialog__body{
     padding: 20px;
 }
-/* #keyToUpload >>> .el-dialog__body{
+.lookImage >>> .el-dialog__body{
   padding: 0;
 }
-#keyToUpload >>> .el-dialog__header{
+.lookImage >>> .el-dialog__header{
   padding: 0;
 }
-#keyToUpload >>> .el-dialog__headerbtn{
+.lookImage >>> .el-dialog__headerbtn{
   top: -11px;
   right: -15px;
   color: #fff;
   opacity: 1;
 }
-#keyToUpload>>> .el-dialog__close{
+.lookImage>>> .el-dialog__close{
   color: #fff;
 }
-#keyToUpload >>>.el-carousel__button{
+.lookImage >>>.el-carousel__button{
   width: 12px;
 }
 .imgList{
-  width: 100%;
+  width: 500px;
   height: 400px;
   display: block;
-} */
+}
 </style>

@@ -399,7 +399,7 @@
                 disabled
                 maxlength="100"
                 v-model="formContract.vehicleDeposit"
-              ></el-input>元/辆/月
+              ></el-input>元/辆
             </el-form-item>
             <el-form-item
               label="充电桩押金"
@@ -412,7 +412,7 @@
                 disabled
                 maxlength="100"
                 v-model="formContract.chargingPileDeposit"
-              ></el-input>元/个/月
+              ></el-input>元/个
             </el-form-item>
             <el-form-item
               label="合同总押金"
@@ -921,7 +921,7 @@ export default {
         data: this.formVeInformation,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.vehicleId = JSON.parse(result.data.data).id;
             this.userId = JSON.parse(result.data.data).userid;
@@ -1041,7 +1041,7 @@ export default {
         data: this.formList,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           this.$store.commit("changeIsStatus", true);
           if (result.data.status === 0) {
             this.$message({
@@ -1159,13 +1159,13 @@ export default {
       //   this.dialogVisible = true;
     },
     handleSuccess2(response, file, fileList) {
-      console.log(response, file, fileList);
+      // console.log(response, file, fileList);
       this.fileIdList = [];
       this.fileIdList.push(response.data.id);
       this.fileList2.map((res) => {
         this.fileIdList.push(res.id);
       });
-      console.log(this.fileIdList);
+      // console.log(this.fileIdList);
     },
     handleError2() {
       this.$error("上传失败,请重新上传图片!");
@@ -1191,7 +1191,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.vehicleNoOptions = result.data.data;
             this.vehicleNoOptionsed = result.data.data;
@@ -1214,7 +1214,7 @@ export default {
     },
     handleChangevehicleNo(index, row) {
       //获取车牌
-      console.log(row);
+      // console.log(row);
       axios({
         method: "get",
         url:
@@ -1266,7 +1266,7 @@ export default {
         data: this.formContract,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.formContract.leaseContractGenerateTableVO.aggregation =
               result.data.data.aggregation;
@@ -1295,10 +1295,7 @@ export default {
       Object.keys(
         this.formContract.leaseContractGenerateTableVO.vehicleMap
       ).forEach((key) => {
-        console.log(
-          key,
-          this.formContract.leaseContractGenerateTableVO.vehicleMap[key]
-        );
+        // console.log(key,this.formContract.leaseContractGenerateTableVO.vehicleMap[key]);
         this.formContract.leaseContractGenerateTableVO.vehicleMap[key][index].adjustedPaybackDateStr =
           this.formContract.leaseContractGenerateTableVO.aggregation[index].adjustedPaybackDateStr;
       });
@@ -1373,7 +1370,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.orderValue = result.data.data.leaseContractOrderVO.orderNumber;
             this.vehicleTypeId = result.data.data.vehicleTypeId;
@@ -1460,7 +1457,7 @@ export default {
               result.data.data.leaseContractGenerateTableVO.aggregation;
 
             this.formContract.leaseContractGenerateTableVO.aggregation[0].billPeriods = '押金';
-            console.log(this.formContract.leaseContractGenerateTableVO.aggregation[0].billPeriods)
+            // console.log(this.formContract.leaseContractGenerateTableVO.aggregation[0].billPeriods)
             Object.keys(this.formContract.leaseContractGenerateTableVO.vehicleMap).forEach((key) => {
               this.formContract.leaseContractGenerateTableVO.vehicleMap[key][0].billPeriods = '押金';
             });
@@ -1497,7 +1494,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.userIdoptions = result.data.data;
           } else {

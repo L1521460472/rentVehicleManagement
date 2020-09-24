@@ -56,3 +56,13 @@ export const getLookDetail = (params,headers) => {//车辆查看详情
     return axios.get('/vehicle-service/violationInfo/findViolationInfoDetails',
 {params:params,headers:headers}).then(res => res.data)};
 
+// 一键上传
+export const keyToUploadData = (params,headers) => {//一键上传分页数据
+    return axios.post('/vehicle-service/reportRecordInfo/reportInfoPageQuery',
+params,{headers}).then(res => res.data)};
+
+export const keyToUploadHandle = (params,headers) => {//一键上传记录处理
+    return axios.post('/vehicle-service/reportRecordInfo/reportInfoHandle',
+params,{headers}).then(res => res.data)};
+
+

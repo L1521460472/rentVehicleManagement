@@ -100,6 +100,9 @@
               </template>
             </el-table-column>
             <el-table-column prop="product" width="120" label="车身尺寸">
+              <template slot-scope="scope">
+                <span>{{scope.row.vehicleLength + "*" + scope.row.width + "*" + scope.row.height}}</span>
+              </template>
             </el-table-column>
             <el-table-column prop="maxLoad" width="90" label="额定载质量">
             </el-table-column>
@@ -272,20 +275,21 @@ export default {
         data: {
           brandName: this.brandValue,
           vehicleTypeName: this.value,
-          currentPage: this.currentPage,
+          currentPage: 1,
           pageSize: this.pageSize,
         },
       })
         .then((result) => {
           this.loading = false
           if (result.data.status == 0) {
-            this.dataList = result.data.data.records.map((item) => {
-              return {
-                ...item,
-                product:
-                  item.vehicleLength + "*" + item.width + "*" + item.height,
-              };
-            });
+            this.dataList = result.data.data.records
+            // .map((item) => {
+            //   return {
+            //     ...item,
+            //     product:
+            //       item.vehicleLength + "*" + item.width + "*" + item.height,
+            //   };
+            // });
             this.total = result.data.data.total;
             this.currentPage = result.data.data.current;
             this.pageSize = result.data.data.size;
@@ -363,13 +367,14 @@ export default {
         .then((result) => {
           this.loading = false
           if (result.data.status == 0) {
-            this.dataList = result.data.data.records.map((item) => {
-              return {
-                ...item,
-                product:
-                  item.vehicleLength + "*" + item.width + "*" + item.height,
-              };
-            });
+            this.dataList = result.data.data.records
+            // .map((item) => {
+            //   return {
+            //     ...item,
+            //     product:
+            //       item.vehicleLength + "*" + item.width + "*" + item.height,
+            //   };
+            // });
             this.total = result.data.data.total;
             this.currentPage = result.data.data.current;
             this.pageSize = result.data.data.size;

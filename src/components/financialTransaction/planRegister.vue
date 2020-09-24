@@ -380,7 +380,7 @@
                 onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
                 maxlength="100"
                 v-model="formContract.vehicleDeposit"
-              ></el-input>元/辆/月
+              ></el-input>元/辆
             </el-form-item>
             <el-form-item
               label="充电桩押金"
@@ -394,7 +394,7 @@
                 onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
                 maxlength="100"
                 v-model="formContract.chargingPileDeposit"
-              ></el-input>元/个/月
+              ></el-input>元/个
             </el-form-item>
             <el-form-item
               label="合同总押金">
@@ -710,7 +710,7 @@ export default {
         data: this.formVeInformation,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.vehicleId = JSON.parse(result.data.data).id;
             this.userId = JSON.parse(result.data.data).userid;
@@ -786,10 +786,6 @@ export default {
       Object.keys(this.formContract.leaseContractGenerateTableVO.vehicleMap).forEach((key) => {
         this.formContract.leaseContractGenerateTableVO.vehicleMap[key][0].billPeriods = 0;
       });
-      this.formContract.supplefileIdList = [];
-      this.fileList1.map((res) => {
-        this.formContract.supplefileIdList.push(res.id);
-      });
       this.formContract.id = this.$route.query.id;
       let params = Object.assign({}, this.formContract)
       params.lateFeeRate = params.lateFeeRate/1000
@@ -802,7 +798,7 @@ export default {
             data: params,
           })
             .then((result) => {
-              console.log(result.data);
+              // console.log(result.data);
               this.$store.commit("changeIsStatus", true);
               if (result.data.status === 0) {
                 this.$message({
@@ -856,7 +852,7 @@ export default {
       });
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
+      // console.log(file, fileList);
       // console.log(this.form.efileIdCode)
       //   var newArr = this.form.efileIdCode.split(",");
       //   var index = newArr.indexOf(file.response ? file.response.data.id:file.id);
@@ -948,7 +944,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             this.vehicleNoOptions = result.data.data;
           } else {
@@ -978,7 +974,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.status === 0) {
             row.id = result.data.data[0].id;
             row.vehicleId = result.data.data[0].id;
@@ -1013,6 +1009,16 @@ export default {
     },
     confirmTable() {
       //生成计划表
+      for(var i = 0; i<this.formContract.vehicleList.length;i++){
+        if(this.formContract.vehicleList[i].vehicleNo == '' || this.formContract.vehicleList[i].vehicleNo == null){
+          this.$message({
+            message: "车牌号没有选择!",
+            center: true,
+            type: "error",
+          });
+          return
+        }
+      }
       var arr = [];
         this.formContract.vehicleList.map((item) => {
           arr.push(item.id);
@@ -1028,15 +1034,61 @@ export default {
             return;
           }
         }
-      for(var i = 0; i<this.formContract.vehicleList.length;i++){
-        if(this.formContract.vehicleList[i].vehicleNo == '' || this.formContract.vehicleList[i].vehicleNo == null){
-          this.$message({
-            message: "车牌号没有选择!",
+      if(this.formContract.rentStartDateStr == '' || this.formContract.rentStartDateStr == null){
+        this.$message({
+            message: "请填写起租日期!",
             center: true,
             type: "error",
           });
           return
-        }
+      }
+      if(this.formContract.vehicleDeposit == '' || this.formContract.vehicleDeposit == null){
+        this.$message({
+            message: "请填写单车押金!",
+            center: true,
+            type: "error",
+          });
+          return
+      }
+      if(this.formContract.chargingPileDeposit == '' || this.formContract.chargingPileDeposit == null){
+        this.$message({
+            message: "请填写单桩押金!",
+            center: true,
+            type: "error",
+          });
+          return
+      }
+      if(this.formContract.onevehicleRent == '' || this.formContract.onevehicleRent == null){
+        this.$message({
+            message: "请填写单车租金!",
+            center: true,
+            type: "error",
+          });
+          return
+      }
+      if(this.formContract.onechargingPileRent == '' || this.formContract.onechargingPileRent == null){
+        this.$message({
+            message: "请填写单桩租金!",
+            center: true,
+            type: "error",
+          });
+          return
+      }
+      if(this.formContract.rentMonths == '' || this.formContract.rentMonths == null){
+        this.$message({
+            message: "请填写租赁月数!",
+            center: true,
+            type: "error",
+          });
+          return
+      }
+      if(this.formContract.payRentDateStr == '' || this.formContract.payRentDateStr == null){
+        this.$message({
+            message: "请填写首次还款日期!",
+            center: true,
+            type: "error",
+          });
+          return
       }
       axios({
         method: "post",
@@ -1057,7 +1109,7 @@ export default {
               result.data.data.vehicleMap;
 
             this.formContract.leaseContractGenerateTableVO.aggregation[0].billPeriods = '押金';
-            console.log(this.formContract.leaseContractGenerateTableVO.aggregation[0].billPeriods)
+            // console.log(this.formContract.leaseContractGenerateTableVO.aggregation[0].billPeriods)
             Object.keys(this.formContract.leaseContractGenerateTableVO.vehicleMap).forEach((key) => {
               this.formContract.leaseContractGenerateTableVO.vehicleMap[key][0].billPeriods = '押金';
             });
@@ -1083,10 +1135,7 @@ export default {
       Object.keys(
         this.formContract.leaseContractGenerateTableVO.vehicleMap
       ).forEach((key) => {
-        console.log(
-          key,
-          this.formContract.leaseContractGenerateTableVO.vehicleMap[key]
-        );
+        // console.log(key,this.formContract.leaseContractGenerateTableVO.vehicleMap[key]);
         this.formContract.leaseContractGenerateTableVO.vehicleMap[key][
           index
         ].adjustedPaybackDateStr = this.formContract.leaseContractGenerateTableVO.aggregation[
@@ -1102,10 +1151,7 @@ export default {
       Object.keys(
         this.formContract.leaseContractGenerateTableVO.vehicleMap
       ).forEach((key) => {
-        console.log(
-          key,
-          this.formContract.leaseContractGenerateTableVO.vehicleMap[key]
-        );
+        // console.log(key,this.formContract.leaseContractGenerateTableVO.vehicleMap[key]);
         this.formContract.leaseContractGenerateTableVO.aggregation[
           index
         ].adjustedPaybackMoney += Number(

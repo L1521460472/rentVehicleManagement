@@ -185,7 +185,7 @@
         <el-button @click="handleInsurance" v-if="addInsuranceBtn" size="small" :class="{ active: !isDisable }" :disabled="isDisable">
           <i class="iconfont icon-baoxian"></i>新增保险记录
         </el-button>
-        <el-button @click="handleImport" class="handleExport" size="small">
+        <el-button @click="handleImport"  v-if="importVehicleBtn" class="handleExport" size="small">
           <i class="iconfont icon-daoru"></i>
           <el-upload
                 class="upload"
@@ -198,7 +198,7 @@
                 <span class="upload_txt">导入</span>
               </el-upload>
         </el-button>
-        <el-button @click="handleExport" class="handleExport" size="small">
+        <el-button @click="handleExport"  v-if="exportVehicleBtn" class="handleExport" size="small">
           <i class="iconfont icon-daochu"></i>导出
         </el-button>
       </div>
@@ -278,7 +278,7 @@
               <span v-if="scope.row.vehicleUsageStatus == 1">待租</span>
             </template>
             </el-table-column>
-            <el-table-column prop="regCertNo" width="100" label="维修状态">
+            <el-table-column prop="vehicleRepairStatusStr" width="100" label="维修状态">
             </el-table-column>
             <el-table-column prop="isHasEtc" width="80" label="有无ETC">
               <template slot-scope="scope">
@@ -440,6 +440,8 @@ export default {
       editBtn : false, // 修改权限按钮 
       addAsBtn : false, //新增年检记录权限按钮
       addInsuranceBtn : false, //新增保险记录权限按钮
+      importVehicleBtn: false,
+      exportVehicleBtn: false,
       headers: {
         Authorization: getCookie("HTBD_PASS"),
         language: this.$store.state.language,
@@ -467,7 +469,7 @@ export default {
           annualInspection: this.ASStateValue,
           payHighInsurance: this.insuranceValue,
           commercialInsurance: this.ComInsuranceValue,
-          currentPage: this.currentPage,
+          currentPage: 1,
           pageSize: val,
         },
       })
@@ -549,7 +551,7 @@ export default {
     },
     handleSuccess(response, file, fileList) {
       //导入
-      console.log(response)
+      // console.log(response)
       if(response.status == 0){
         this.$message.error({
           message:response.data,
@@ -585,12 +587,13 @@ export default {
             annualInspection: this.ASStateValue,
             payHighInsurance: this.insuranceValue,
             commercialInsurance: this.ComInsuranceValue,
-            currentPage: this.currentPage,
+            currentPage: 1,
             pageSize: this.pageSize,
         },
       })
         .then((result) => {
           this.loading = false
+          // console.log(result.data)
           if (result.data.status == 0) {
             this.dataList = result.data.data.records;
             this.total = result.data.data.total;
@@ -623,7 +626,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           this.vehicleTypeNameOptions = result.data.data;
         })
         .catch((err) => {
@@ -700,7 +703,7 @@ export default {
         responseType: 'blob'
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           if (result.data.type === "application/json") {
               this.$message({
                 type: "error",
@@ -769,7 +772,7 @@ export default {
         },
       })
         .then((result) => {
-          console.log(result.data)
+          // console.log(result.data)
           this.loading = false
           if (result.data.status == 0) {
             this.dataList = result.data.data.records;
@@ -802,7 +805,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           this.companyOptions = result.data.data;
         })
         .catch((err) => {
@@ -820,7 +823,7 @@ export default {
       headers: this.headers,
     })
       .then((result) => {
-        console.log(result.data);
+        // console.log(result.data);
         this.brandNameOptions = result.data.data;
       })
       .catch((err) => {
@@ -853,6 +856,8 @@ export default {
             if(item.name == '修改') this.editBtn = true
             if(item.name == '新增年检记录') this.addAsBtn = true
             if(item.name == '新增保险记录') this.addInsuranceBtn = true
+            if(item.name == '导入') this.importVehicleBtn = true
+            if(item.name == '导出') this.exportVehicleBtn = true
           })
       },
       immediate:true,

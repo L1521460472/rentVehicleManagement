@@ -21,13 +21,9 @@
                 },
               ]"
             >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="form.brandName"
-              ></el-input> </el-form-item
-            ><el-form-item
+              <el-input class="formItem" size="small" maxlength="100" v-model="form.brandName"></el-input>
+            </el-form-item>
+            <el-form-item
               label="车型"
               prop="vehicleTypeName"
               :rules="[
@@ -43,8 +39,9 @@
                 size="small"
                 maxlength="100"
                 v-model="form.vehicleTypeName"
-              ></el-input> </el-form-item
-            ><el-form-item
+              ></el-input>
+            </el-form-item>
+            <el-form-item
               label="车身尺寸长(mm)"
               prop="vehicleLength"
               :rules="[
@@ -55,13 +52,9 @@
                 },
               ]"
             >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="form.vehicleLength"
-              ></el-input> </el-form-item
-            ><el-form-item
+              <el-input class="formItem" size="small" maxlength="100" v-model="form.vehicleLength"></el-input>
+            </el-form-item>
+            <el-form-item
               label="车身尺寸宽(mm)"
               prop="width"
               :rules="[
@@ -72,13 +65,9 @@
                 },
               ]"
             >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="form.width"
-              ></el-input> </el-form-item
-            ><el-form-item
+              <el-input class="formItem" size="small" maxlength="100" v-model="form.width"></el-input>
+            </el-form-item>
+            <el-form-item
               label="车身尺寸高(mm)"
               prop="height"
               :rules="[
@@ -89,13 +78,9 @@
                 },
               ]"
             >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="form.height"
-              ></el-input> </el-form-item
-            ><el-form-item
+              <el-input class="formItem" size="small" maxlength="100" v-model="form.height"></el-input>
+            </el-form-item>
+            <el-form-item
               label="轴距(mm)"
               prop="axisbase"
               :rules="[
@@ -106,13 +91,9 @@
                 },
               ]"
             >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="form.axisbase"
-              ></el-input> </el-form-item
-            ><el-form-item
+              <el-input class="formItem" size="small" maxlength="100" v-model="form.axisbase"></el-input>
+            </el-form-item>
+            <el-form-item
               label="轮距(mm)"
               prop="wheelbase"
               :rules="[
@@ -123,13 +104,9 @@
                 },
               ]"
             >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="form.wheelbase"
-              ></el-input> </el-form-item
-            ><el-form-item
+              <el-input class="formItem" size="small" maxlength="100" v-model="form.wheelbase"></el-input>
+            </el-form-item>
+            <el-form-item
               label="总质量(kg)"
               prop="totalMass"
               :rules="[
@@ -140,13 +117,9 @@
                 },
               ]"
             >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="form.totalMass"
-              ></el-input> </el-form-item
-            ><el-form-item
+              <el-input class="formItem" size="small" maxlength="100" v-model="form.totalMass"></el-input>
+            </el-form-item>
+            <el-form-item
               label="额定载质量(kg)"
               prop="maxLoad"
               :rules="[
@@ -157,13 +130,9 @@
                 },
               ]"
             >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="form.maxLoad"
-              ></el-input> </el-form-item
-            ><el-form-item
+              <el-input class="formItem" size="small" maxlength="100" v-model="form.maxLoad"></el-input>
+            </el-form-item>
+            <el-form-item
               label="额定乘坐人数"
               prop="maxPassengers"
               :rules="[
@@ -174,12 +143,7 @@
                 },
               ]"
             >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="form.maxPassengers"
-              ></el-input>
+              <el-input class="formItem" size="small" maxlength="100" v-model="form.maxPassengers"></el-input>
             </el-form-item>
             <el-form-item
               label="最高车速(km/h)"
@@ -192,12 +156,7 @@
                 },
               ]"
             >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="form.maxSpeed"
-              ></el-input>
+              <el-input class="formItem" size="small" maxlength="100" v-model="form.maxSpeed"></el-input>
             </el-form-item>
             <el-form-item
               label="续航里程(km)"
@@ -210,12 +169,7 @@
                 },
               ]"
             >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="form.vehicleRange"
-              ></el-input>
+              <el-input class="formItem" size="small" maxlength="100" v-model="form.vehicleRange"></el-input>
             </el-form-item>
             <el-form-item
               label="充电时长(h)"
@@ -228,12 +182,7 @@
                 },
               ]"
             >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="form.chargingTime"
-              ></el-input>
+              <el-input class="formItem" size="small" maxlength="100" v-model="form.chargingTime"></el-input>
             </el-form-item>
             <el-form-item
               label="电池容量(kw.h)"
@@ -264,12 +213,7 @@
                 },
               ]"
             >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="form.monthlyRent"
-              ></el-input>
+              <el-input class="formItem" size="small" maxlength="100" v-model="form.monthlyRent"></el-input>
             </el-form-item>
             <el-form-item
               label="图片"
@@ -301,21 +245,13 @@
                 <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
               </el-upload>
               <el-dialog :visible.sync="dialogVisible" width="500px">
-                <img width="100%" :src="dialogImageUrl" alt="" />
+                <img width="100%" :src="dialogImageUrl" alt />
               </el-dialog>
             </el-form-item>
           </div>
           <div class="footerButton">
-            <el-button
-              type="primary"
-              size="small"
-              v-if="showButton"
-              @click="addConfirm"
-              >新增</el-button
-            >
-            <el-button type="primary" size="small" v-else @click="editConfirm"
-              >修改</el-button
-            >
+            <el-button type="primary" size="small" v-if="showButton" @click="addConfirm">新增</el-button>
+            <el-button type="primary" size="small" v-else @click="editConfirm">修改</el-button>
             <el-button size="small" @click="cancel">取消</el-button>
           </div>
         </el-form>
@@ -336,9 +272,9 @@ export default {
   data() {
     return {
       form: {
-        enterpriseId:'',
-        brandId:'',//品牌id
-        id:'',//车型id
+        enterpriseId: "",
+        brandId: "", //品牌id
+        id: "", //车型id
         brandName: "", //品牌
         vehicleTypeName: "", //车型名称
         vehicleLength: "", //长
@@ -373,100 +309,124 @@ export default {
   methods: {
     addConfirm() {
       //确定新增
-      if(this.imgIdList.length <= 0)
-      {
-        this.$message({
-          type: "error",
-          message: "信息不全",
-          center: true,
-        });
-        return;
-      }
-      axios({
-        method: "post",
-        url: "/vehicle-service/vehicleTypeInfo/insertVehicleType",
-        headers: this.headers,
-        data: this.form,
-      })
-        .then((result) => {
-          // console.log(result.data);
-          if (result.data.status === 0) {
-            this.$store.commit("changeIsStatus", true);
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          if (this.imgIdList.length <= 0) {
             this.$message({
-              type: "success",
-              message: this.international.global.global_addSuccess,
-              center: true,
-            });
-            this.$router.back();
-          } else {
-            this.$message({
-              message: result.data.message,
-              center: true,
               type: "error",
+              message: "图片不能为空!",
+              center: true,
             });
+            return;
           }
-        })
-        .catch((err) => {
-          console.error(err);
-          this.$message({
-            message: err.response.data.message,
-            center: true,
-            type: "error",
-          });
-        });
+          axios({
+            method: "post",
+            url: "/vehicle-service/vehicleTypeInfo/insertVehicleType",
+            headers: this.headers,
+            data: this.form,
+          })
+            .then((result) => {
+              // console.log(result.data);
+              if (result.data.status === 0) {
+                this.$store.commit("changeIsStatus", true);
+                this.$message({
+                  type: "success",
+                  message: this.international.global.global_addSuccess,
+                  center: true,
+                });
+                this.$router.back();
+              } else {
+                this.$message({
+                  message: result.data.message,
+                  center: true,
+                  type: "error",
+                });
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+              this.$message({
+                message: err.response.data.message,
+                center: true,
+                type: "error",
+              });
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
     cancel() {
       //取消新增修改
       this.$router.back();
+      
     },
     editConfirm() {
       //确定修改
       this.form.id = this.$route.query.id;
-      axios({
-        method: "post",
-        url: "/vehicle-service/vehicleTypeInfo/editVehicleType",
-        headers: this.headers,
-        data: this.form,
-      })
-        .then((result) => {
-          // console.log(result.data);
-          if (result.data.status === 0) {
-            this.$store.commit("changeIsStatus", true);
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          if (this.imgIdList.length <= 0) {
             this.$message({
-              type: "success",
-              message: this.international.global.global_changeSuccess,
-              center: true,
-            });
-            this.$router.back();
-          } else {
-            this.$message({
-              message: result.data.message,
-              center: true,
               type: "error",
+              message: "图片不能为空!",
+              center: true,
             });
+            return;
           }
-        })
-        .catch((err) => {
-          console.error(err);
-          this.$message({
-            message: err.response.data.message,
-            center: true,
-            type: "error",
-          });
-        });
+          axios({
+            method: "post",
+            url: "/vehicle-service/vehicleTypeInfo/editVehicleType",
+            headers: this.headers,
+            data: this.form,
+          })
+            .then((result) => {
+              // console.log(result.data);
+              if (result.data.status === 0) {
+                this.$store.commit("changeIsStatus", true);
+                this.$message({
+                  type: "success",
+                  message: this.international.global.global_changeSuccess,
+                  center: true,
+                });
+                this.$router.back();
+              } else {
+                this.$message({
+                  message: result.data.message,
+                  center: true,
+                  type: "error",
+                });
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+              this.$message({
+                message: err.response.data.message,
+                center: true,
+                type: "error",
+              });
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
     handleRemove(file, fileList) {
-      let index = this.imgIdList.indexOf(file.response ? file.response.data.id:file.id)
-      this.imgIdList.splice(index,1)
-      this.form.efileIdCode = this.imgIdList.toString()
+      let index = this.imgIdList.indexOf(
+        file.response ? file.response.data.id : file.id
+      );
+      this.imgIdList.splice(index, 1);
+      this.form.efileIdCode = this.imgIdList.toString();
     },
     handlePreview(file) {
       this.dialogImageUrl = file.url;
       this.dialogVisible = true;
     },
     handleSuccess(response, file, fileList) {
-      this.imgIdList.push(response.data.id) 
-      this.form.efileIdCode = this.imgIdList.toString()
+      this.imgIdList.push(response.data.id);
+      this.form.efileIdCode = this.imgIdList.toString();
     },
     handleError() {
       this.$error("上传失败,请重新上传图片!");
@@ -482,7 +442,7 @@ export default {
       }
       return isImage && isLt2M;
     },
-    handleExceed(){
+    handleExceed() {
       this.$message({
         message: "最多上传5张图片!",
         center: true,
@@ -522,7 +482,7 @@ export default {
         headers: this.headers,
       })
         .then((result) => {
-          console.log(result.data)
+          // console.log(result.data)
           if (result.data.status === 0) {
             this.form.enterpriseId = result.data.data.enterpriseId;
             this.form.brandId = result.data.data.brandId;
@@ -545,12 +505,12 @@ export default {
             //this.form.efileIdCode = result.data.data.efileIdCode;
             this.fileList = result.data.data.ls_EfileIdCodeAddr;
             this.form.efileIdCode = "";
-            if(result.data.data.ls_EfileIdCodeAddr){
-              this.imgIdList = [],
-              result.data.data.ls_EfileIdCodeAddr.map(item=>{
-                this.imgIdList.push(item.id)
-              })
-              this.form.efileIdCode = this.imgIdList.toString()
+            if (result.data.data.ls_EfileIdCodeAddr) {
+              (this.imgIdList = []),
+                result.data.data.ls_EfileIdCodeAddr.map((item) => {
+                  this.imgIdList.push(item.id);
+                });
+              this.form.efileIdCode = this.imgIdList.toString();
             }
 
             // for( var i = 0; i < result.data.data.ls_EfileIdCodeAddr.length; ++i )
@@ -561,7 +521,6 @@ export default {
             //     this.form.efileIdCode +=",";
             //   }
             // }
-
           } else {
             this.$message({
               message: result.data.message,
