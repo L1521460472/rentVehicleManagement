@@ -54,6 +54,10 @@ export const getFunctionsettingList = (params,headers) => {//App用户数据权�
     return axios.post('/platform-base-service/platformBaseRole/listAuthoritySettingByPage',
 params,{headers}).then(res => res.data)};
 
+export const getFunctionsettingList2 = (params,headers) => {//角色权限分配
+    return axios.post('/platform-base-service/roleConfig/listPage',
+params,{headers}).then(res => res.data)};
+
 export const funcDeactiveStatus = (params,headers) => {//失效状态
     return axios.post('/platform-base-service/platformBaseRole/role/status/disabled',
 params,{headers}).then(res => res.data)};
@@ -64,6 +68,10 @@ params,{headers}).then(res => res.data)};
 
 export const addFunSetting = (params,headers) => {//新增功能权限设置
     return axios.post('/platform-base-service/platformBaseRole/functionRole/add',
+params,{headers}).then(res => res.data)};
+
+export const addFunSetting2 = (params,headers) => {//角色分配-新增功能权限设置
+    return axios.post('/platform-base-service/roleConfig/addFunctionRole',
 params,{headers}).then(res => res.data)};
 
 export const editFunSetting = (params,headers) => {//编辑功能权限设置
@@ -86,6 +94,10 @@ export const getUndistribute = (params,headers) => {//获取待分配权限树�
     return axios.get('/platform-base-service/platformBaseMenu/listUnassignedMenuButton',
 {params:params,headers:headers}).then(res => res.data)};
 
+export const getUndistribute2 = (params,headers) => {//账号管理-获取待分配权限树列表
+    return axios.get('/platform-base-service/roleConfig/listUnassignedMenuButton',
+{params:params,headers:headers}).then(res => res.data)};
+
 export const getDistribute = (params,headers) => {//获取已分配权限树列表
     return axios.get('/platform-base-service/platformBaseMenu/listAssignedMenuButton',
 {params:params,headers:headers}).then(res => res.data)};
@@ -93,4 +105,3 @@ export const getDistribute = (params,headers) => {//获取已分配权限树列�
 export const distributeFun = (params,headers) => {//分配功能权限
     return axios.post('/platform-base-service/platformBaseRole/assignFunctionPermission',
 params,{headers}).then(res => res.data)};
-

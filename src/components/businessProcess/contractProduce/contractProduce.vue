@@ -71,8 +71,8 @@
       <div class="headerBotton">
         <el-button size="small" type="primary" class="search" v-if="searchBtn" @click="search">查询</el-button>
         <el-button class="reset" size="small" type="primary"  @click="reset">重置</el-button>
-        <el-button class="reset" size="small" type="primary" v-if="taxesBtn"  @click="taxesAction">即将交租合同</el-button>
-        <el-button class="reset" size="small" type="primary" v-if="expireBtn"  @click="expireAction">即将到期合同</el-button>
+        <el-button class="reset" size="small" type="primary" v-if="taxesBtn"  @click="taxesAction" title="距账单日7天">即将交租合同</el-button>
+        <el-button class="reset" size="small" type="primary" v-if="expireBtn"  @click="expireAction" title="距到期日30天">即将到期合同</el-button>
       </div>
     </div>
     <div class="footer">
@@ -124,7 +124,12 @@
             <el-table-column prop="contractCode" width="150" label="合同编号" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="customerName" width="100" label="承租方" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="customerContacts" width="100" label="联系人姓名" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="billPeriods" width="80" label="当前期数" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="billPeriods" width="80" label="当前期数" :show-overflow-tooltip="true">
+              <template slot-scope="scope">
+                <span v-if="scope.row.billPeriods == 0">押金</span>
+                <span v-else>{{scope.row.billPeriods}}</span>
+              </template>
+            </el-table-column>
             <el-table-column prop="payMoney" width="100" label="应收金额"></el-table-column>
             <el-table-column prop="payedMoney" width="100" label="已收金额"></el-table-column>
             <el-table-column prop="uncollectionMoney" width="100" label="待收金额"></el-table-column>
@@ -231,6 +236,11 @@ export default {
     //获取所有数据分页信息
     getListData(){
       this.loading = true
+      let query=this.$router.currentRoute.query;  
+      if(query&&query.vehicleNo)
+      {
+        this.vehicleNo=query.vehicleNo;
+      }
       let params = {
         collectionStatus: this.collectionStatus,
         contactsPhoneNumber: this.contactsPhoneNumber,

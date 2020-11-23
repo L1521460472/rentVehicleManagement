@@ -163,8 +163,6 @@
               <el-input maxlength="100" size="small" v-model="form.customerIdNumber"></el-input>
             </el-form-item>
             <el-form-item 
-            :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'blur'}]"
-            prop="customerDriverNumber"
             class="formItem" 
             label="客户-驾驶证号码">
               <el-input maxlength="100" size="small" v-model="form.customerDriverNumber"></el-input>
@@ -317,12 +315,14 @@ export default {
               })
               return
           }
-          if(!regexpidCard(this.form.customerDriverNumber)){
+          if(this.form.customerDriverNumber){
+            if(!regexpidCard(this.form.customerDriverNumber)){
               this.$message.error({
                   message:'驾驶证号码格式不确',
                   center:true
               })
               return
+            }
           }
           if(this.idcardProsIdList.length<1){
             this.$message.error({

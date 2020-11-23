@@ -4,7 +4,11 @@
       <el-header>
         <div class="top-bar">
           <div class="logo">
-            <h1><img src="../assets/logo.png" alt="">租车管理系统</h1>
+            <h1>
+              <img :src="$store.state.logoAddress" alt="" v-if="$store.state.logoAddress">
+              <img src="../assets/logo.png" alt="" v-else>
+              租车管理系统
+            </h1>
           </div>
           <div class="isMenu" @click="changeIsCollapse">
             <el-radio-group v-model="isCollapse">
@@ -13,36 +17,12 @@
             </el-radio-group>
           </div>
           <div class="setting-btn">
-            <el-popover
-              ref="setting-btn-popover"
-              placement="bottom"
-              trigger="hover"
-            >
-              <!-- <el-button type="text" class='setting-popover-item'>修改密码</el-button> -->
-              <el-button
-                type="text"
-                class="setting-popover-item"
-                @click="logout"
-                >退出</el-button
-              >
+            <el-popover ref="setting-btn-popover" width="60" placement="bottom" trigger="hover" style="min-width: 60px;">
+              <el-button type="text" class='setting-popover-item' @click="jumptomycenter">个人中心</el-button>
+              <el-button type="text" class='setting-popover-item' @click="changePassword">修改密码</el-button>
+              <el-button type="text" class="setting-popover-item" @click="logout">退出</el-button>
             </el-popover>
             <el-button type="text" v-popover:setting-btn-popover class="logout"> {{userName}} <i class="el-icon-arrow-down"/></el-button>
-          </div>
-          <div class="language">
-            <el-select
-              v-model="value"
-              size="small"
-              @change="changeValue"
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item.code"
-                :label="item.value"
-                :value="item.code"
-              >
-              </el-option>
-            </el-select>
           </div>
         </div>
       </el-header>
@@ -130,9 +110,9 @@
               </el-tab-pane>
             </el-tabs>
           </div>
-          <keep-alive  
+          <keep-alive
           :include=includeList
-          exclude="addOperationUser,addPlatformUser,addDepartment,addOrganization,addOperation,addFunSetting,addAppUserSetting,addUserArchives,addDataPermission,editDataPermission,addillegal,dealWithillegal,auditillegal,addCustomerInfo,addOrder,auditOrder,addInfo,addVehicleMaintenance,addVehicleManagement,addInsurance,addAS,planRegister,checkContract,payFee,planChange,planAudit,planLook,addAccount,audit,lookContractPayment,advancesReceived,backVehicle,backVehicleAudit,lookVehicle,vehicleMonitoring,backLookVehicle" v-if="isKeep">
+          exclude="addOperationUser,addPlatformUser,addDepartment,addOrganization,addOperation,addFunSetting,addAppUserSetting,addUserArchives,addDataPermission,editDataPermission,addillegal,dealWithillegal,auditillegal,addCustomerInfo,addOrder,auditOrder,addInfo,addVehicleMaintenance,addVehicleManagement,addInsurance,addAS,planRegister,checkContract,payFee,planChange,planAudit,planLook,addAccount,audit,lookContractPayment,advancesReceived,backVehicle,backVehicleAudit,lookVehicle,vehicleMonitoring,backLookVehicle,mainWorkDesk,vehicleWorkDesk,businessWorkDesk,financialWorkDesk" v-if="isKeep">
             <router-view v-if="isRouterAlive" />
           </keep-alive>
         </el-main>
@@ -143,7 +123,7 @@
 
 <script>
 import axios from "axios";
-import { getCookie, setCookie, removeCookie, getMenuBtnList } from "../public";
+import { getCookie, setCookie, removeCookie, getMenuBtnList,openNewTab } from "../public";
 import { mapState, mapActions, mapMutations } from "vuex";
 export default {
   name: "home",
@@ -189,6 +169,7 @@ export default {
           // this.setMenuData({menuData: result.data.data});
           // this.updateMenuData(result.data.data)
           this.$store.state.menuData = result.data.data;
+          // openNewTab(this, result.data.data[0].children[0].children[0].name, result.data.data[0].children[0].children[0].url);
         })
         .catch((err) => {
           this.$message({
@@ -211,7 +192,7 @@ export default {
       });
     },
     //增加tabs
-    addTable(menu) {
+    addTable(menu,flag) {
       // console.log(menu);
       var isTabs = false;
       for (var i = 0; i < this.editableTabs.length; i++) {
@@ -222,6 +203,9 @@ export default {
       }
       if (isTabs == true) {
         this.editableTabsValue = menu.url;
+        if(flag){
+           this.$router.push({ path: menu.url, query: menu.params})
+        }
         return;
       }
       this.tabIndex = menu.url;
@@ -232,6 +216,9 @@ export default {
       this.editableTabsValue = menu.url;
       if(this.includeList.indexOf(this.$route.name) == -1){
         this.includeList.push(this.$route.name)
+      }
+      if(flag){
+         this.$router.push({ path: menu.url, query: menu.params})
       }
     },
     //删除tabs
@@ -260,6 +247,10 @@ export default {
     },
     logout() {
       this.$router.push("/");
+    },
+    //修改密码
+    changePassword(){
+      openNewTab(this,"修改密码","/changePassword")
     },
     getLanguage() {
       // console.log(this.$store.state.language)
@@ -319,6 +310,10 @@ export default {
         this.isKeep = true;
       });
     },
+    //个人中心
+    jumptomycenter(){
+        openNewTab(this,"个人中心","/myCenter")
+    }
   },
   beforeMount() {
     this.getInternationalTitle();
@@ -328,9 +323,18 @@ export default {
     this.userName = getCookie("HTBD_UserName");
     this.$store.commit("changeValue", this.value);
     // this.$router.push("/contractRegistration");
-    this.includeList.push(this.$route.name)
+    this.includeList.push(this.$route.name);
   },
-  watch: {},
+  computed:{
+    openNewTab:function(){
+      return this.$store.state.openNewTab;
+    }
+  },
+  watch: {
+     openNewTab:function(router){
+      this.addTable(router,true);
+    }
+  },
 };
 </script>
 
@@ -514,13 +518,14 @@ li {
 }
 .el-popover {
   min-width: 60px !important;
-  padding: 0 12px !important;
-  text-align: center !important;
+ /* padding: 0 12px !important;
+  text-align: center !important; */
   /* background: #313131 !important; */
 }
 .setting-popover-item {
-  /* display: block;
-  border: 1px solid #212121 !important; */
+  display: block !important;
+  line-height: 10px !important;
+  /* border: 1px solid #212121 !important; */
 }
 .el-popover .el-button--text {
   color: #333 !important;
@@ -564,4 +569,10 @@ li {
   display: inline-block;
   /* float: left; */
 }
+</style>
+<style scoped>
+
+  .el-button+.el-button {
+      margin-left: unset!important;
+  }
 </style>

@@ -622,7 +622,7 @@ export default {
           this.form.contractCode = res.data.contractCode, //合同编号
           this.form.rentStartDateStr = res.data.rentStartDateStr, //租赁开始日期
           this.form.rentEndDateStr = res.data.rentEndDateStr, //租赁到期日期
-          this.form.fileInfoVOS = res.data.fileInfoVOS, //合同附件信息
+          this.form.fileInfoVOS = res.data.fileInfoVOS ? res.data.fileInfoVOS : [], //合同附件信息
           this.form.customerName = res.data.customerName, //承租方
           this.form.customerPhoneNumber = res.data.customerPhoneNumber, //承租方电话
           this.form.customerAdd = res.data.customerAdd, //地址

@@ -57,7 +57,7 @@
                     <el-table-column
                     prop="accountDesc"
                     label="账号说明"
-                    width="200"
+                    width="240"
                     show-overflow-tooltip>
                     </el-table-column>
                     <el-table-column

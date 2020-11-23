@@ -37,15 +37,14 @@
           <span>回款信息</span>
         </div>
         <div class="footerNav">
-          <el-form ref="form" :model="form" label-width="135px" label-position="right">
-            <el-form-item 
+          <el-form ref="form" :model="form" label-width="125px" label-position="right">
+            <el-form-item
             :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'change'}]"
             prop="getFeeTime"
-            class="formItem" 
+            class="formItem"
             label="收款时间">
               <el-date-picker
                 size="small"
-                disabled
                 v-model="form.getFeeTime"
                 prefix-icon="el-icon-time2"
                 format="yyyy-MM-dd"
@@ -54,19 +53,19 @@
                 placeholder
               ></el-date-picker>
             </el-form-item>
-            <el-form-item 
+            <el-form-item
             :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'blur'}]"
-            class="formItem" 
+            class="formItem"
             prop="getFee"
             label="收款金额(元)">
               <el-input size="small" disabled v-model="form.getFee"></el-input>
             </el-form-item>
-            <el-form-item 
+            <el-form-item
             :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'change'}]"
             prop="collectionAccount"
-            class="formItem" 
+            class="formItem"
             label="收款账户">
-              <el-select size="small" disabled filterable v-model="form.belongCompany" placeholder @change="changeCompany">
+              <el-select size="small" filterable v-model="form.belongCompany" placeholder @change="changeCompany">
                 <el-option
                   v-for="item in companyList"
                   :key="item.id"
@@ -74,7 +73,7 @@
                   :value="item.id"
                 ></el-option>
               </el-select>
-              <el-select size="small" disabled v-model="form.collectionAccount" placeholder>
+              <el-select size="small" class="bank"  v-model="form.collectionAccount" placeholder @change="changeCompany2">
                 <el-option
                   v-for="item in collectionList"
                   :key="item.id"
@@ -86,9 +85,9 @@
             <el-form-item class="formItem" label="备注">
               <el-input size="small" disabled v-model="form.remark"></el-input>
             </el-form-item>
-            <el-form-item 
+            <el-form-item
             :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'blur'}]"
-            class="formItem" 
+            class="formItem"
             label="附件">
               <el-upload
                 class="upload"
@@ -123,7 +122,7 @@
             :model="form"
             label-width="135px"
             label-position="right"
-          > 
+          >
             <span class="formItem car">{{item.vehicleNo}}(剩余未回款总额：{{item.uncollectionMoneyTotal}}元)</span>
             <el-form-item class="formItem" label="应收期数">
               <el-input disabled size="small" v-model="item.billPeriods"></el-input>
@@ -195,11 +194,15 @@
                   label="应收期数"
                   align="center"
                   width="100">
+                  <template slot-scope="scope">
+                    <span v-if="scope.row.billPeriods == 0">押金</span>
+                    <span v-else>{{scope.row.billPeriods}}</span>
+                  </template>
                   </el-table-column>
                   <el-table-column
                   prop="adjustedPaybackMoney"
                   label="应收金额(元)"
-                  align="center" 
+                  align="center"
                   width="95">
                   </el-table-column>
                   <el-table-column
@@ -236,7 +239,8 @@ import {
   setCookie,
   removeCookie,
   getMenuBtnList,
-  formatJE
+  formatJE,formatDate,
+  debounce
 } from "../../public";
 export default {
   name: "audit",
@@ -256,11 +260,14 @@ export default {
         collectionAccount: "", //收款账号
         remark: "", //备注
         contractRentId:"",//合同回款计划id
+        collectionAccountId:""//收款账号ID
       },
       formAudit: {
         id: "",
         status: 0,
         auditSuggestion: "",
+        rentTimeStr:'',
+        collectionAccountId:''
       },
       companyList: [], //收款公司列表
       collectionList: [], //收款账号
@@ -286,26 +293,34 @@ export default {
     confirm() {
       //确定
       this.formAudit.id = this.$route.query.id;
+      this.formAudit.rentTimeStr=formatDate(this.form.getFeeTime,'yyyy-MM-dd');
+      this.formAudit.collectionAccountId=this.form.collectionAccountId;
       this.$refs.formAudit.validate((valid) => {
         if (valid) {
-          axios({
+            if(this.timer){
+                clearTimeout(this.timer)
+            }
+            let _this = this;
+      this.timer = setTimeout(function () {
+        _this.timer = null;
+        axios({
             method: "post",
             url: "/vehicle-service/rentCollectionInfo/submitPayCostAuditing", //+this.vehicleTypeId
-            headers: this.headers,
-            data: this.formAudit,
+            headers: _this.headers,
+            data: _this.formAudit,
           })
             .then((result) => {
               // console.log(result.data);
-              this.$store.commit("changeIsStatus", true);
+              _this.$store.commit("changeIsStatus", true);
               if (result.data.status === 0) {
-                this.$message({
+                _this.$message({
                   type: "success",
                   message: "审核成功",
                   center: true,
                 });
-                this.$router.back();
+                _this.$router.back();
               } else {
-                this.$message({
+                _this.$message({
                   message: result.data.message,
                   center: true,
                   type: "error",
@@ -314,12 +329,13 @@ export default {
             })
             .catch((err) => {
               console.error(err);
-              this.$message({
+              _this.$message({
                 message: err.response.data.message,
                 center: true,
                 type: "error",
               });
             });
+      },500)
         } else {
           console.log("error submit!!");
           return false;
@@ -416,6 +432,11 @@ export default {
       }).catch(err=>{console.log(err)})
 
     },
+    //
+    changeCompany2(val){
+       this.form.collectionAccountId = val;
+
+    },
     // 获取缴费详情数据
     initData(){
       axios({
@@ -434,10 +455,14 @@ export default {
             this.form.currPeriodUnClooectionMoney = result.data.data.leaseContractCurrentBillVO.currPeriodUnClooectionMoney; //当期未回款金额
             this.form.lateFee = result.data.data.leaseContractCurrentBillVO.lateFee; //滞纳金
 
-            this.form.getFeeTime = result.data.data.collectionInfoVO.rentTime; //收款时间
+            this.form.getFeeTime =  new Date(result.data.data.collectionInfoVO.rentTimeStr); //收款时间
             this.form.getFee = result.data.data.collectionInfoVO.rentMoney; //getFee: "", //收款金额
             this.form.belongCompany = result.data.data.collectionInfoVO.accountEnterpriseId; //收款公司
             this.form.collectionAccount = result.data.data.collectionInfoVO.bankTypeName; //收款账号
+            this.form.collectionAccountId=result.data.data.collectionInfoVO.collectionAccountId; //收款账号ID
+            getFeeAccount({ id: this.form.belongCompany }, this.headers).then(res=>{
+              this.collectionList = res.data
+            }).catch(err=>{console.log(err)})
             this.form.remark = result.data.data.collectionInfoVO.remark; //备注
             this.imgList = result.data.data.collectionInfoVO.efileIdList;
 
@@ -663,5 +688,10 @@ export default {
 .selectToast >>> .el-dialog__footer{
     text-align: center ;
 }
-
+.bank{
+  width: 300px !important;
+}
+.bank >>> .el-input--suffix{
+  width: 100% !important;
+}
 </style>

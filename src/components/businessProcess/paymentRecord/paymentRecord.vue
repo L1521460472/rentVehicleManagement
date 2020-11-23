@@ -6,15 +6,15 @@
           <span class="demonstration">合同编号</span>
           <el-input maxlength="50" size="small" v-model="contractCode" placeholder></el-input>
         </div>
-        <div class="nav">       
+        <div class="nav">
           <span class="demonstration">车牌号</span>
           <el-input maxlength="50" size="small" v-model="vehicleNo" placeholder></el-input>
         </div>
-        <div class="nav">       
+        <div class="nav">
           <span class="demonstration">联系人姓名</span>
           <el-input maxlength="50" size="small" v-model="customerContacts" placeholder></el-input>
         </div>
-        <div class="nav">       
+        <div class="nav">
           <span class="demonstration">联系人手机号</span>
           <el-input maxlength="50" size="small" v-model="contactsPhoneNumber" placeholder></el-input>
         </div>
@@ -28,7 +28,7 @@
               :value="item.id"
             ></el-option>
           </el-select>
-        </div>      
+        </div>
         <div class="nav">
           <span class="demonstration">缴费渠道</span>
           <el-select clearable size="small" v-model="paymentChannel" placeholder>
@@ -71,6 +71,15 @@
     </div>
     <div class="footer" >
       <div class="bottom">
+        <el-button style="margin: 10px;"
+          v-if="auditBtn"
+          @click="handleAudit"
+          size="small"
+          :class="{ active: !isDisable }"
+          :disabled="isDisable"
+        >
+          <i class="iconfont icon-shenhe"></i>重新提交操作
+        </el-button>
         <div class="footerTable">
           <el-table
             border
@@ -80,13 +89,17 @@
             :data="tableData"
             :height="tableHeight"
             style="width: 100%;"
+            @selection-change="handleSelectionChange"
           >
             <!-- <el-table-column
                     type="selection"
                     align="center"
                     width="60">
             </el-table-column>-->
-            
+            <el-table-column type="selection" prop="id" align="center" width="60"></el-table-column>
+            <el-table-column prop width="60" label="序号" align="center">
+              <template slot-scope="scope">{{ scope.$index + (currentPage - 1) * pageSize + 1 }}</template>
+            </el-table-column>
             <el-table-column prop="contractCode" label="合同编号" width="120" show-overflow-tooltip></el-table-column>
             <el-table-column prop="customerContacts" label="联系人姓名" width="120" show-overflow-tooltip></el-table-column>
             <el-table-column prop="contactsPhoneNumber" label="联系人手机号" width="120" show-overflow-tooltip></el-table-column>
@@ -118,7 +131,7 @@
               show-overflow-tooltip
             ></el-table-column>
           </el-table>
-        </div> 
+        </div>
         <div class="footer_page">
           <el-pagination
             @size-change="handleSizeChange"
@@ -137,7 +150,7 @@
             <el-carousel-item v-for="item in imageUrlList" :key="item.id">
               <img class="imgList" :src="item.efileAddr" alt="" srcset="">
             </el-carousel-item>
-          </el-carousel>        
+          </el-carousel>
         </el-dialog>
       </div>
     </div>
@@ -198,8 +211,11 @@ export default {
       dialogVisible:false,//查看附件弹窗
       imageUrlList:[],//附件资料
       searchBtn:false,//查询按钮是否有权限
+      auditBtn:false, //审核操作权限按钮
+      isDisable: true,
       tableHeight: window.innerHeight - 380 +'',
       headerHeight:0,
+      multipleSelection:[],
       headers: {
         Authorization: getCookie("HTBD_PASS"),
         language: this.$store.state.language,
@@ -207,6 +223,43 @@ export default {
     };
   },
   methods: {
+    handleSelectionChange(val) {
+      // console.log(val);
+      this.multipleSelection = val;
+      this.isDisable = this.multipleSelection.length < 1 ? true : false;
+    },
+    // 审核操作
+    handleAudit() {
+      if (this.multipleSelection.length > 1) {
+        this.$message({
+          message: "提交操作不能多选!",
+          center: true,
+          type: "error",
+        });
+        return;
+      }
+      if(this.multipleSelection[0].auditStatus==0){
+         this.$message({
+           message:  "待审核中，不可再进行提交操作!",
+           center: true,
+           type: "error",
+         });
+         return;
+      }
+      else if(this.multipleSelection[0].auditStatus==1){
+         this.$message({
+           message: "审核通过，不可再进行提交操作!",
+           center: true,
+           type: "error",
+         });
+         return;
+      }
+      this.$store.commit("changeIsStatus", false);
+      this.$router.push({
+        path: "/repayFee",
+        query: { form: "repayFee", id: this.multipleSelection[0].id },
+      });
+    },
     // 获取分页数据
     getListData() {
       this.loading = true
@@ -295,7 +348,7 @@ export default {
             center:true
           })
         }
-      }).catch(err=>{console.log(err)}) 
+      }).catch(err=>{console.log(err)})
     },
 
     //每页多少条
@@ -334,6 +387,7 @@ export default {
           let btns =  getMenuBtnList(data,this.$route.path)
           btns.map(item=>{
             if(item.name == '查询') this.searchBtn = true
+            if(item.name == '重新审核操作') this.auditBtn = true
           })
       },
       immediate:true,
@@ -464,7 +518,7 @@ export default {
 }
 .footerTable {
   width: 100%;
-  height: calc(100% - 56px);
+  height: calc(100% - 109px);
   overflow-y: auto;
 }
 .footer_page {
@@ -478,6 +532,7 @@ export default {
 }
 .footerTable .el-table {
   overflow: auto;
+  height: 100%!important;
 }
 .from {
   overflow: hidden;

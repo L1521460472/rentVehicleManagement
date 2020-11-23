@@ -15,6 +15,9 @@ const state = {
   isShow:true,//显示新增还是修改
   isStatus:false,//是否刷新页面
   // menuData:JSON.parse(sessionStorage.getItem(`menuData`))||[]
+
+  openNewTab:{},//打开新的标签页
+  logoAddress:"",//logo地址，默认../assets/logo.png
 }
 
 const getters = {
@@ -45,11 +48,17 @@ const mutations = {
   },
   changeIsStatus(state,payload){
     state.isStatus = payload;
-  }
+  },
   // setMenuData(state,menuData){
   //   sessionStorage.setItem(`menuData`, JSON.stringify(menuData))
   //   state.menuData = menuData
   // },
+  openNewTab(state,router){
+    state.openNewTab=router;
+  },
+  setlogoAddress(state,logoAddress){
+    state.logoAddress = logoAddress;
+  }
 }
 
 const actions = {
@@ -77,6 +86,9 @@ const actions = {
   // updateMenuData(context,value){
   //   context.commit('setMenuData',value)
   // }
+  openNewTab(context,router){
+     context.commit('openNewTab',router)
+  }
 }
 
 export default new Vuex.Store({

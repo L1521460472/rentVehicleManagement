@@ -98,7 +98,7 @@
     </div>
     <div class="footer">
       <div class="top">
-        <el-button size="small" @click="addAction" v-if="searchBtn">
+        <el-button size="small" @click="addAction" v-if="addBtn">
           <i class="iconfont icon-add"></i>
           新增
         </el-button>
@@ -124,6 +124,10 @@
         <el-button size="small" v-if="detailBtn" :class="{ 'active': !isDisable }" :disabled="isDisable" @click="detailAction">
           <i class="iconfont icon-chakan"></i>
           详情
+        </el-button>
+        <el-button size="small" v-if="deleteBtn" :class="{ 'active': !isDisable }" :disabled="isDisable" @click="deleteAction">
+          <i class="iconfont icon-shanchu"></i>
+          删除
         </el-button>
 
       </div>
@@ -174,12 +178,12 @@
           ></el-pagination>
         </div>
         <!-- 分配业务员 -->
-        <el-dialog 
+        <el-dialog
         :visible.sync="dialogVisible"
         title="分配业务员"
         top="200px"
         width="500px">
-          <div class=""> 
+          <div class="">
             <span>给选中的意向订单分配业务员为：</span>
             <el-select clearable size="small" v-model="salesman" placeholder>
               <el-option
@@ -208,6 +212,7 @@ import {
   removeCookie,
   getMenuBtnList,
 } from "../../../public";
+import axios from "axios";
 export default {
   name: "intentionOrder",
   data() {
@@ -284,6 +289,7 @@ export default {
       addInfoBtn:false,//补充资料按钮是否有权限显示
       auditBtn:false,//审核按钮是否有权限显示
       detailBtn:false,//详情按钮是否有权限显示
+      deleteBtn:false,//显示删除按钮
       tableHeight: window.innerHeight - 447 +'',
       headers: {
         Authorization: getCookie("HTBD_PASS"),
@@ -307,7 +313,7 @@ export default {
         orderStatus: this.orderStatus !== '' ? this.orderStatus: null,
         orderSource: this.orderSource !== '' ? this.orderSource: null,
         currentPag: this.currentPage,
-        pageSize: this.pageSize      
+        pageSize: this.pageSize
       };
       intenaionOrderData(params, this.headers)
         .then((res) => {
@@ -542,6 +548,56 @@ export default {
         query: { from: "detail", id: this.selectData[0].id },
       });
     },
+    deleteAction(){
+      if (this.selectData.length > 1) {
+        this.$message.warning({
+          message: "删除不能多选",
+          center: true,
+        });
+        return;
+      }
+      if(this.selectData[0].orderStatusStr=="审核通过"){
+        this.$message.warning({
+          message: "该订单已审核通过，不能删除",
+          center: true,
+        });
+        return;
+      }
+      this.$confirm('请确认删除该意向订单？', '删除提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            axios({
+                method: "post",
+                url: '/vehicle-service/leaseOrderInfo/delLeaseOrderInfo?id='+this.selectData[0].id ,
+                headers: this.headers,
+                data: null,
+              })
+              .then((result) => {
+                // console.log(result.data)
+                if(result.data.status==0){
+                  this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                  });
+                  this.getListData();
+                }
+              })
+              .catch((err) => {
+                this.$message({
+                  message: err.message,
+                  center: true,
+                  type: "error",
+                });
+              });
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            });
+          });
+    },
     //   表格选择
     handleSelectionChange(val) {
       this.selectData = val;
@@ -585,6 +641,7 @@ export default {
                 if(item.name == '补充资料') this.addInfoBtn = true
                 if(item.name == '审核') this.auditBtn = true
                 if(item.name == '详情') this.detailBtn = true
+                if(item.name == '删除') this.deleteBtn = true
               })
           },
           immediate:true,

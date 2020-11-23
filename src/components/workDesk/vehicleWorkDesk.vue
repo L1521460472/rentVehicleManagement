@@ -1,58 +1,58 @@
 <template>
-  <div>
+  <div class="box-container" v-loading="loading">
     <div class="box">
       <div class="box-title">工作进度</div>
       <div class="box-item">
         <div class="box-item-tab" style="width: calc(100% - 100px)">
           <div class="box-item-tab-top">
             <div class="box-item-tab-icon"><img src="../../assets/workdesk/Frame.png"></div>
-            <div class="box-item-tab-top-value">车辆利用率：68.6%</div>
+            <div class="box-item-tab-top-value">车辆利用率：{{(vehicleUseRate * 100).toFixed(2)}}%</div>
           </div>
           <hr class="divider-raw">
           <div class="box-item-tab-left">
-            <div class="box-item-tab-left-value">856</div>
+            <div class="box-item-tab-left-value"> {{onRentVehicleNumbers}} </div>
             <div class="box-item-tab-left-title">在租车</div>
           </div>
           <hr class="divider-col">
           <div class="box-item-tab-right">
-            <div class="box-item-tab-right-value">223</div>
+            <div class="box-item-tab-right-value"> {{forRentVehicleNumbers}} </div>
             <div class="box-item-tab-right-title">待租车</div>
           </div>
           <hr class="divider-col">
           <div class="box-item-tab-right">
-            <div class="box-item-tab-right-value">462</div>
+            <div class="box-item-tab-right-value"> {{spareVehicleNumbers}} </div>
             <div class="box-item-tab-right-title">备用车</div>
           </div>
         </div>
         <div class="box-item-tab" style="width: calc(100% - 522px)">
           <div class="box-item-tab-top">
             <div class="box-item-tab-icon"><img src="../../assets/workdesk/Frame.png"></div>
-            <div class="box-item-tab-top-value">车辆维修率：5.9%</div>
+            <div class="box-item-tab-top-value">车辆维修率：{{(vehicleRepairRate * 100).toFixed(2)}}%</div>
           </div>
           <hr class="divider-raw">
           <div class="box-item-tab-left" style="width: calc(calc(100% - 20px) / 2);">
-            <div class="box-item-tab-left-value" style="color: #333333;">806</div>
+            <div class="box-item-tab-left-value" style="color: #333333;"> {{normalVehicleNumbers}} </div>
             <div class="box-item-tab-left-title">正常状态</div>
           </div>
           <hr class="divider-col">
           <div class="box-item-tab-right" style="width: calc(calc(100% - 20px) / 2);">
-            <div class="box-item-tab-right-value" style="color: #333333;">50</div>
+            <div class="box-item-tab-right-value" style="color: #333333;"> {{repairVehicleNumbers}} </div>
             <div class="box-item-tab-right-title">维修状态</div>
           </div>
         </div>
         <div class="box-item-tab" style="width: calc(100% - 522px)">
           <div class="box-item-tab-top">
             <div class="box-item-tab-icon"><img src="../../assets/workdesk/Frame.png"></div>
-            <div class="box-item-tab-top-value">车辆在线率：92.3%</div>
+            <div class="box-item-tab-top-value">车辆在线率：{{(vehicleOnlineRate * 100).toFixed(2)}}%</div>
           </div>
           <hr class="divider-raw">
           <div class="box-item-tab-left" style="width: calc(calc(100% - 20px) / 2);">
-            <div class="box-item-tab-left-value" style="color: #36CBC4;">769</div>
+            <div class="box-item-tab-left-value" style="color: #36CBC4;"> {{onlineVehicleNumbers}} </div>
             <div class="box-item-tab-left-title">设备在线</div>
           </div>
           <hr class="divider-col">
           <div class="box-item-tab-right" style="width: calc(calc(100% - 20px) / 2);">
-            <div class="box-item-tab-right-value" style="color: #FF4444;">87</div>
+            <div class="box-item-tab-right-value" style="color: #FF4444;"> {{offlineVehicleNumbers}} </div>
             <div class="box-item-tab-right-title">设备离线</div>
           </div>
         </div>
@@ -61,37 +61,37 @@
         <div class="box-item-col" style="margin-right: 28px;">
           <div class="box-item-label">
             <div class="box-item-label-left">需年检车辆</div>
-            <div class="box-item-label-right">15</div>
+            <div class="box-item-label-right"> {{yearlyInsVehicleNumbers}} </div>
           </div>
           <div class="box-item-label">
             <div class="box-item-label-left" style="background: #f7e4ce;color: #E72828;">事故/出险车辆</div>
-            <div class="box-item-label-right" style="color: #E72828;">257</div>
+            <div class="box-item-label-right" style="color: #E72828;"> {{accidentVehicleNumbers}} </div>
           </div>
         </div>
         <div class="box-item-col" style="margin-right: 28px;">
           <div class="box-item-label">
             <div class="box-item-label-left" style="background: #cfe0f7;color: #0A5FD1;">需续保车辆</div>
-            <div class="box-item-label-right" style="color: #0A5FD1;">12</div>
+            <div class="box-item-label-right" style="color: #0A5FD1;"> {{renOfInsVehicleNumbers}} </div>
           </div>
           <div class="box-item-label">
             <div class="box-item-label-left" style="background: #d9ebd0;color: #389E06;">保养车辆</div>
-            <div class="box-item-label-right" style="color: #389E06;">8</div>
+            <div class="box-item-label-right" style="color: #389E06;"> {{maintainVehicleNumbers}} </div>
           </div>
         </div>
-        <div class="box-item-col"  style="margin-right: 28px;">
+        <div class="box-item-col" style="margin-right: 28px;">
           <div class="box-item-label">
             <div class="box-item-label-left" style="background: #cfe8f7;color: #1B6AD2;">违章车辆</div>
-            <div class="box-item-label-right" style="color: #1B6AD2;">36</div>
+            <div class="box-item-label-right" style="color: #1B6AD2;"> {{violationVehicleNumbers}} </div>
           </div>
           <div class="box-item-label">
             <div class="box-item-label-left" style="background: #cfe8f7;color: #0C8FD9;">逾期锁车</div>
-            <div class="box-item-label-right" style="color: #0C8FD9;">3</div>
+            <div class="box-item-label-right" style="color: #0C8FD9;"> {{lateLockVehicleNumbers}} </div>
           </div>
         </div>
         <div class="box-item-col">
           <div class="box-item-label">
             <div class="box-item-label-left" style="background: #e4daec;color: #7F40B1;">保障/维修车辆</div>
-            <div class="box-item-label-right" style="color: #7F40B1;">36</div>
+            <div class="box-item-label-right" style="color: #7F40B1;"> {{guaRepairVehicleNumbers}} </div>
           </div>
         </div>
       </div>
@@ -102,12 +102,12 @@
         <div class="box-item-card" style="background: linear-gradient(129.09deg, #4A9CEE 0%, #329FFF 100%);">
           <div class="box-item-card-icon"><img src="../../assets/workdesk/Frame-3.png"></div>
           <div class="box-item-card-title">车辆登记</div>
-          <div class="box-item-card-value">24</div>
+          <div class="box-item-card-value"> {{vehicleRegisterNumbers}} </div>
         </div>
         <div class="box-item-card" style="background: linear-gradient(129.09deg, #01AACD 0%, #44C3EA 100%);">
           <div class="box-item-card-icon"><img src="../../assets/workdesk/Frame-5.png"></div>
-          <div class="box-item-card-title">一键上传待处理</div>
-          <div class="box-item-card-value">4</div>
+          <div class="box-item-card-title">一键上报待处理</div>
+          <div class="box-item-card-value"> {{reportRecordNoHandleNumbers}} </div>
         </div>
       </div>
     </div>
@@ -121,21 +121,21 @@
           <div class="searchbtn">
             <el-input id="searchin" class="searchin" size="small" placeholder="请输入车牌号 搜索相关合同" v-model="searchVal">
             </el-input>
-            <el-button slot="append" size="small" icon="el-icon-search"></el-button>
+            <el-button slot="append" @click="handleSearch" size="small" icon="el-icon-search"></el-button>
           </div>
           <div class="box-item" style="justify-content: space-between;">
             <div class="box-item-col" style="margin-right: 16px;width: calc(100% / 2);">
-              <div class="box-item-pain">实时监控</div>
-              <div class="box-item-pain">轨迹回放</div>
-              <div class="box-item-pain">车型维护</div>
-              <div class="box-item-pain">车辆管理</div>
-              <div class="box-item-pain">逾期锁车</div>
+              <div class="box-item-pain" @click="handleMonitoring">实时监控</div>
+              <div class="box-item-pain" @click="handleTrack">轨迹回放</div>
+              <div class="box-item-pain" @click="handleVehicleType">车型维护</div>
+              <div class="box-item-pain" @click="handleVehicle">车辆管理</div>
+              <div class="box-item-pain" @click="handleOverdue">逾期锁车</div>
             </div>
             <div class="box-item-col" style="width: calc(100% / 2);">
-              <div class="box-item-pain">违章管理</div>
-              <div class="box-item-pain">报障/维修管理</div>
-              <div class="box-item-pain">事故/出险管理</div>
-              <div class="box-item-pain">事故/出险管理</div>
+              <div class="box-item-pain" @click="handleLllegal">违章管理</div>
+              <div class="box-item-pain" @click="handleMaintain">报障/维修管理</div>
+              <div class="box-item-pain" @click="handleAccident">事故/出险管理</div>
+              <div class="box-item-pain" @click="handleUpkeep">保养管理</div>
             </div>
           </div>
         </div>
@@ -143,20 +143,23 @@
       <div class="panel" style="margin-left:16px;">
         <div class="panel-title">
           通知提醒
-          <a class="panel-more" href="javascript:;">更多></a>
+          <a class="panel-more" href="javascript:;" @click="handleMore">更多></a>
         </div>
         <hr class="panel-divider">
         <div class="panel-content">
-          <div v-for="item in notifylist">
-            <div class="panel-list">
-              <div class="panel-list-order">{{item.order}}</div>
+          <div v-for="(item,index) in notifylist" :key="item.id">
+            <div class="panel-list" @click="setreaded(item,$event)">
+              <div class="panel-list-order">{{index + 1}}</div>
               <div class="panel-list-content">
-                <div class="panel-list-content-t">{{item.title}}</div>
+                <div class="panel-list-content-t">
+                  <div class="panel-list-title" v-html="item.title"></div>
+                  <div class="red-dot" v-if="item.messageStatus==1"></div>
+                </div>
                 <div class="panel-list-content-b">{{item.content}}</div>
               </div>
               <div class="panel-list-contrl">
-                <span>{{item.time}}</span>
-                <a class="panel-more" href="javascript:;">查看></a>
+                <span>{{item.createTimeStr}}</span>
+                <!-- <a class="panel-more" href="javascript:;">查看></a> -->
               </div>
             </div>
             <hr class="divider-raw">
@@ -165,36 +168,177 @@
       </div>
     </div>
   </div>
-  </div>
 </template>
 
 <script>
   import {
-    formatJE2
+    formatJE2,
+    getCookie,
+    openNewTab
   } from '../../public.js'
+  import axios from 'axios';
   export default {
-    name: 'financialWorkDesk',
+    name: 'vehicleWorkDesk',
     data() {
       return {
+        loading:true,
         searchVal: '',
-        notifylist:[]
+        notifylist: [],
+        accidentVehicleNumbers: '', //事故/出险车辆
+        forRentVehicleNumbers: '', //待租车
+        guaRepairVehicleNumbers: '', //保障/维修车辆
+        lateLockVehicleNumbers: '', //逾期锁车
+        maintainVehicleNumbers: '', //保养车辆
+        normalVehicleNumbers: '', //正常状态
+        offlineVehicleNumbers: '', //设备离线
+        onRentVehicleNumbers: '', //在租车
+        onlineVehicleNumbers: '', //设备在线
+        renOfInsVehicleNumbers: '', //需续保车辆
+        repairVehicleNumbers: '', //维修状态
+        reportRecordNoHandleNumbers: '', //一键上传待处理
+        spareVehicleNumbers: '', //备用车
+        vehicleOnlineRate: '', //车辆在线率
+        vehicleRegisterNumbers: '', //车辆登记
+        vehicleRepairRate: '', //车辆维修率
+        vehicleUseRate: '', //车辆利用率
+        violationVehicleNumbers: '', //违章车辆
+        yearlyInsVehicleNumbers: '', //需年检车辆
+        headers: {
+          Authorization: getCookie("HTBD_PASS"),
+          language: this.$store.state.language,
+        },
       }
     },
-    methods:{
-
+    methods: {
+      initData() {
+        axios({
+          method: 'get',
+          url: '/vehicle-service/vehicleManagement/getData',
+          headers: this.headers,
+        }).then((result) => {
+          // console.log(result.data);
+          this.loading = false;
+          this.accidentVehicleNumbers = result.data.data.accidentVehicleNumbers; //事故/出险车辆
+          this.forRentVehicleNumbers = result.data.data.forRentVehicleNumbers; //待租车
+          this.guaRepairVehicleNumbers = result.data.data.guaRepairVehicleNumbers; //保障/维修车辆
+          this.lateLockVehicleNumbers = result.data.data.lateLockVehicleNumbers; //逾期锁车
+          this.maintainVehicleNumbers = result.data.data.maintainVehicleNumbers; //保养车辆
+          this.normalVehicleNumbers = result.data.data.normalVehicleNumbers; //正常状态
+          this.offlineVehicleNumbers = result.data.data.offlineVehicleNumbers; //设备离线
+          this.onRentVehicleNumbers = result.data.data.onRentVehicleNumbers; //在租车
+          this.onlineVehicleNumbers = result.data.data.onlineVehicleNumbers; //设备在线
+          this.renOfInsVehicleNumbers = result.data.data.renOfInsVehicleNumbers; //需续保车辆
+          this.repairVehicleNumbers = result.data.data.repairVehicleNumbers; //维修状态
+          this.reportRecordNoHandleNumbers = result.data.data.reportRecordNoHandleNumbers; //一键上传待处理
+          this.spareVehicleNumbers = result.data.data.spareVehicleNumbers; //备用车
+          this.vehicleOnlineRate = result.data.data.vehicleOnlineRate; //车辆在线率
+          this.vehicleRegisterNumbers = result.data.data.vehicleRegisterNumbers; //车辆登记
+          this.vehicleRepairRate = result.data.data.vehicleRepairRate; //车辆维修率
+          this.vehicleUseRate = result.data.data.vehicleUseRate; //车辆利用率
+          this.violationVehicleNumbers = result.data.data.violationVehicleNumbers; //违章车辆
+          this.yearlyInsVehicleNumbers = result.data.data.yearlyInsVehicleNumbers; //需年检车辆
+          this.notifylist = result.data.data.page.records;
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      setreaded(item,event){
+        var $currentTarget=event.currentTarget
+        if(item.messageStatus==1){
+          axios({
+              method: "post",
+              url: this.setreadedUrl,
+              headers: this.headers,
+              data: {id:item.id},
+            })
+            .then((result) => {
+              debugger
+              $currentTarget.children[1].children[0].children[1].remove()
+            })
+        }
+      },
+      handleVehicle() { //车辆管理
+        openNewTab(this, '车辆管理', '/vehicleManagement')
+      },
+      handleClick() { //一键上传
+        openNewTab(this, '一键上传', '/keyToUpload')
+      },
+      handleSearch() {
+        let searchVal = this.searchVal.replace(/\s/gm, '')
+        if (searchVal) {
+          // this.$parent.$parent.$parent.$parent.addTable({url:''})
+          openNewTab(this, '收租台账', '/rentParameter', {
+            vehicleNo: this.searchVal
+          })
+        }
+      },
+      handleMonitoring() { //实时监控
+        openNewTab(this, '实时监控', '/realTimemonitoring')
+      },
+      handleTrack() { //轨迹回放
+        openNewTab(this, '轨迹回放', '/trackPlayback')
+      },
+      handleVehicleType() { //车型维护
+        openNewTab(this, '车型维护', '/vehicleMaintenance')
+      },
+      handleOverdue() { //逾期锁车
+        this.$message({
+          message: '功能正在努力开发中!',
+          center: true,
+        });
+      },
+      handleLllegal() { //违章管理
+        openNewTab(this, '违章处理', '/illegalProcessing')
+      },
+      handleMaintain() { //报障/维修管理
+        this.$message({
+          message: '功能正在努力开发中!',
+          center: true,
+        });
+      },
+      handleAccident() { //事故/出险管理
+        this.$message({
+          message: '功能正在努力开发中!',
+          center: true,
+        });
+      },
+      handleUpkeep() { //保养管理
+        this.$message({
+          message: '功能正在努力开发中!',
+          center: true,
+        });
+      },
+      handleMore() {
+        // this.$router.push({
+        //   path: '/remindProcess'
+        // });
+         openNewTab(this, '提醒处理', '/remindProcess')
+      },
     },
     mounted() {
+      this.initData();
       document.getElementById('searchin').style.border = 'none'
-      for(let i=1;i<=6;++i){
-        this.notifylist.push({order:i,title:'合同到期提醒',content:'合同TFA23423442到期，还有30天',time:'2020-09-02 14:32'})
-      }
+      openNewTab(this,'车管','/vehicleWorkDesk')
+      // for(let i=1;i<=6;++i){
+      //   this.notifylist.push({order:i,title:'合同到期提醒',content:'合同TFA23423442到期，还有30天',time:'2020-09-02 14:32'})
+      // }
     }
   }
 </script>
 
 <style scoped>
+  .box-container {
+    margin-left: -20px;
+    padding-left: 20px;
+    margin-right: -20px;
+    padding-right: 20px;
+    height: calc(100% - 40px);
+    overflow: auto;
+    margin-bottom: -20px;
+  }
+
   .box {
-    width: calc(100% - 30px);
+    width: calc(100% - 15px);
     border: 1px solid #E5E5E5;
     padding: 16px 15px;
     margin-top: 16px;
@@ -271,12 +415,12 @@
     display: inline-block;
     vertical-align: middle;
     width: 30px;
-    line-height: 36px;
+    text-align: center;
   }
 
   .panel-list-content {
     display: inline-block;
-    width: calc(100% - 200px);
+    width: calc(100% - 150px);
   }
 
   .panel-list-content-b {
@@ -286,13 +430,22 @@
   .panel-list-contrl {
     display: inline-block;
     color: #999999;
-    line-height: 36px;
   }
-
+.panel-list-title {
+    display: inline-block;
+  }
   .panel-list-contrl>span {
     margin-right: 10px;
   }
-
+.red-dot {
+    width: 5px;
+    height: 5px;
+    background-color: red;
+    border-radius: 50%;
+    display: inline-block;
+    margin-bottom: 5px;
+    margin-left: -3px;
+  }
   .box-title {
     color: #333333;
     font-family: Microsoft YaHei;
@@ -487,8 +640,11 @@
     line-height: 48px;
     margin-top: 14px;
     margin-bottom: 14px;
+    cursor: pointer;
   }
-
+.box-item-pain:hover {
+    color: #368CFE;
+  }
   .divider-raw {
     width: 95%;
     margin: auto;

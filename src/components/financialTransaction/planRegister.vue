@@ -114,6 +114,20 @@
         </div>
         <el-form ref="formContract" :model="formContract" label-width="130px">
           <div class="formNav formNavs" v-if="international.title">
+          <el-form-item
+              label="合同类型"
+              prop="contractType"
+              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
+            >
+              <el-select clearable v-model="formContract.contractType" size="small" placeholder>
+                <el-option
+                  v-for="item in contractTypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item
               label="合同编号"
               prop="contractCode"
@@ -637,6 +651,8 @@ export default {
         contactsPhoneNumber: null, //承租方联系人电话
         customerAdd: null, //承租方地址
 
+        contractType:null,//合同类型
+
         //车辆信息
         vehicleNum: 1, //租车数量
         chargingPileNum: 0, //充电桩数量
@@ -692,6 +708,9 @@ export default {
           name: "2 粤BD81822",
           id: 2,
         },
+      ],
+      contractTypes:[
+        {value:1,label:'新签'}, {value:2,label:'续签'}
       ],
       tableData: [],
       headers: {
@@ -764,14 +783,16 @@ export default {
           arr.push(item.id);
         });
         var nary = arr.sort();
-        for (var j = 0; j < arr.length; j++) {
-          if (nary[j] == nary[j + 1]) {
-            this.$message({
-              type: "error",
-              message: "车牌号相同不能提交!",
-              center: true,
-            });
-            return;
+        if(arr.length>1){
+          for (var j = 0; j < arr.length; j++) {
+            if (nary[j] == nary[j + 1]) {
+              this.$message({
+                type: "error",
+                message: "车牌号相同不能提交!",
+                center: true,
+              });
+              return;
+            }
           }
         }
       if(this.formContract.leaseContractGenerateTableVO.aggregation.length == 0){
@@ -1101,10 +1122,10 @@ export default {
             // result.data.data.aggregation.map(item=>{
 
             // })
-            
+
             this.formContract.leaseContractGenerateTableVO.aggregation =
               result.data.data.aggregation;
-            
+
             this.formContract.leaseContractGenerateTableVO.vehicleMap =
               result.data.data.vehicleMap;
 
@@ -1216,6 +1237,7 @@ export default {
               result.data.data.leaseContractOrderVO.userName; //分配业务员
 
             this.formContract.contractCode = result.data.data.contractCode; //合同编号
+            this.formContract.contractType = result.data.data.contractType;
             this.formContract.rentStartDateStr =
               result.data.data.rentStartDateStr; //起租日期
             this.formContract.rentEndDateStr = result.data.data.rentEndDateStr; //止租日期

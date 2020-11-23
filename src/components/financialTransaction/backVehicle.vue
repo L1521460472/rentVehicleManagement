@@ -503,7 +503,7 @@
             <el-form-item
               label="押金退款日"
               prop="backOffMoneyDate"
-              :rules="[{required: true,message: '内容不能为空',trigger: 'blur',},]"
+              
             >
               <el-date-picker
                 v-model="formBackVehicle.backOffMoneyDate"

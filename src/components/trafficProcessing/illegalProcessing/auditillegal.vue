@@ -172,14 +172,14 @@ export default {
     return {
       form: {
         idCar: "",//车牌号
-        illegalTime: "2020-08-13 12:12",//违章时间
+        illegalTime: "",//违章时间
         illegalLocation: "",//违章地点
         illegalBehavior: "",//违章行为
         deductMarks: "",//扣分
         forfeit: "",//罚款
         illegalCode: "",//违章编号
-        contractCode:'HTBD875866',//合同编号
-        merchandiser:'张三',//业务员
+        contractCode:'',//合同编号
+        merchandiser:'',//业务员
         auditOpinion:'',//审核意见
       }, //新增数据
       handleForm:{

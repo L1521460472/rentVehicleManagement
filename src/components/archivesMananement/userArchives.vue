@@ -2,17 +2,8 @@
   <div id="header">
     <div class="userLeft">
       <!-- indent="0" 是否缩进 -->
-      <el-tree
-        :data="data"
-        ref="tree"
-        :indent="0"
-        :props="defaultProps"
-        highlight-current
-        :expand-on-click-node="false"
-        node-key="id"
-        default-expand-all
-        @node-click="handleNodeClick"
-      ></el-tree>
+      <el-tree :data="data" ref="tree" :indent="0" :props="defaultProps" highlight-current
+      :expand-on-click-node="false" node-key="id" default-expand-all @node-click="handleNodeClick"></el-tree>
     </div>
     <div class="userRight">
       <div class="header" v-if="international.global">
@@ -45,7 +36,7 @@
           </div>
           <div class="nav">
             <span>{{ international.content.content_userProfile_status }}</span>
-            <el-select v-model="status" size="small" placeholder="">
+            <el-select v-model="status" clearable size="small" placeholder="">
               <el-option
                 v-for="item in optionsStatusList"
                 :key="item.id"
@@ -59,7 +50,7 @@
             <span>{{
               international.content.content_userProfile_userType
             }}</span>
-            <el-select v-model="userType" size="small" placeholder="">
+            <el-select v-model="userType" clearable size="small" placeholder="">
               <el-option
                 v-for="item in optionsUserType"
                 :key="item.id"
@@ -322,6 +313,8 @@ export default {
       total: 0, //数据总条数
       currentPage: 1, //当前页数
       pageSize: 10, //每页长度
+      enterpriseId:null,
+      departmentId:null,
       departmentName: "", //部门名称
       username: "", //用户账号
       status: "", //状态
@@ -387,57 +380,61 @@ export default {
       this.editPassword.resetPassStr1="";
       this.editPassword.resetPassStr2="";
     },
+    resetAll(){
+      this.enterpriseId=null
+      this.departmentId=null
+      this.departmentName=null
+      this.username=null
+      this.status=null
+      this.userType=null
+    },
     handleNodeClick(data) {
-      //   console.log(data);
+      this.resetAll();
       if (data.type == 1) {
+        this.enterpriseId = data.id,
+        this.departmentId = null,
         this.treeValue = {
           enterpriseId: data.id,
           currentPage: 1,
           pageSize: 10,
         };
       } else {
+        this.enterpriseId = null,
+        this.departmentId = data.id,
         this.treeValue = {
           departmentId: data.id,
           currentPage: 1,
           pageSize: 10,
         };
       }
-      axios({
-        method: "post",
-        url: "/platform-base-service/platformBaseUserInfo/userPageQuery",
-        headers: this.headers,
-        data: this.treeValue,
-      })
-        .then((result) => {
-          //   console.log(result.data);
-          this.tableData = result.data.data.records;
-          this.total = result.data.data.total;
-          this.pageSize = result.data.data.size;
-          this.currentPage = result.data.data.current;
-        })
-        .catch((err) => {
-          console.error(err);
-          this.$message({
-            message: err.response.data.message,
-            center: true,
-            type: "error",
-          });
-        });
+      this.getListData()
     },
     // 获取初始数据
-    getListData() {
+    getListData(currentPage,pageSize) {
+      if(currentPage){
+        this.currentPage=currentPage
+      }
+      if(pageSize){
+        this.pageSize=pageSize
+      }
       axios({
         //分页数据
         method: "post",
         url: "/platform-base-service/platformBaseUserInfo/userPageQuery",
         headers: this.headers,
         data: {
+          enterpriseId: this.enterpriseId,
+          departmentId: this.departmentId,
+          departmentName: this.departmentName,
+          username: this.username,
+          userStatus: this.status,
+          userType: this.userType,
           currentPage: this.currentPage,
           pageSize: this.pageSize,
         },
       })
         .then((result) => {
-          console.log(result.data);
+          // console.log(result.data);
           this.tableData = result.data.data.records;
           this.total = result.data.data.total;
           this.pageSize = result.data.data.size;
@@ -474,34 +471,7 @@ export default {
     },
     // 查询
     search() {
-      axios({
-        method: "post",
-        url: "/platform-base-service/platformBaseUserInfo/userPageQuery",
-        headers: this.headers,
-        data: {
-          departmentName: this.departmentName,
-          username: this.username,
-          userStatus: this.status,
-          currentPage: 1,
-          userType: this.userType,
-          pageSize: 10,
-        },
-      })
-        .then((result) => {
-          console.log(result.data);
-          this.tableData = result.data.data.records;
-          this.total = result.data.data.total;
-          this.pageSize = result.data.data.size;
-          this.currentPage = result.data.data.current;
-        })
-        .catch((err) => {
-          console.error(err);
-          this.$message({
-            message: err.response.data.message,
-            center: true,
-            type: "error",
-          });
-        });
+      this.getListData()
     },
     // 重置
     reset() {
@@ -509,12 +479,12 @@ export default {
       this.departmentName = "";
       this.username = "";
       this.status = "";
+      this.userType = null;
+      this.enterpriseId = null;
+      this.departmentId = null
       this.getListData();
     },
     handleAdd() {
-      //新增
-      // this.$store.commit("changeIsShow", true);
-      // this.$router.push("/addUserArchives");
       this.$store.commit("changeIsStatus", false);
       this.$router.push({
         path: "/addUserArchives",
@@ -534,9 +504,6 @@ export default {
         });
         return;
       }
-      // this.$store.commit("changeEditId", this.multipleSelection[0].id);
-      // this.$store.commit("changeIsShow", false);
-      // this.$router.push("/addUserArchives");
       this.$store.commit("changeIsStatus", false);
       this.$router.push({
         path: "/addUserArchives",
@@ -578,10 +545,6 @@ export default {
           });
         });
     },
-    // 表格选择
-    // handleSelectionChange(val){
-
-    // },
     handleDisable() {
       //失效
       var brr = [];
@@ -605,6 +568,10 @@ export default {
           })
             .then((result) => {
               this.getListData();
+              this.$message.success({
+                message: this.international.global.global_changeStatusSuccess,
+                center: true,
+              });
             })
             .catch((err) => {
               console.error(err);
@@ -614,10 +581,6 @@ export default {
                 type: "error",
               });
             });
-          this.$message.error({
-            message: this.international.global.global_changeStatusFailure,
-            center: true,
-          });
         })
         .catch(() => {});
     },
@@ -644,6 +607,10 @@ export default {
           })
             .then((result) => {
               this.getListData();
+              this.$message.success({
+                message: this.international.global.global_changeStatusSuccess,
+                center: true,
+              });
             })
             .catch((err) => {
               console.error(err);
@@ -653,84 +620,28 @@ export default {
                 type: "error",
               });
             });
-          this.$message.success({
-            message: this.international.global.global_changeStatusSuccess,
-            center: true,
-          });
         })
         .catch(() => {});
     },
     //每页多少条
     handleSizeChange(val) {
-      axios({
-        method: "post",
-        url: "/platform-base-service/platformBaseUserInfo/userPageQuery",
-        headers: this.headers,
-        data: {
-          departmentName: this.departmentName,
-          username: this.username,
-          userStatus: this.status,
-          userType: this.userType,
-          currentPage: this.currentPage,
-          pageSize: val,
-        },
-      })
-        .then((result) => {
-          console.log(result.data);
-          this.tableData = result.data.data.records;
-          this.total = result.data.data.total;
-          this.pageSize = result.data.data.size;
-          this.currentPage = result.data.data.current;
-        })
-        .catch((err) => {
-          console.error(err);
-          this.$message({
-            message: err.response.data.message,
-            center: true,
-            type: "error",
-          });
-        });
+      this.currentPage=1;
+      this.pageSize=val;
+      this.getListData()
     },
     //选择页数
-    handleCurrentChange(val) {
-      axios({
-        method: "post",
-        url: "/platform-base-service/platformBaseUserInfo/userPageQuery",
-        headers: this.headers,
-        data: {
-          departmentName: this.departmentName,
-          username: this.username,
-          userStatus: this.status,
-          userType: this.userType,
-          currentPage: val,
-          pageSize: this.pageSize,
-        },
-      })
-        .then((result) => {
-          this.tableData = result.data.data.records;
-          this.total = result.data.data.total;
-          this.pageSize = result.data.data.size;
-          this.currentPage = result.data.data.current;
-        })
-        .catch((err) => {
-          console.error(err);
-          this.$message({
-            message: err.response.data.message,
-            center: true,
-            type: "error",
-          });
-        });
+    handleCurrentChange(val) { 
+        this.currentPage=val; 
+        this.getListData()
     },
     getSelete() {
       axios({
         //用户类型
         method: "get",
-        url:
-          "/platform-base-service/dictionaryType/listInternalLangByDictionaryType?type=roleType",
+        url: "/platform-base-service/dictionaryType/listInternalLangByDictionaryType?type=roleType",
         headers: this.headers,
       })
-        .then((result) => {
-          //   console.log(result.data);
+        .then((result) => { 
           this.optionsUserType = result.data.data;
         })
         .catch((err) => {

@@ -46,88 +46,56 @@
         </div>
         <div class="bottom">
             <div class="footerTable">
-                <el-table
-                border
-                stripe
-                :header-cell-style="{background:'#F5F7FA',color:'#333333'}"
-                size="small"
-                :data="tableData"
-                @selection-change="handleSelectionChange"
-                style="width: 100%; height: 100%;"
-                :height="tableHeight"
-                >
-                    <el-table-column
-                    type="selection"
-                    align="center"
-                    width="60">
-                    </el-table-column>
-                    <el-table-column
-                    prop="id"
-                    :label="international.field.field_organizationList_serialNumber"
-                    align="center"
-                    width="60">
+                <el-table border stripe :header-cell-style="{background:'#F5F7FA',color:'#333333'}" size="small" :data="tableData"
+                @selection-change="handleSelectionChange" style="width: 100%; height: 100%;" :height="tableHeight">
+                    <el-table-column type="selection"  align="center" width="60"></el-table-column>
+                    <el-table-column prop="id" :label="international.field.field_organizationList_serialNumber" align="center" width="60">
                         <template slot-scope="scope">
                             {{ scope.$index + (currentPage - 1) * pageSize + 1 }}
                         </template>
                     </el-table-column>
-                    <el-table-column
-                    prop="enterpriseCode"
-                    :label="international.field.field_organizationList_organizationCode"
-                    width="140"
+                    <el-table-column prop="enterpriseCode" :label="international.field.field_organizationList_organizationCode"
+                     width="140"
                     show-overflow-tooltip>
                     </el-table-column>
-                    <el-table-column
-                    prop="enterpriseName"
-                    :label="international.field.field_organizationList_organizationName"
-                    width="180"
+                    <el-table-column  prop="enterpriseName" :label="international.field.field_organizationList_organizationName"
+                     width="180"
                     show-overflow-tooltip>
                     </el-table-column>
-                    <el-table-column
-                    prop="statusText"
-                    :label="international.field.field_organizationList_status"
-                    width="100"
-                    show-overflow-tooltip>
+                    <el-table-column prop="statusText" :label="international.field.field_organizationList_status" align="center"
+                    width="80" show-overflow-tooltip>
                         <template slot-scope="scope">
                             <span :class="scope.row.enterpriseStatus == 230 ? 'activeStatus':'deactiveStatus'">{{scope.row.statusText}}</span>
                         </template>
                     </el-table-column>
-                    <el-table-column
-                    prop="parentEnterpriseName"
+                    <el-table-column prop="parentEnterpriseName"
                     :label="international.field.field_organizationList_belongOrganization"
-                    width="200"
-                    show-overflow-tooltip>
+                    width="200" show-overflow-tooltip>
                     </el-table-column>
-                    <el-table-column
-                    prop="headOfPerson"
-                    :label="international.field.field_organizationList_principal"
-                    width="130"
-                    show-overflow-tooltip>
+                    <el-table-column  prop="headOfPerson" :label="international.field.field_organizationList_principal"
+                    width="130" show-overflow-tooltip>
                     </el-table-column>
-                    <el-table-column
-                    prop="mobile"
-                    :label="international.field.field_organizationList_phone"
-                    width="130"
-                    show-overflow-tooltip>
+                    <el-table-column prop="mobile" :label="international.field.field_organizationList_phone"
+                    width="130" show-overflow-tooltip>
                     </el-table-column>
-                    <el-table-column
-                    prop="email"
-                    :label="international.field.field_organizationList_email"
-                    min-width="160"
-                    show-overflow-tooltip>
+                   <!-- <el-table-column prop="email" :label="international.field.field_organizationList_email"
+                    min-width="160" show-overflow-tooltip>
+                    </el-table-column> -->
+                    <el-table-column prop="dueDate" label="到期时间" min-width="120" show-overflow-tooltip align="center">
                     </el-table-column>
+                    <el-table-column prop="openAccounts" label="可开账号个数" min-width="100" show-overflow-tooltip align="center">
+                      <template slot-scope="scope">
+                          <span v-html="scope.row.openAccounts==0?'无限制':scope.row.openAccounts"></span>
+                      </template>
+                    </el-table-column>
+                    <el-table-column prop="openedAccounts" label="已开账号个数" min-width="100" show-overflow-tooltip align="center"></el-table-column>
                 </el-table>
             </div>
             <div class="footer_page">
-                <el-pagination
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                    :current-page="currentPage"
-                    :page-sizes="[10, 20, 30, 40, 50]"
-                    :page-size="pageSize"
-                    :pager-count="5"
-                    layout="total, sizes, prev, pager, next ,jumper"
-                    :total="total"
-                    >
+                <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+                    :current-page="currentPage" :page-sizes="[10, 20, 30, 40, 50]"
+                    :page-size="pageSize" :pager-count="5"
+                    layout="total, sizes, prev, pager, next ,jumper" :total="total" >
                 </el-pagination>
             </div>
         </div>
@@ -137,7 +105,7 @@
 </template>
 
 <script>
-import { getCookie, setCookie, removeCookie ,getMenuBtnList} from "../../public";
+import { getCookie, setCookie, removeCookie ,getMenuBtnList,formatDate} from "../../public";
 import {getOrganizationData,getStatusList ,activeOrganization,loseEefficacyOrganization} from '../../api/fileManagement/api'
 export default {
     name:'organization',
@@ -189,6 +157,16 @@ export default {
                 this.loading = false
                 this.total = res.data.total
                 this.tableData = res.data.records
+                if(this.tableData){
+                  for(let item of this.tableData){
+                    for(let pname in item){
+                      if(pname=="dueDate")
+                      {
+                        item.dueDate=formatDate(item.dueDate,'yyyy-MM-dd');
+                      }
+                    }
+                  }
+                }
             }).catch(err=>{
                 this.loading = false
                 console.log(err)
@@ -240,12 +218,12 @@ export default {
                     }
                 }).catch(err=>{console.log(err)})
             }).catch(()=>{
-                
+
             })
         },
         // 失效状态
         loseEefficacy(){
-            let params = this.ids 
+            let params = this.ids
             this.$confirm(this.international.global.global_confirmDeactive,{
                 confirmButtonText: this.international.global.global_confirm,
                 cancelButtonText: this.international.global.global_cancel,

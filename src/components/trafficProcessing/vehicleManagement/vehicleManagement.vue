@@ -82,7 +82,15 @@
           </el-select>
         </div>
         <div class="nav">
-          <span class="demonstration">年检状态</span>
+          <div class="demonstration" style="margin-right: 0px;width: 85px;">
+            <el-popover placement="bottom" title="状态说明" width="230" trigger="hover"
+            style="margin-right: 0px;">
+                <div class="title">剩余天数>30天：正常；</div>
+                <div class="title">剩余天数≤30天：即将到期，<span style="color: green;">绿色</span>；</div>
+                <div class="title">剩余天数＜0天：逾期，<span style="color: red;">红色</span>；</div>
+                <span slot="reference">年检状态<i class="el-icon-info" style="color: cornflowerblue;"></i></span>
+            </el-popover>
+          </div>
           <el-select clearable v-model="ASStateValue" size="small" placeholder="">
             <el-option
               v-for="item in ASStateOptions"
@@ -94,7 +102,15 @@
           </el-select>
         </div>
         <div class="nav">
-          <span class="demonstration">交强险状态</span>
+          <div class="demonstration" style="margin-right: 0px;width: 85px;">
+            <el-popover placement="bottom" title="状态说明" width="230" trigger="hover"
+            style="margin-right: 0px;">
+                <div class="title">剩余天数>30天：正常；</div>
+                <div class="title">剩余天数≤30天：即将到期，<span style="color: green;">绿色</span>；</div>
+                <div class="title">剩余天数＜0天：逾期，<span style="color: red;">红色</span>；</div>
+                <span slot="reference">交强险状态<i class="el-icon-info" style="color: cornflowerblue;"></i></span>
+            </el-popover>
+          </div>
           <el-select clearable v-model="insuranceValue" size="small" placeholder="">
             <el-option
               v-for="item in insuranceOptions"
@@ -106,7 +122,15 @@
           </el-select>
         </div>
         <div class="nav">
-          <span class="demonstration">商业险状态</span>
+          <div class="demonstration" style="margin-right: 0px;width: 85px;">
+            <el-popover placement="bottom" title="状态说明" width="230" trigger="hover"
+            style="margin-right: 0px;">
+                <div class="title">剩余天数>30天：正常；</div>
+                <div class="title">剩余天数≤30天：即将到期，<span style="color: green;">绿色</span>；</div>
+                <div class="title">剩余天数＜0天：逾期，<span style="color: red;">红色</span>；</div>
+                <span slot="reference">商业险状态<i class="el-icon-info" style="color: cornflowerblue;"></i></span>
+            </el-popover>
+          </div>
           <el-select clearable v-model="ComInsuranceValue" size="small" placeholder="">
             <el-option
               v-for="item in ComInsuranceOptions"
@@ -185,8 +209,8 @@
         <el-button @click="handleInsurance" v-if="addInsuranceBtn" size="small" :class="{ active: !isDisable }" :disabled="isDisable">
           <i class="iconfont icon-baoxian"></i>新增保险记录
         </el-button>
-        <el-button @click="handleImport"  v-if="importVehicleBtn" class="handleExport" size="small">
-          <i class="iconfont icon-daoru"></i>
+        <!-- <el-button @click="handleImport"  v-if="importVehicleBtn" class="handleExport" size="small"> -->
+
           <el-upload
                 class="upload"
                 action="/vehicle-service/vehicleInfo/importVehicleInfo"
@@ -195,58 +219,60 @@
                 :file-list="fileList"
                 :show-file-list="false"
               >
-                <span class="upload_txt">导入</span>
+                <!-- <span class="upload_txt">导入</span> -->
+                <el-button size="small" class="handleExport"><i class="iconfont icon-daoru"></i>导入</el-button>
               </el-upload>
-        </el-button>
+        <!-- </el-button> -->
         <el-button @click="handleExport"  v-if="exportVehicleBtn" class="handleExport" size="small">
           <i class="iconfont icon-daochu"></i>导出
         </el-button>
       </div>
       <div class="footerTable">
         <div class="footer_informatian">
-          <el-table
-            :data="dataList"
-            border
-            stripe
-            :header-cell-style="{ background: '#F5F7FA', color: '#333333' }"
-            size="small"
-            style="width: 100%; height: 100%;"
-            @selection-change="handleSelectionChange"
-            :height="tableHeight"
-          >
-            <el-table-column
-              type="selection"
-              prop="id"
-              align="center"
-              width="60"
-            ></el-table-column>
+          <el-table :data="dataList" border stripe :header-cell-style="{ background: '#F5F7FA', color: '#333333' }"
+            size="small" style="width: 100%; height: 100%;" @selection-change="handleSelectionChange" :height="tableHeight"
+            :row-class-name="setrowstyle"
+            >
+            <el-table-column type="selection" prop="id" align="center" width="60"></el-table-column>
             <el-table-column prop="" width="60" label="序号" align="center">
+              <template slot-scope="scope">{{ scope.$index + (currentPage - 1) * pageSize + 1 }}</template>
+            </el-table-column>
+            <el-table-column prop="brandName" width="100" label="品牌" :show-overflow-tooltip="true">
+            </el-table-column>
+            <el-table-column prop="typeName" width="100" label="车型" :show-overflow-tooltip="true">
+            </el-table-column>
+            <el-table-column prop="vehicleNo" width="100" label="车牌号码" :show-overflow-tooltip="true">
+            </el-table-column>
+            <el-table-column prop="enterpriseName" width="150" label="所属公司" :show-overflow-tooltip="true">
+            </el-table-column>
+            <el-table-column prop="parkingLotName" width="180" label="存车地点" :show-overflow-tooltip="true">
+            </el-table-column>
+            <el-table-column prop="salesMan" min-width="150" label="业务员">
+            </el-table-column>
+            <el-table-column prop="vehicleUsageMode" width="80" label="使用方式">
               <template slot-scope="scope">
-                {{ scope.$index + (currentPage - 1) * pageSize + 1 }}
+              <span v-if="scope.row.vehicleUsageMode == 0">租赁</span>
+              <span v-if="scope.row.vehicleUsageMode == 1">替换</span>
+              <span v-if="scope.row.vehicleUsageMode == 2">样车</span>
+            </template>
+            </el-table-column>
+            <el-table-column prop="vehicleUsageStatus" width="80" label="出租状态">
+              <template slot-scope="scope">
+                <span v-if="scope.row.vehicleUsageStatus == 0">已租</span>
+                <span v-if="scope.row.vehicleUsageStatus == 1">待租</span>
               </template>
             </el-table-column>
-            <el-table-column
-              prop="brandName"
-              width="100"
-              label="品牌"
-              :show-overflow-tooltip="true"
-            >
+            <el-table-column prop="vehicleRepairStatusStr" width="100" label="维修状态">
             </el-table-column>
-            <el-table-column
-              prop="typeName"
-              width="100"
-              label="车型"
-              :show-overflow-tooltip="true"
-            >
+            <el-table-column prop="contractCode" width="100" label="合同编号">
             </el-table-column>
-            <el-table-column
-              prop="vehicleNo"
-              width="100"
-              label="车牌号码"
-              :show-overflow-tooltip="true"
-            >
+            <el-table-column prop="rentStartDate" width="100" label="租赁开始日">
             </el-table-column>
-            <el-table-column prop="licenseNo" width="110" label="行驶证">
+            <el-table-column prop="rentEndDate" width="100" label="租赁到期日">
+            </el-table-column>
+            <el-table-column prop="customerName" width="100" label="承租方">
+            </el-table-column>
+            <el-table-column prop="contactsPhoneNumber" width="100" label="联系人手机号">
             </el-table-column>
             <el-table-column prop="termOfValidityStr" width="140" label="年检到期日期">
             </el-table-column>
@@ -260,51 +286,14 @@
             </el-table-column>
             <el-table-column prop="remainingDaysPolicyEndDate1" width="110" label="商业险剩余天数">
             </el-table-column>
-            <el-table-column prop="enterpriseName" width="100" label="所属公司" :show-overflow-tooltip="true">
-            </el-table-column>
-            <el-table-column prop="parkingLotName" width="180" label="存车地点">
-            </el-table-column>
-            <el-table-column prop="salesMan" min-width="100" label="业务员">
-            </el-table-column>
-            <el-table-column prop="vehicleUsageMode" width="80" label="使用方式">
-              <template slot-scope="scope">
-              <span v-if="scope.row.vehicleUsageMode == 0">租赁</span>
-              <span v-if="scope.row.vehicleUsageMode == 1">替换</span>
-            </template>
-            </el-table-column>
-            <el-table-column prop="vehicleUsageStatus" width="80" label="出租状态">
-              <template slot-scope="scope">
-              <span v-if="scope.row.vehicleUsageStatus == 0">已租</span>
-              <span v-if="scope.row.vehicleUsageStatus == 1">待租</span>
-            </template>
-            </el-table-column>
-            <el-table-column prop="vehicleRepairStatusStr" width="100" label="维修状态">
-            </el-table-column>
-            <el-table-column prop="isHasEtc" width="80" label="有无ETC">
-              <template slot-scope="scope">
-              <span v-if="scope.row.isHasEtc == 0">有</span>
-              <span v-if="scope.row.isHasEtc == 1">无</span>
-            </template>
-            </el-table-column>
-            <el-table-column prop="isHasRfid" width="100" label="有无电子标签">
-              <template slot-scope="scope">
-              <span v-if="scope.row.isHasRfid == 0">有</span>
-              <span v-if="scope.row.isHasRfid == 1">无</span>
-            </template>
+            <el-table-column prop="remark" width="110" label="备注">
             </el-table-column>
           </el-table>
         </div>
         <div class="footer_page">
-          <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="currentPage"
-            :page-sizes="[10, 20, 30, 40, 50]"
-            :page-size="pageSize"
-            :pager-count="5"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total"
-          >
+          <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+            :current-page="currentPage" :page-sizes="[10, 20, 30, 40, 50]" :page-size="pageSize" :pager-count="5"
+            layout="total, sizes, prev, pager, next, jumper" :total="total">
           </el-pagination>
         </div>
       </div>
@@ -341,6 +330,10 @@ export default {
           value: "1",
           label: "替换",
         },
+        {
+          value: "2",
+          label: "样车",
+        }
       ],//使用方式
       leaseStateOptions: [
         {
@@ -437,7 +430,7 @@ export default {
       tableHeight: window.innerHeight - 446 +'',
       searchBtn : false, //查询权限按钮
       addBtn : false, //新增权限按钮
-      editBtn : false, // 修改权限按钮 
+      editBtn : false, // 修改权限按钮
       addAsBtn : false, //新增年检记录权限按钮
       addInsuranceBtn : false, //新增保险记录权限按钮
       importVehicleBtn: false,
@@ -449,6 +442,36 @@ export default {
     };
   },
   methods: {
+    getrowstyle(minval){
+      let classname=1
+      if(minval>30){
+          classname=1
+      }
+      else if(minval<=30&&minval>0){
+          classname=2
+      }
+      else{
+        classname=3
+      }
+      return classname
+    },
+    setrowstyle(rowdata){
+      let row=rowdata.row
+      let classname1=0
+      let classname2=0
+      let classname3=0
+      if(row.termOfValidityStr){
+          classname1 = this.getrowstyle(row.remainingDaysValid)
+      }
+      if(row.policyEndDate0Str){
+          classname2 = this.getrowstyle(row.remainingDaysPolicyEndDate0)
+      }
+      if(row.policyEndDate1Str){
+          classname3 = this.getrowstyle(row.remainingDaysPolicyEndDate1)
+      }
+      let level=classname1>classname2?classname1:classname2>classname3?classname2:classname3;
+      return level==1?"black":level==2?"green":level==3?"red":""
+    },
     handleSizeChange(val) {
       this.loading = true
       axios({
@@ -551,9 +574,9 @@ export default {
     },
     handleSuccess(response, file, fileList) {
       //导入
-      // console.log(response)
+      console.log(response)
       if(response.status == 0){
-        this.$message.error({
+        this.$message.success({
           message:response.data,
           center:true,
           type:'true',
@@ -562,7 +585,7 @@ export default {
         this.reset();
       }else{
         this.$message.error({
-          message:'导入失败！',
+          message:response.message,
           center:true,
         })
       }
@@ -627,6 +650,7 @@ export default {
       })
         .then((result) => {
           // console.log(result.data);
+          this.vehicleTypeName = '';
           this.vehicleTypeNameOptions = result.data.data;
         })
         .catch((err) => {
@@ -652,6 +676,7 @@ export default {
       this.ComInsuranceValue = '';
       this.brandName = '';
       this.vehicleTypeName = '';
+      this.vehicleTypeNameOptions = [];
     },
     handleAdd() {//新增
       this.$router.push({
@@ -718,7 +743,7 @@ export default {
                 let link = document.createElement("a");
                 let evt = document.createEvent("HTMLEvents");
                 evt.initEvent("click", false, false);
-                link.href = URL.createObjectURL(blob); 
+                link.href = URL.createObjectURL(blob);
                 link.download = "车辆管理信息.xls";
                 link.style.display = "none";
                 document.body.appendChild(link);
@@ -981,6 +1006,7 @@ export default {
 .handleExport{
   color: #368cfe;
   border-radius: 4px;
+  margin-left: 10px;
   border: 1px solid rgba(54, 140, 254, 0.5);
 }
 .footerBottom .el-button:nth-child(1):hover {
@@ -1051,5 +1077,23 @@ export default {
   color: #fff !important;
   background: #368cfe !important;
 }
-
+/deep/ .el-popover__title{
+    margin-top: 12px;
+    text-align: left!important;
+    padding: 20px!important;
+    font-size: 14px;
+}
+/deep/ .el-table .green{
+  color: green;
+}
+/deep/ .el-table .black{
+  color: black;
+}
+/deep/ .el-table .red{
+  color: red;
+}
+.title{
+  margin-bottom: 5px;
+  font-size: 12px;
+}
 </style>

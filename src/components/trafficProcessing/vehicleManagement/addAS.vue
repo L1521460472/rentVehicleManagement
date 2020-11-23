@@ -15,7 +15,7 @@
               prop="vehicleNo"
               :rules="[
                 {
-                  required: true,
+                  required: this.showredstar,
                   message: international.global.global_contNotEmpty,
                   trigger: 'blur',
                 },
@@ -31,13 +31,6 @@
             ><el-form-item
               label="年检金额"
               prop="yearlyInspectionMoney"
-              :rules="[
-                {
-                  required: true,
-                  message: international.global.global_contNotEmpty,
-                  trigger: 'blur',
-                },
-              ]"
             >
               <el-input
                 class="formItem"
@@ -51,7 +44,7 @@
               prop="yearlyInspectionDate"
               :rules="[
                 {
-                  required: true,
+                  required: this.showredstar,
                   message: international.global.global_contNotEmpty,
                   trigger: 'blur',
                 },
@@ -70,13 +63,6 @@
             ><el-form-item
               label="年检处理人"
               prop="handler"
-              :rules="[
-                {
-                  required: true,
-                  message: international.global.global_contNotEmpty,
-                  trigger: 'blur',
-                },
-              ]"
             >
               <el-input
                 class="formItem"
@@ -98,7 +84,7 @@
               prop="termOfValidity"
               :rules="[
                 {
-                  required: true,
+                  required: this.showredstar,
                   message: international.global.global_contNotEmpty,
                   trigger: 'blur',
                 },
@@ -198,6 +184,7 @@ export default {
         remark: "", //备注
         efileIdCode: "", //图片id
       },
+      showredstar:true,//查看不显示红星
       brandOptions: [],
       imgIdList: [], //图片id
       international: {},
@@ -216,7 +203,7 @@ export default {
   methods: {
     addConfirm() {
       //确定新增
-      
+
       var time1 = new Date(this.form.yearlyInspectionDate).getTime();
       var time2 = new Date(this.form.termOfValidity).getTime();
 
@@ -226,7 +213,7 @@ export default {
           message: "年检日期大于下次年检日期",
           center: true,
           type: "error",
-        }); 
+        });
         return;
       }
       this.$refs.form.validate((valid) => {
@@ -413,6 +400,7 @@ export default {
       this.form.remark = "";
       this.form.efileIdCode = "";
     } else if (this.$route.query.form == "look") {
+      this.showredstar=false;
       this.showButton = false;
       this.showMsg = "查看 年检信息";
       this.isShow = true;

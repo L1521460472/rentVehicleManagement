@@ -403,13 +403,13 @@ export default {
       this.$refs.bannerRight.style.width = this.$refs.realTimemonitoring.offsetWidth - 20 + "px";
     },
     handleSelectionChange(val) {
-      console.log(val)
+      // console.log(val)
       var newArr = val.map((item) => {
         return { ...item, address: "" };
       });
       var points = null;
       var arr = newArr.map((items)=>{
-        console.log(items)
+        // console.log(items)
         let p = wgs84togcj02(items.lng,items.lat);
         let bd09 = gcj02tobd09(p[0],p[1]);
         points = new BMap.Point(bd09[0], bd09[1]);

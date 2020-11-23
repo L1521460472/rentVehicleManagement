@@ -340,6 +340,9 @@ function formatJE(money) {
     if (arr.length == 1) {
       money = arr[0].replace(/(\d)(?=(?:\d{3})+$)/g, '$1,') + ".00";
     } else {
+      if(arr[1].length==1){
+        arr[1]=arr[1]+'0'
+      }
       money = arr[0].replace(/(\d)(?=(?:\d{3})+$)/g, '$1,') + "." + arr[1];
     }
   }
@@ -355,6 +358,9 @@ function formatJE2(money) {
 //formatDate('yyyy-MM-dd HH:mm:ss')
 //formatDate('yyyy/MM/dd HH:mm:ss')
 function formatDate(date,fmt) {
+        if(!date){
+          return ""
+        }
         if(typeof date =='string'){
           date=new Date(date);
         }
@@ -385,6 +391,23 @@ function download(url,fileName) {
       a.click()
   }
   x.send(null);
+}
+//将一个对象属性赋值到另一个对象对应属性里面
+function convertObject(target,origin){
+  if(origin&&target){
+     for(var pname in origin){
+       if(target.hasOwnProperty(pname)){
+         target[pname]=origin[pname];
+       }
+     }
+  }
+}
+//打开一个新的标签页
+function openNewTab($this,title,url,params){
+  if($this&&$this.$store){
+    var router={name:title,url:url,params:params}
+    $this.$store.dispatch('openNewTab',router)
+  }
 }
 // const downloadRes = async (url, name) => {
 //   let response = await fetch(url)
@@ -418,6 +441,9 @@ module.exports = {
   formatJE,
   formatJE2,
   formatDate,
-  download
+  download,
+  openNewTab,
+  convertObject,
+  debounce
   // downloadRes
 };

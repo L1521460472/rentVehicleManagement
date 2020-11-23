@@ -169,6 +169,10 @@
                   label="应收期数"
                   align="center"
                   width="100">
+                    <template slot-scope="scope">
+                      <span v-if="scope.row.billPeriods == 0">押金</span>
+                      <span v-else>{{scope.row.billPeriods}}</span>
+                    </template>
                   </el-table-column>
                   <el-table-column
                   prop="adjustedPaybackMoney"
@@ -243,6 +247,7 @@ export default {
       dialogImageUrl:'',
       selectData:[],//选择的车辆数据
       val:[],
+      timer: null,
       confirmFee:0,//核销金额
       international: {},
       headers: {
@@ -270,47 +275,55 @@ export default {
             })
             return
           }
-          let vehiclePaymentDtos = []
-          this.selectData.map(item=>{
-            let obj ={}
-            obj.billPeriods = item.billPeriods
-            obj.paybackMoney = item.payfee
-            obj.vehicleId = item.vehicleId
-            obj.vehicleNo = item.vehicleNo
-            obj.vehicleRentId = item.vehicleRentId
-            vehiclePaymentDtos.push(obj)
-          })
-          let params = {
-            billPeriods: this.form.billPeriods, //应收期数
-            collectionAccountId: this.form.collectionAccount, //收款账户id
-            contractCode: this.form.contractCode, //合同编号
-            contractId: this.$route.query.id, //合同id
-            contractRentId: this.form.contractRentId, //合同回款计划id
-            efileIdList: this.imgIdList, //附件集合
-            payMoney: this.form.getFee, //缴费金额
-            rentTime:this.form.getFeeTime,//缴费时间
-            payType: 1, //缴费渠道1-web后台 2-App提交
-            remark:this.form.remark,
-            preCollectMoney: this.advancePayment, //预收金额
-            vehiclePaymentDtos: vehiclePaymentDtos, //车辆缴费数据集合
-          };
-          submitPayment(params, this.headers)
-            .then((res) => {
-              if(res.status == 0){
-                this.$store.commit("changeIsStatus", true);
-                this.$message.success({
-                  message:'缴费提交成功',
-                  center:true
-                })
-                this.$router.back();
-              }else{
-                this.$message.error({
-                  message:'缴费提交失败 ',
-                  center:true
-                })
-              }
+          if (this.timer) {
+            clearTimeout(this.timer);
+          }
+          let _this = this
+          this.timer = setTimeout(function () {
+            _this.timer = null;
+            let vehiclePaymentDtos = []
+            _this.selectData.map(item=>{
+              let obj ={}
+              obj.billPeriods = item.billPeriods
+              obj.paybackMoney = item.payfee
+              obj.vehicleId = item.vehicleId
+              obj.vehicleNo = item.vehicleNo
+              obj.vehicleRentId = item.vehicleRentId
+              vehiclePaymentDtos.push(obj)
             })
-            .catch((err) => {console.log(err)});
+            let params = {
+              billPeriods: _this.form.billPeriods, //应收期数
+              collectionAccountId: _this.form.collectionAccount, //收款账户id
+              contractCode: _this.form.contractCode, //合同编号
+              contractId: _this.$route.query.id, //合同id
+              contractRentId: _this.form.contractRentId, //合同回款计划id
+              efileIdList: _this.imgIdList, //附件集合
+              payMoney: _this.form.getFee, //缴费金额
+              rentTime:_this.form.getFeeTime,//缴费时间
+              payType: 1, //缴费渠道1-web后台 2-App提交
+              remark:_this.form.remark,
+              preCollectMoney: _this.advancePayment, //预收金额
+              vehiclePaymentDtos: vehiclePaymentDtos, //车辆缴费数据集合
+            };
+            submitPayment(params, _this.headers)
+              .then((res) => {
+                if(res.status == 0){
+                  _this.$store.commit("changeIsStatus", true);
+                  _this.$message.success({
+                    message:'缴费提交成功',
+                    center:true
+                  })
+                  _this.$router.back();
+                }else{
+                  _this.$message.error({
+                    message:'缴费提交失败 ',
+                    center:true
+                  })
+                }
+              })
+              .catch((err) => {console.log(err)});
+          }, 1000);
+
         }
       })
     },
@@ -440,6 +453,12 @@ export default {
           this.form.lateFee = res.data.lateFee; //滞纳金
           this.form.contractRentId = res.data.contractRentId //合同回款计划id
           this.vehicleList = res.data.vehicleRepaymentVOList //合同车辆
+          if(res.data.vehicleRepaymentVOList.length <=0 ){
+            this.$message.error({
+              message: '暂无账单',
+              center: true,
+            });
+          }
           // this.vehicleList= JSON.parse(JSON.stringify(res2.data.leaseOrderDetailInfoVOS))
         } else {
           this.$message.error({

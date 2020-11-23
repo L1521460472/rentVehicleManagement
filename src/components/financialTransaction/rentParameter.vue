@@ -5,17 +5,52 @@
   >
     <div class="header">
       <div class="headerTop">
-        <div class="nav">
+       <!-- <div class="nav">
           <span class="demonstration">订单编号</span>
           <el-input v-model="orderNo" size="small" maxlength="50" placeholder></el-input>
-        </div>
-        <div class="nav">
+        </div> -->
+      <!--  <div class="nav">
           <span class="demonstration">联系人姓名</span>
           <el-input v-model="customerContacts" size="small" maxlength="50" placeholder></el-input>
-        </div>
-        <div class="nav">
+        </div> -->
+       <!-- <div class="nav">
           <span class="demonstration">联系人手机</span>
           <el-input v-model="contactsPhoneNumber" size="small" maxlength="50" placeholder></el-input>
+        </div> -->
+        <div class="nav">
+          <span class="demonstration">品牌</span>
+          <el-select clearable
+            v-model="brandName"
+            size="small"
+            @change="getVehicleType"
+            placeholder
+          >
+            <el-option
+              v-for="item in brandNameOptions"
+              :key="item.id"
+              :label="item.brandName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </div>
+        <div class="nav">
+          <span class="demonstration">车型</span>
+          <el-select clearable
+            v-model="vehicleTypeName"
+            size="small"
+            placeholder
+          >
+            <el-option
+              v-for="item in vehicleTypeNameOptions"
+              :key="item.id"
+              :label="item.vehicleTypeName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </div>
+        <div class="nav">
+          <span class="demonstration">承租方</span>
+          <el-input v-model="chengzufang" size="small" maxlength="50" placeholder></el-input>
         </div>
         <div class="nav">
           <span class="demonstration">所属业务员</span>
@@ -29,12 +64,34 @@
           </el-select>
         </div>
         <div class="nav">
+          <span class="demonstration">合同类型</span>
+          <el-select clearable v-model="contractType" size="small" placeholder>
+            <el-option
+              v-for="item in contractTypes"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </div>
+        <div class="nav">
           <span class="demonstration">合同编号</span>
           <el-input v-model="contractCode" size="small" maxlength="50" placeholder></el-input>
         </div>
         <div class="nav">
           <span class="demonstration">车牌号</span>
           <el-input v-model="vehicleNo" size="small" maxlength="50" placeholder></el-input>
+        </div>
+        <div class="nav">
+          <span class="demonstration">应收月份</span>
+          <el-select clearable v-model="yuefenvalue" size="small" placeholder>
+            <el-option
+              v-for="item in yuefen"
+              :key="item"
+              :label="item"
+              :value="item"
+            ></el-option>
+          </el-select>
         </div>
         <div class="nav">
           <span class="demonstration">合同状态</span>
@@ -48,10 +105,10 @@
           </el-select>
         </div>
         <div class="nav">
-          <span class="demonstration">锁车审核状态</span>
-          <el-select clearable v-model="auditLockStatus" size="small" placeholder>
+          <span class="demonstration">退车审核状态</span>
+          <el-select clearable v-model="auditBackStatus" size="small" placeholder>
             <el-option
-              v-for="item in auditStatus1Options"
+              v-for="item in auditStatus2Options"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -59,10 +116,10 @@
           </el-select>
         </div>
         <div class="nav">
-          <span class="demonstration">退车审核状态</span>
-          <el-select clearable v-model="auditBackStatus" size="small" placeholder>
+          <span class="demonstration">锁车审核状态</span>
+          <el-select clearable v-model="auditLockStatus" size="small" placeholder>
             <el-option
-              v-for="item in auditStatus2Options"
+              v-for="item in auditStatus1Options"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -83,7 +140,7 @@
             end-placeholder
           ></el-date-picker>
         </div>
-        <div class="headerBotton">
+        <div class="headerBotton" style="margin-left: 45px;">
           <el-button size="small" type="primary" v-if="searchBtn" class="search" @click="search">查询</el-button>
           <el-button class="reset" size="small" plain @click="reset">重置</el-button>
         </div>
@@ -130,54 +187,67 @@
         <el-button @click="handleExamine" v-if="checkCarRecordBtn" size="small" :class="{ active: !isDisable }" :disabled="isDisable">
           <i class="iconfont icon-chakan"></i>查看合同车辆记录
         </el-button>
-        <el-button
+        <el-button class='exportBtn'
           @click="handleInsurance"
           size="small"
           v-if="exportBtn"
         >
           <i class="iconfont icon-daochu"></i>导出
         </el-button>
+        <el-button
+          @click="handleInsurance(1)"
+          size="small"
+          v-if="exportmingxiBtn"
+        >
+          <i class="iconfont icon-daochu"></i>导出明细
+        </el-button>
       </div>
       <div class="footerTable">
-        <div class="footer_informatian">
-          <el-table
-            :data="dataList"
-            border
-            stripe
-            :header-cell-style="{ background: '#F5F7FA', color: '#333333' }"
-            size="small"
-            style="width: 100%; height: 100%;"
-            :height="tableHeight"
-            @selection-change="handleSelectionChange"
-          >
-            <el-table-column type="selection" prop="id" align="center" width="60"></el-table-column>
-            <el-table-column prop width="60" label="序号" align="center">
-              <template slot-scope="scope">{{ scope.$index + (currentPage - 1) * pageSize + 1 }}</template>
-            </el-table-column>
-            <el-table-column prop="orderNo" width="140" label="订单编号" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="userName" width="100" label="业务员" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="contractCode" width="120" label="合同编号"></el-table-column>
-            <el-table-column prop="customerName" width="120" label="承租方"></el-table-column>
-            <el-table-column prop="customerContacts" width="100" label="联系人姓名"></el-table-column>
-            <el-table-column prop="rentStartDateStr" width="100" label="租赁开始日"></el-table-column>
-            <el-table-column prop="rentEndDateStr" width="100" label="租赁到期日"></el-table-column>
-            <el-table-column prop="rentMonths" width="80" label="租赁月数"></el-table-column>
-            <el-table-column prop="vehicleNum" width="80" label="车辆数"></el-table-column>
-            <el-table-column prop="chargingPileNum" width="80" label="充电桩数"></el-table-column>
-            <el-table-column prop="deposit" width="90" label="合同总押金"></el-table-column>
-            <el-table-column prop="vehicleRent" width="110" label="合同月租(汇总)"></el-table-column>
-            <el-table-column prop="billPeriods" width="80" label="当前期数">
-              <template slot-scope="scope">
-                <span v-if="scope.row.billPeriods == 0">押金</span>
-                <span v-else>{{scope.row.billPeriods}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="contractStatusStr" min-width="100" label="合同状态"></el-table-column>
-            <!-- <el-table-column prop="collectionStatusStr" width="100" label="当期状态"></el-table-column> -->
-            <el-table-column prop="auditLockStatusStr" width="100" label="锁车审核状态"></el-table-column>
-            <el-table-column prop="auditBackStatusStr" min-width="100" label="退车审核状态"></el-table-column>
-          </el-table>
-        </div>
+        <el-table
+          :data="dataList"
+          border
+          stripe
+          :header-cell-style="{ background: '#F5F7FA', color: '#333333' }"
+          size="small"
+          style="width: 100%; height: 100%;"
+          :height="tableHeight"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column type="selection" prop="id" align="center" width="60"></el-table-column>
+          <el-table-column prop width="60" label="序号" align="center">
+            <template slot-scope="scope">{{ scope.$index + (currentPage - 1) * pageSize + 1 }}</template>
+          </el-table-column>
+          <!-- <el-table-column prop="orderNo" width="140" label="订单编号" :show-overflow-tooltip="true"></el-table-column> -->
+          <el-table-column prop="userName" width="100" label="业务员" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="contractType" width="100" label="合同类型"></el-table-column>
+          <el-table-column prop="contractCode" width="150" label="合同编号"></el-table-column>
+          <el-table-column prop="customerName" width="120" label="承租方"></el-table-column>
+          <!-- <el-table-column prop="customerContacts" width="100" label="联系人姓名"></el-table-column> -->
+          <el-table-column prop="rentStartDateStr" width="100" label="租赁开始日"></el-table-column>
+          <el-table-column prop="rentEndDateStr" width="100" label="租赁到期日"></el-table-column>
+          <el-table-column prop="rentMonths" width="80" label="租赁月数"></el-table-column>
+          <el-table-column prop="vehicleNum" width="80" label="车辆数"></el-table-column>
+          <!-- <el-table-column prop="chargingPileNum" width="80" label="充电桩数"></el-table-column> -->
+          <el-table-column prop="deposit" width="90" label="合同总押金"></el-table-column>
+          <!-- <el-table-column prop="vehicleRent" width="110" label="合同月租(汇总)"></el-table-column> -->
+          <el-table-column prop="billPeriods" width="80" label="当前期数">
+            <template slot-scope="scope">
+              <span v-if="scope.row.billPeriods == 0">押金</span>
+              <span v-else>{{scope.row.billPeriods}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="receivableMonth" width="90" label="应收月份"></el-table-column>
+          <el-table-column prop="receivableMoney" width="100" label="当期应收金额"></el-table-column>
+          <el-table-column prop="receivedMoney" width="100" label="当期已收金额"></el-table-column>
+          <el-table-column prop="receivedDate" width="100" label="当期已收日期"></el-table-column>
+          <el-table-column prop="toCollectedMoney" width="100" label="当期待收金额"></el-table-column>
+          <el-table-column prop="lateFee" width="90" label="当期滞纳金"></el-table-column>
+          <el-table-column prop="collectionStatusStr" width="90" label="当期状态"></el-table-column>
+          <el-table-column prop="contractStatusStr" min-width="100" label="合同状态"></el-table-column>
+          <!-- <el-table-column prop="collectionStatusStr" width="100" label="当期状态"></el-table-column> -->
+          <!-- <el-table-column prop="auditLockStatusStr" width="100" label="锁车审核状态"></el-table-column> -->
+          <!-- <el-table-column prop="auditBackStatusStr" min-width="100" label="退车审核状态"></el-table-column> -->
+        </el-table>
         <div class="footer_page">
           <el-pagination
             @size-change="handleSizeChange"
@@ -201,6 +271,12 @@ export default {
   name: "rentParameter",
   data() {
     return {
+      contractType:'',
+      contractTypes:[
+        {value:1,label:'新签'}, {value:2,label:'续签'}
+      ],
+      brandName:'',//品牌
+      vehicleTypeName:'',//车型
       loading: false,
       orderNo: "", //订单编号
       customerContacts: "", //联系人姓名
@@ -213,6 +289,15 @@ export default {
       auditBackStatus: "", //退车审核状态
       dateValue: "", //合同时段
       userIdOptions: [], //所属业务员
+      chengzufang:'',//承租方
+      yuefenvalue:'',//应收月份
+      yuefen:[1,2,3,4,5,6,7,8,9,10,11,12],
+      brandNameOptions: [
+        //品牌
+      ],
+      vehicleTypeNameOptions: [
+        //车型
+      ],
       contractStatusOptions: [
         // {
         //   value: "0",
@@ -276,6 +361,7 @@ export default {
       settleAuditBtn : false,//退车结算审核权限按钮
       checkCarRecordBtn : false,//查看合同车辆记录按钮
       exportBtn : false, //导出按钮权限
+      exportmingxiBtn : false, //导出明细按钮权限
       tableHeight: window.innerHeight - 445 +'',
       headers: {
         Authorization: getCookie("HTBD_PASS"),
@@ -284,6 +370,29 @@ export default {
     };
   },
   methods: {
+    getVehicleType() {
+      //获取车型
+      axios({
+        method: "get",
+        url:
+          "/vehicle-service/vehicleTypeInfo/queryVehicleTypeListByBrandId?id=" +
+          this.brandName,
+        headers: this.headers,
+      })
+        .then((result) => {
+          // console.log(result.data);
+          this.vehicleTypeName = '';
+          this.vehicleTypeNameOptions = result.data.data;
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$message({
+            message: err.response.data.message,
+            center: true,
+            type: "error",
+          });
+        });
+    },
     handleSizeChange(val) {
       this.loading = true
       axios({
@@ -291,23 +400,28 @@ export default {
         url: "/vehicle-service/rentCollectionInfo/queryPageRentParameter",
         headers: this.headers,
         data: {
-          auditBackStatus:null,
-          auditLockStatus: null,
-          contactsPhoneNumber: null,
-          contractCode: null,
-          contractStatus: null,
-          customerContacts: null,
-          endContractMode: null,
-          enterpriseIdList: [],
+          auditBackStatus:this.auditBackStatus,
+          auditLockStatus: this.auditLockStatus,
+          contactsPhoneNumber: this.contactsPhoneNumber,
+          contractCode: this.contractCode,
+          contractStatus: this.contractStatus,
+          customerContacts: this.customerContacts,
+          endContractMode: this.endContractMode,
+          contractType:this.contractType,
+          enterpriseIdList: null,
           id: null,
-          orderNo: null,
-          rentEndDateStr: null,
-          rentStartDateStr: null,
-          userId: null,
-          vehicleNo: null,
+          orderNo: this.orderNo,
+          rentStartDateStr: this.dateValue[0] ? this.dateValue[0] : "",
+          rentEndDateStr: this.dateValue[1] ? this.dateValue[1] : "",
+          userId: this.userId,
+          vehicleNo: this.vehicleNo,
           userName: null,
-          currentPage: this.currentPage,
+          currentPage: 1,
           pageSize: val,
+          brandId:this.brandName,
+          vehicleTypeId:this.vehicleTypeName,
+          customerName:this.chengzufang,
+          receivableMonth:this.yuefenvalue
         },
       })
         .then((result) => {
@@ -315,6 +429,10 @@ export default {
           if (result.data.status == 0) {
             result.data.data.records.map(item=>{
               item.deposit = formatJE(item.deposit)
+              item.receivableMoney = formatJE(item.receivableMoney)
+              item.receivedMoney = formatJE(item.receivedMoney)
+              item.toCollectedMoney = formatJE(item.toCollectedMoney)
+              item.lateFee = formatJE(item.lateFee)
             })
             this.dataList = result.data.data.records;
             this.total = result.data.data.total;
@@ -344,23 +462,28 @@ export default {
         url: "/vehicle-service/rentCollectionInfo/queryPageRentParameter",
         headers: this.headers,
         data: {
-          auditBackStatus:null,
-          auditLockStatus: null,
-          contactsPhoneNumber: null,
-          contractCode: null,
-          contractStatus: null,
-          customerContacts: null,
-          endContractMode: null,
-          enterpriseIdList: [],
-          id: null,
-          orderNo: null,
-          rentEndDateStr: null,
-          rentStartDateStr: null,
-          userId: null,
-          vehicleNo: null,
-          userName: null,
-          currentPage: val,
-          pageSize: this.pageSize,
+         auditBackStatus:this.auditBackStatus,
+         auditLockStatus: this.auditLockStatus,
+         contactsPhoneNumber: this.contactsPhoneNumber,
+         contractCode: this.contractCode,
+         contractStatus: this.contractStatus,
+         customerContacts: this.customerContacts,
+         endContractMode: this.endContractMode,
+         enterpriseIdList: null,
+         contractType:this.contractType,
+         id: null,
+         orderNo: this.orderNo,
+         rentStartDateStr: this.dateValue[0] ? this.dateValue[0] : "",
+         rentEndDateStr: this.dateValue[1] ? this.dateValue[1] : "",
+         userId: this.userId,
+         vehicleNo: this.vehicleNo,
+         userName: null,
+         currentPage: val,
+         pageSize: this.pageSize,
+         brandId:this.brandName,
+         vehicleTypeId:this.vehicleTypeName,
+         customerName:this.chengzufang,
+         receivableMonth:this.yuefenvalue
         },
       })
         .then((result) => {
@@ -368,6 +491,10 @@ export default {
           if (result.data.status == 0) {
             result.data.data.records.map(item=>{
               item.deposit = formatJE(item.deposit)
+              item.receivableMoney = formatJE(item.receivableMoney)
+              item.receivedMoney = formatJE(item.receivedMoney)
+              item.toCollectedMoney = formatJE(item.toCollectedMoney)
+              item.lateFee = formatJE(item.lateFee)
             })
             this.dataList = result.data.data.records;
             this.total = result.data.data.total;
@@ -396,6 +523,7 @@ export default {
     },
     search() {
       this.loading = true
+      this.currentPage=1,
       axios({
         method: "post",
         url: "/vehicle-service/rentCollectionInfo/queryPageRentParameter",
@@ -409,6 +537,7 @@ export default {
           customerContacts: this.customerContacts,
           endContractMode: this.endContractMode,
           enterpriseIdList: null,
+          contractType:this.contractType,
           id: null,
           orderNo: this.orderNo,
           rentStartDateStr: this.dateValue[0] ? this.dateValue[0] : "",
@@ -416,8 +545,12 @@ export default {
           userId: this.userId,
           vehicleNo: this.vehicleNo,
           userName: null,
-          currentPage: this.currentPage,
+          currentPage: 1,
           pageSize: this.pageSize,
+          brandId:this.brandName,
+          vehicleTypeId:this.vehicleTypeName,
+          customerName:this.chengzufang,
+          receivableMonth:this.yuefenvalue
         },
       })
         .then((result) => {
@@ -425,6 +558,10 @@ export default {
           if (result.data.status == 0) {
             result.data.data.records.map(item=>{
               item.deposit = formatJE(item.deposit)
+              item.receivableMoney = formatJE(item.receivableMoney)
+              item.receivedMoney = formatJE(item.receivedMoney)
+              item.toCollectedMoney = formatJE(item.toCollectedMoney)
+              item.lateFee = formatJE(item.lateFee)
             })
             this.dataList = result.data.data.records;
             this.total = result.data.data.total;
@@ -460,6 +597,11 @@ export default {
       this.userId = "";
       this.dateValue = "";
       this.vehicleNo = "";
+      this.brandName='',
+      this.vehicleTypeName='',
+      this.chengzufang='',
+      this.yuefenvalue='',
+      this.contractType=''
     },
     handleEdit() {
       //查看合同缴费记录
@@ -541,11 +683,17 @@ export default {
         query: { form: "look", id: this.multipleSelection[0].id },
       });
     },
-    handleInsurance() {
+    handleInsurance(flag) {
+       let filename="收租台账信息.xls"
+      let path="/vehicle-service/rentCollectionInfo/exportRentParameterInfo"//导出
+      if(flag==1){
+        path="/vehicle-service/rentCollectionInfo/exportRentParameterDetailInfo"//导出明细
+        filename="收租台账信息明细.xls"
+      }
       //导出
       axios({
         method: "post",
-        url: "/vehicle-service/rentCollectionInfo/exportRentParameterInfo",
+        url: path,
         headers: this.headers,
         data: {
           auditBackStatus:this.auditBackStatus,
@@ -556,6 +704,7 @@ export default {
           customerContacts: this.customerContacts,
           endContractMode: this.endContractMode,
           enterpriseIdList: null,
+          contractType:this.contractType,
           id: null,
           orderNo: this.orderNo,
           rentStartDateStr: this.dateValue[0] ? this.dateValue[0] : "",
@@ -565,6 +714,10 @@ export default {
           userName: null,
           currentPage: this.currentPage,
           pageSize: this.pageSize,
+          brandId:this.brandName,
+          vehicleTypeId:this.vehicleTypeName,
+          customerName:this.chengzufang,
+          receivableMonth:this.yuefenvalue
         },
         responseType: 'blob'
       })
@@ -582,8 +735,8 @@ export default {
                 let link = document.createElement("a");
                 let evt = document.createEvent("HTMLEvents");
                 evt.initEvent("click", false, false);
-                link.href = URL.createObjectURL(blob); 
-                link.download = "收租台账信息.xls";
+                link.href = URL.createObjectURL(blob);
+                link.download = filename
                 link.style.display = "none";
                 document.body.appendChild(link);
                 link.click();
@@ -602,6 +755,11 @@ export default {
     },
     initData() {
       this.loading = true
+      let query=this.$router.currentRoute.query;
+      if(query&&query.vehicleNo)
+      {
+        this.vehicleNo=query.vehicleNo;
+      }
       axios({
         method: "post",
         url: "/vehicle-service/rentCollectionInfo/queryPageRentParameter",
@@ -620,10 +778,15 @@ export default {
           rentEndDateStr: null,
           rentStartDateStr: null,
           userId: null,
-          vehicleNo: null,
+          vehicleNo: this.vehicleNo,
           userName: null,
           currentPage: this.currentPage,
           pageSize: this.pageSize,
+          brandId:this.brandName,
+          vehicleTypeId:this.vehicleTypeName,
+          customerName:this.chengzufang,
+          receivableMonth:this.yuefenvalue,
+          contractType:this.contractType,
         },
       })
         .then((result) => {
@@ -631,6 +794,10 @@ export default {
           if (result.data.status == 0) {
             result.data.data.records.map(item=>{
               item.deposit = formatJE(item.deposit)
+              item.receivableMoney = formatJE(item.receivableMoney)
+              item.receivedMoney = formatJE(item.receivedMoney)
+              item.toCollectedMoney = formatJE(item.toCollectedMoney)
+              item.lateFee = formatJE(item.lateFee)
             })
             this.dataList = result.data.data.records;
             this.total = result.data.data.total;
@@ -673,6 +840,24 @@ export default {
           type: "error",
         });
       });
+      axios({
+        //品牌
+        method: "post",
+        url: "/vehicle-service/brandInfo/brandInfoListQuery",
+        headers: this.headers,
+      })
+        .then((result) => {
+          // console.log(result.data);
+          this.brandNameOptions = result.data.data;
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$message({
+            message: err.response.data.message,
+            center: true,
+            type: "error",
+          });
+        });
   },
     computed: {
     // 计算国际化标题和按钮
@@ -698,6 +883,7 @@ export default {
             if(item.name == '退车结算审核') this.settleAuditBtn = true
             if(item.name == '查看合同车辆记录') this.checkCarRecordBtn = true
             if(item.name == '导出') this.exportBtn = true
+            if(item.name == '导出明细') this.exportmingxiBtn = true
           })
       },
       immediate:true,
@@ -719,7 +905,7 @@ export default {
 }
 .header {
   width: 100%;
-  height: 155px;
+  height: 205px;
   box-sizing: border-box;
   /* border: 1px solid #e5e5e5; */
   margin-bottom: 16px;
@@ -803,7 +989,7 @@ export default {
 /* ------------ footer -------------- */
 .footer {
   width: 100%;
-  height: calc(100% - 155px);
+  height: calc(100% - 205px);
   box-sizing: border-box;
   border: 1px solid #e5e5e5;
 }
@@ -815,17 +1001,17 @@ export default {
   display: flex;
   align-items: center;
 }
-.footerBottom .el-button:last-child {
+.footerBottom .el-button:last-child,.footerBottom .exportBtn {
   color: #368cfe;
   border-radius: 4px;
   border: 1px solid rgba(54, 140, 254, 0.5);
 }
-.footerBottom .el-button:last-child:hover {
+.footerBottom .el-button:last-child:hover,.footerBottom .exportBtn:hover {
   color: #368cfe !important;
   border-radius: 4px;
   border: 1px solid rgba(54, 140, 254, 0.5);
 }
-.footerBottom .el-button:hover {
+.footerBottom .el-button:hover  {
   color: #c0c4cc !important;
 }
 .active {
@@ -886,5 +1072,8 @@ export default {
 }
 .illegalTime >>> .el-input__inner {
   width: 210px !important;
+}
+.el-table{
+  height: calc(100% - 56px)!important;
 }
 </style>

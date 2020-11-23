@@ -8,11 +8,11 @@
     </div>
     <div class="main">
       <img src="../assets/logo_bg.jpg" alt />
-      <!-- <div class="left">
-        <img src="../assets/qrcode.png" alt="">
+      <div class="left">
+        <img src="../assets/HTBD_APP.png" alt="">
         <p>扫码下载最新App</p>
         <p class="remark">(支持IOS/Android)</p>
-      </div> -->
+      </div>
       <div class="center">
         <img src="../assets/phone2.png" alt="">
       </div>
@@ -53,7 +53,7 @@ import axios from "axios";
 import bcryptjs from "bcryptjs";
 import JSEncrypt from "jsencrypt";
 import { mapActions } from "vuex";
-import { getCookie, setCookie, removeCookie } from "../public";
+import { getCookie, setCookie, removeCookie,openNewTab } from "../public";
 export default {
   name: "login",
   data() {
@@ -130,18 +130,43 @@ export default {
             setCookie("HTBD_UserName", this.username, 1 / 12);
             setCookie("HTBD_PASS", result.data.data.token, 1 / 12);
             setCookie("userInfo", result.data.data.userInfoVo.username);
-            this.$router.push("/home");
+            setCookie("userId", result.data.data.userInfoVo.userId);
+            this.$store.commit('setlogoAddress',result.data.data.userInfoVo.logoAddress) 
+            if(result.data.data.userInfoVo.authorityData
+            &&result.data.data.userInfoVo.authorityData.length>0
+            &&result.data.data.userInfoVo.authorityData[0].children[0].show){
+              this.$router.push(result.data.data.userInfoVo.authorityData[0].children[0].children[0].url)
+              }else{
+                if(result.data.data.userInfoVo.authorityData&&result.data.data.userInfoVo.authorityData.length>0){
+                  this.$router.push(result.data.data.userInfoVo.authorityData[0].children[0].url)
+                }
+                else{
+                  this.$message.error("该账号暂没开通任何功能业务，请联系系统管理员！")
+                }
+            }
           } else {
             this.logining = false
+            let msg="登录失败"
+            if(result.data.message){
+                msg=result.data.message
+            }
+            else if(result.data.data.message){
+              msg=result.data.data.message
+            }
             this.$message({
-              message: result.data.message,
+              message: msg,
               center: true,
               type: "error",
             });
           }
         })
         .catch((err) => {
-          console.error(err);
+            this.logining = false
+            this.$message({
+              message: err.message,
+              center: true,
+              type: "error",
+            });
         });
     },
     keyDown(e) {
@@ -218,7 +243,7 @@ export default {
 .main .left{
   position: absolute;
   top: 50%;
-  left: 346px;
+  left: 25%;
   transform: translateY(-50%);
 }
 
@@ -248,7 +273,7 @@ export default {
 .main .center{
   position: absolute;
   top: 50%;
-  left: 534px;
+  left: 37%;
   transform: translateY(-50%);
   width: 197px;
   height: 405px;

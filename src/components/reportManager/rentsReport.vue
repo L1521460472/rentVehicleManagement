@@ -2,8 +2,6 @@
   <div
     id="header"
     v-loading="loading"
-    element-loading-text="loading"
-    element-loading-spinner="el-icon-loading"
   >
     <div class="header">
       <div class="headerTop">
@@ -14,7 +12,6 @@
         <div class="nav illegalTime">
           <span class="demonstration">合同时段</span>
           <el-date-picker
-            :unlink-panels='true'
             size="small"
             v-model="dateValue"
             type="daterange"
@@ -50,6 +47,15 @@
               :value="item.id"
             ></el-option>
           </el-select>
+        </div>
+        <div class="nav illegalTime">
+          <span class="demonstration" style="width: 80px">计划还款时段</span>
+          <el-date-picker
+            size="small"
+            v-model="jihuadateValue"
+            type="daterange"
+            range-separator="~"
+          ></el-date-picker>
         </div>
         <div class="headerBotton">
           <el-button size="small" type="primary" v-if="searchBtn" class="search" @click="search">查询</el-button>
@@ -136,10 +142,11 @@ export default {
     return {
       rentsReportUrl:'/vehicle-service/contractRentCollectionInfo/collectionReport',//查询列表数据接口
       rentsReportTotalCountUrl:'/vehicle-service/contractRentCollectionInfo/collectionReportSummary',//底部统计接口
-      exporturl:'/vehicle-service/contractRentCollectionInfo/exportCollectionReport',
+      exporturl:'/vehicle-service/contractRentCollectionInfo/exportCollectionReport',//导出
       loading: false,
       contractCode: "", //合同编号
       dateValue: [], //合同时段
+      jihuadateValue:[],//计划还款时段
       contractStatus:"",//合同状态编号
       contractStatusOptions: /*合同状态*/[
         {
@@ -201,6 +208,12 @@ export default {
         startDate=formatDate(this.dateValue[0],'yyyy-MM-dd')
         endDate=formatDate(this.dateValue[1],'yyyy-MM-dd')
       }
+      let planPaymentStartDate=""
+      let planPaymentEndDate=""
+      if(this.jihuadateValue&&this.jihuadateValue.length==2){
+        planPaymentStartDate=formatDate(this.jihuadateValue[0],'yyyy-MM-dd')
+        planPaymentEndDate=formatDate(this.jihuadateValue[1],'yyyy-MM-dd')
+      }
       return {
         contractCode: this.contractCode,
         startDate: startDate,
@@ -208,12 +221,15 @@ export default {
         contractStatus: this.contractStatus,
         contactsName: this.contactsName,
         contactsPhoneNum:this.contactsPhoneNum,
+        planPaymentStartDate:planPaymentStartDate,
+        planPaymentEndDate:planPaymentEndDate,
         userId: this.userId,
         currentPage: this.currentPage,
         pageSize: this.pageSize,
       }
     },
     GetList(){
+      this.loading=true
       axios({
         method: "post",
         url: this.rentsReportUrl,
@@ -222,6 +238,7 @@ export default {
       })
         .then((result) => {
           //console.log(result.data);
+          this.loading=false
           if (result.data.status == 0) {
             this.dataList = result.data.data.records;
             this.total = result.data.data.total;
@@ -237,6 +254,7 @@ export default {
         })
         .catch((err) => {
           //console.error(err);
+          this.loading=false
           this.$message({
             message: err.response.data.message,
             center: true,

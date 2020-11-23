@@ -21,7 +21,12 @@
                 },
               ]"
             >
-              <el-input class="formItem" size="small" maxlength="100" v-model="form.brandName"></el-input>
+              <el-input
+                class="formItem"
+                size="small"
+                maxlength="100"
+                v-model="form.brandName"
+              ></el-input>
             </el-form-item>
             <el-form-item
               label="车型"
@@ -52,7 +57,12 @@
                 },
               ]"
             >
-              <el-input class="formItem" size="small" maxlength="100" v-model="form.vehicleLength"></el-input>
+              <el-input
+                class="formItem"
+                size="small"
+                maxlength="100"
+                v-model="form.vehicleLength"
+              ></el-input>
             </el-form-item>
             <el-form-item
               label="车身尺寸宽(mm)"
@@ -65,7 +75,12 @@
                 },
               ]"
             >
-              <el-input class="formItem" size="small" maxlength="100" v-model="form.width"></el-input>
+              <el-input
+                class="formItem"
+                size="small"
+                maxlength="100"
+                v-model="form.width"
+              ></el-input>
             </el-form-item>
             <el-form-item
               label="车身尺寸高(mm)"
@@ -78,7 +93,12 @@
                 },
               ]"
             >
-              <el-input class="formItem" size="small" maxlength="100" v-model="form.height"></el-input>
+              <el-input
+                class="formItem"
+                size="small"
+                maxlength="100"
+                v-model="form.height"
+              ></el-input>
             </el-form-item>
             <el-form-item
               label="轴距(mm)"
@@ -91,7 +111,12 @@
                 },
               ]"
             >
-              <el-input class="formItem" size="small" maxlength="100" v-model="form.axisbase"></el-input>
+              <el-input
+                class="formItem"
+                size="small"
+                maxlength="100"
+                v-model="form.axisbase"
+              ></el-input>
             </el-form-item>
             <el-form-item
               label="轮距(mm)"
@@ -104,7 +129,12 @@
                 },
               ]"
             >
-              <el-input class="formItem" size="small" maxlength="100" v-model="form.wheelbase"></el-input>
+              <el-input
+                class="formItem"
+                size="small"
+                maxlength="100"
+                v-model="form.wheelbase"
+              ></el-input>
             </el-form-item>
             <el-form-item
               label="总质量(kg)"
@@ -117,7 +147,12 @@
                 },
               ]"
             >
-              <el-input class="formItem" size="small" maxlength="100" v-model="form.totalMass"></el-input>
+              <el-input
+                class="formItem"
+                size="small"
+                maxlength="100"
+                v-model="form.totalMass"
+              ></el-input>
             </el-form-item>
             <el-form-item
               label="额定载质量(kg)"
@@ -130,7 +165,12 @@
                 },
               ]"
             >
-              <el-input class="formItem" size="small" maxlength="100" v-model="form.maxLoad"></el-input>
+              <el-input
+                class="formItem"
+                size="small"
+                maxlength="100"
+                v-model="form.maxLoad"
+              ></el-input>
             </el-form-item>
             <el-form-item
               label="额定乘坐人数"
@@ -143,7 +183,12 @@
                 },
               ]"
             >
-              <el-input class="formItem" size="small" maxlength="100" v-model="form.maxPassengers"></el-input>
+              <el-input
+                class="formItem"
+                size="small"
+                maxlength="100"
+                v-model="form.maxPassengers"
+              ></el-input>
             </el-form-item>
             <el-form-item
               label="最高车速(km/h)"
@@ -156,7 +201,12 @@
                 },
               ]"
             >
-              <el-input class="formItem" size="small" maxlength="100" v-model="form.maxSpeed"></el-input>
+              <el-input
+                class="formItem"
+                size="small"
+                maxlength="100"
+                v-model="form.maxSpeed"
+              ></el-input>
             </el-form-item>
             <el-form-item
               label="续航里程(km)"
@@ -169,7 +219,12 @@
                 },
               ]"
             >
-              <el-input class="formItem" size="small" maxlength="100" v-model="form.vehicleRange"></el-input>
+              <el-input
+                class="formItem"
+                size="small"
+                maxlength="100"
+                v-model="form.vehicleRange"
+              ></el-input>
             </el-form-item>
             <el-form-item
               label="充电时长(h)"
@@ -182,7 +237,12 @@
                 },
               ]"
             >
-              <el-input class="formItem" size="small" maxlength="100" v-model="form.chargingTime"></el-input>
+              <el-input
+                class="formItem"
+                size="small"
+                maxlength="100"
+                v-model="form.chargingTime"
+              ></el-input>
             </el-form-item>
             <el-form-item
               label="电池容量(kw.h)"
@@ -213,7 +273,12 @@
                 },
               ]"
             >
-              <el-input class="formItem" size="small" maxlength="100" v-model="form.monthlyRent"></el-input>
+              <el-input
+                class="formItem"
+                size="small"
+                maxlength="100"
+                v-model="form.monthlyRent"
+              ></el-input>
             </el-form-item>
             <el-form-item
               label="图片"
@@ -250,8 +315,16 @@
             </el-form-item>
           </div>
           <div class="footerButton">
-            <el-button type="primary" size="small" v-if="showButton" @click="addConfirm">新增</el-button>
-            <el-button type="primary" size="small" v-else @click="editConfirm">修改</el-button>
+            <el-button
+              type="primary"
+              size="small"
+              v-if="showButton"
+              @click="addConfirm"
+              >新增</el-button
+            >
+            <el-button type="primary" size="small" v-else @click="editConfirm"
+              >修改</el-button
+            >
             <el-button size="small" @click="cancel">取消</el-button>
           </div>
         </el-form>
@@ -309,12 +382,48 @@ export default {
   methods: {
     addConfirm() {
       //确定新增
+      var vehicleRangeStr = this.form.vehicleRange.indexOf("-");
+      var vehicleRangeArr = this.form.vehicleRange.split("-");
+      var chargingTimeStr = this.form.chargingTime.indexOf("-");
+      var chargingTimeArr = this.form.chargingTime.split("-");
       this.$refs.form.validate((valid) => {
         if (valid) {
           if (this.imgIdList.length <= 0) {
             this.$message({
               type: "error",
               message: "图片不能为空!",
+              center: true,
+            });
+            return;
+          }
+          if (vehicleRangeStr < 0) {
+            this.$message({
+              type: "error",
+              message: "续航里程请输入区间值xxx-xxx!",
+              center: true,
+            });
+            return;
+          }
+          if (Number(vehicleRangeArr[0]) > Number(vehicleRangeArr[1])) {
+            this.$message({
+              type: "error",
+              message: "续航里程前面的值不能大于后面的值!",
+              center: true,
+            });
+            return;
+          }
+          if (chargingTimeStr < 0) {
+            this.$message({
+              type: "error",
+              message: "充电时长请输入区间值xxx-xxx!",
+              center: true,
+            });
+            return;
+          }
+          if (Number(chargingTimeArr[0]) > Number(chargingTimeArr[1])) {
+            this.$message({
+              type: "error",
+              message: "充电时长前面的值不能大于后面的值!",
               center: true,
             });
             return;
@@ -360,10 +469,13 @@ export default {
     cancel() {
       //取消新增修改
       this.$router.back();
-      
     },
     editConfirm() {
       //确定修改
+      var vehicleRangeStr = this.form.vehicleRange.indexOf("-");
+      var vehicleRangeArr = this.form.vehicleRange.split("-");
+      var chargingTimeStr = this.form.chargingTime.indexOf("-");
+      var chargingTimeArr = this.form.chargingTime.split("-");
       this.form.id = this.$route.query.id;
       this.$refs.form.validate((valid) => {
         if (valid) {
@@ -371,6 +483,38 @@ export default {
             this.$message({
               type: "error",
               message: "图片不能为空!",
+              center: true,
+            });
+            return;
+          }
+          if (vehicleRangeStr < 0) {
+            this.$message({
+              type: "error",
+              message: "续航里程请输入区间值xxx-xxx!",
+              center: true,
+            });
+            return;
+          }
+          if (Number(vehicleRangeArr[0]) > Number(vehicleRangeArr[1])) {
+            this.$message({
+              type: "error",
+              message: "续航里程前面的值不能大于后面的值!",
+              center: true,
+            });
+            return;
+          }
+          if (chargingTimeStr < 0) {
+            this.$message({
+              type: "error",
+              message: "充电时长请输入区间值xxx-xxx!",
+              center: true,
+            });
+            return;
+          }
+          if (Number(chargingTimeArr[0]) > Number(chargingTimeArr[1])) {
+            this.$message({
+              type: "error",
+              message: "充电时长前面的值不能大于后面的值!",
               center: true,
             });
             return;

@@ -1,47 +1,47 @@
 <template>
-  <div>
+  <div v-loading="loading" class="box-container">
     <div class="box">
       <div class="box-title">工作进度</div>
       <div class="box-item">
         <div class="box-item-tab">
           <div class="box-item-tab-top">
             <div class="box-item-tab-icon"><img src="../../assets/workdesk/Frame-4.png"></div>
-            <div class="box-item-tab-top-value">回款率：68.6%</div>
+            <div class="box-item-tab-top-value">回款率：<span v-html="financialReceivableVO.receivableRate"></span>%</div>
           </div>
           <hr class="divider-raw">
           <div class="box-item-tab-left">
-            <div class="box-item-tab-left-value">254,123.00</div>
+            <div class="box-item-tab-left-value"><span v-html="financialReceivableVO.accountsReceivableTotal"></span></div>
             <div class="box-item-tab-left-title">总应收款</div>
           </div>
           <hr class="divider-col">
           <div class="box-item-tab-right">
-            <div class="box-item-tab-right-value">85,476.00</div>
+            <div class="box-item-tab-right-value"><span v-html="financialReceivableVO.collectionTotal"></span></div>
             <div class="box-item-tab-right-title">总已收款</div>
           </div>
         </div>
         <div class="box-item-tab" style="width: calc(100% - 522px)">
           <div class="box-item-tab-top">
             <div class="box-item-tab-icon"><img src="../../assets/workdesk/Frame-10.png"></div>
-            <div class="box-item-tab-top-value">逾期率 : 75%</div>
+            <div class="box-item-tab-top-value">逾期率 : <span v-html="financialOverdueVO.overdueRate"></span>%</div>
           </div>
           <hr class="divider-raw">
           <div class="box-item-tab-left" style="width: calc(calc(100% - 20px) / 4);">
-            <div class="box-item-tab-left-value" style="color: #333333;">563</div>
+            <div class="box-item-tab-left-value" style="color: #333333;"><span v-html="financialOverdueVO.backFinish"></span></div>
             <div class="box-item-tab-left-title">已完结合同</div>
           </div>
           <hr class="divider-col">
           <div class="box-item-tab-right" style="width: calc(calc(100% - 20px) / 4);">
-            <div class="box-item-tab-right-value" style="color: #333333;">127</div>
+            <div class="box-item-tab-right-value" style="color: #333333;"><span v-html="financialOverdueVO.normalProgress"></span></div>
             <div class="box-item-tab-right-title">进行中合同</div>
           </div>
           <hr class="divider-col">
           <div class="box-item-tab-right" style="width: calc(calc(100% - 20px) / 4);">
-            <div class="box-item-tab-right-value" style="color: #333333;">55</div>
+            <div class="box-item-tab-right-value" style="color: #333333;"><span v-html="financialOverdueVO.lateWaitProcessed"></span></div>
             <div class="box-item-tab-right-title">逾期状态合同</div>
           </div>
           <hr class="divider-col">
           <div class="box-item-tab-right" style="width: calc(calc(100% - 20px) / 4);">
-            <div class="box-item-tab-right-value" style="color: #333333;">48</div>
+            <div class="box-item-tab-right-value" style="color: #333333;"><span v-html="financialOverdueVO.expire"></span></div>
             <div class="box-item-tab-right-title">本月到期合同</div>
           </div>
         </div>
@@ -50,27 +50,27 @@
         <div class="box-item-col" style="margin-right: 28px;">
           <div class="box-item-label">
             <div class="box-item-label-left">本月新增合同</div>
-            <div class="box-item-label-right">15</div>
+            <div class="box-item-label-right"><span v-html="receivingOverViewVO.newContract"></span></div>
           </div>
           <div class="box-item-label">
             <div class="box-item-label-left" style="background: #f7e4ce;color: #F08D19;">本月退车应付（预计）</div>
-            <div class="box-item-label-right" style="color: #F08D19;">125,413.00</div>
+            <div class="box-item-label-right" style="color: #F08D19;"><span v-html="receivingOverViewVO.dealWith"></span></div>
           </div>
         </div>
         <div class="box-item-col" style="margin-right: 28px;">
           <div class="box-item-label">
             <div class="box-item-label-left" style="background: #e4daec;color: #7F40B1;">本月应收款（元）</div>
-            <div class="box-item-label-right" style="color: #7F40B1;">251,246.00</div>
+            <div class="box-item-label-right" style="color: #7F40B1;"><span v-html="receivingOverViewVO.accountsReceivable"></span></div>
           </div>
           <div class="box-item-label">
             <div class="box-item-label-left" style="background: #ece2d6;color: #B27427;">本月退车已付（元）</div>
-            <div class="box-item-label-right" style="color: #B27427;">14,125.00</div>
+            <div class="box-item-label-right" style="color: #B27427;"><span v-html="receivingOverViewVO.paid"></span></div>
           </div>
         </div>
         <div class="box-item-col">
           <div class="box-item-label">
             <div class="box-item-label-left" style="background: #cfe0f7;color: #1B6AD2;">本月已收款（元）</div>
-            <div class="box-item-label-right" style="color: #1B6AD2;">5,468.00</div>
+            <div class="box-item-label-right" style="color: #1B6AD2;"><span v-html="receivingOverViewVO.collection"></span></div>
           </div>
         </div>
       </div>
@@ -81,22 +81,22 @@
         <div class="box-item-card" style="background: linear-gradient(129.09deg, #25A092 0%, #36CBC4 100%);">
           <div class="box-item-card-icon"><img src="../../assets/workdesk/Frame-12.png"></div>
           <div class="box-item-card-title">合同待登记</div>
-          <div class="box-item-card-value">88</div>
+          <div class="box-item-card-value"><span v-html="financialToDoVO.toRegistered"></span></div>
         </div>
         <div class="box-item-card" style="background: linear-gradient(129.09deg, #01AACD 0%, #44C3EA 100%);">
           <div class="box-item-card-icon"><img src="../../assets/workdesk/Frame-8.png"></div>
           <div class="box-item-card-title">缴费待审核</div>
-          <div class="box-item-card-value">56</div>
+          <div class="box-item-card-value"><span v-html="financialToDoVO.toAuditCost"></span></div>
         </div>
         <div class="box-item-card" style="background: linear-gradient(129.09deg, #E3612A 0%, #FB986E 100%);">
           <div class="box-item-card-icon"><img src="../../assets/workdesk/Frame-6.png"></div>
           <div class="box-item-card-title">变更待审核</div>
-          <div class="box-item-card-value">28</div>
+          <div class="box-item-card-value"><span v-html="financialToDoVO.toAuditChange"></span></div>
         </div>
         <div class="box-item-card" style="background: linear-gradient(129.09deg, #FF4444 0%, #F56C6C 100%);">
           <div class="box-item-card-icon"><img src="../../assets/workdesk/Frame-15.png"></div>
           <div class="box-item-card-title">待开票</div>
-          <div class="box-item-card-value">67</div>
+          <div class="box-item-card-value"><span style="font-size: 18px;display: flow-root;">暂无数据</span></div>
         </div>
       </div>
     </div>
@@ -108,23 +108,21 @@
         <hr class="panel-divider">
         <div class="panel-content">
           <div class="searchbtn">
-            <el-input id="searchin" class="searchin" size="small" placeholder="请输入车牌号 搜索相关合同" v-model="searchVal">
+            <el-input ref="searchin" class="searchin" size="small" placeholder="请输入车牌号 搜索相关合同" v-model="searchVal">
             </el-input>
-            <el-button slot="append" size="small" icon="el-icon-search"></el-button>
+            <el-button slot="append" size="small" icon="el-icon-search" @click="search"></el-button>
           </div>
           <div class="box-item" style="justify-content: space-between;">
             <div class="box-item-col" style="margin-right: 16px;width: calc(100% / 2);">
-              <div class="box-item-pain">合同登记</div>
-              <div class="box-item-pain">合同变更</div>
-              <div class="box-item-pain">变更记录</div>
-              <div class="box-item-pain">收租台账</div>
-              <div class="box-item-pain">逾期锁车</div>
+              <div class="box-item-pain" @click="jumpto('/contractRegistration','合同登记')">合同登记</div>
+              <div class="box-item-pain" @click="jumpto('/planChangeRecord','变更记录')">变更记录</div>
+              <div class="box-item-pain" @click="jumpto('/rentParameter','收租台账')">收租台账</div>
+              <div class="box-item-pain" @click="jumpto('功能正在开发中','逾期锁车')">逾期锁车</div>
             </div>
             <div class="box-item-col" style="width: calc(100% / 2);">
-              <div class="box-item-pain">退车结算</div>
-              <div class="box-item-pain">租金抵扣</div>
-              <div class="box-item-pain">缴费审核</div>
-              <div class="box-item-pain">预收款管理</div>
+              <div class="box-item-pain" @click="jumpto('功能正在开发中','租金抵扣')">租金抵扣</div>
+              <div class="box-item-pain" @click="jumpto('/payAuditing','缴费审核')">缴费审核</div>
+              <div class="box-item-pain" @click="jumpto('功能正在开发中','预收款管理')">预收款管理</div>
             </div>
           </div>
         </div>
@@ -132,20 +130,23 @@
       <div class="panel" style="margin-left:16px;">
         <div class="panel-title">
           通知提醒
-          <a class="panel-more" href="javascript:;">更多></a>
+          <a class="panel-more" href="javascript:;"  @click="jumpto('/remindProcess','提醒处理')">更多></a>
         </div>
         <hr class="panel-divider">
         <div class="panel-content">
-          <div v-for="item in notifylist">
-            <div class="panel-list">
-              <div class="panel-list-order">{{item.order}}</div>
+          <div v-for="item in page.records">
+            <div class="panel-list" @click="setreaded(item,$event)">
+              <div class="panel-list-order" v-html="item.order"></div>
               <div class="panel-list-content">
-                <div class="panel-list-content-t">{{item.title}}</div>
-                <div class="panel-list-content-b">{{item.content}}</div>
+                <div class="panel-list-content-t">
+                  <div class="panel-list-title" v-html="item.title"></div>
+                  <div class="red-dot" v-if="item.messageStatus==1"></div>
+                </div>
+                <div class="panel-list-content-b" v-html="item.content"></div>
               </div>
               <div class="panel-list-contrl">
-                <span>{{item.time}}</span>
-                <a class="panel-more" href="javascript:;">查看></a>
+                <span v-html="item.createTimeStr"></span>
+                <!-- <a class="panel-more" href="javascript:;" :data-id='item.id'>查看></a> -->
               </div>
             </div>
             <hr class="divider-raw">
@@ -154,36 +155,165 @@
       </div>
     </div>
   </div>
-  </div>
 </template>
 
 <script>
+  import axios from "axios";
   import {
-    formatJE2
+    formatJE,
+    getCookie,
+    openNewTab,
+    formatDate
   } from '../../public.js'
   export default {
     name: 'financialWorkDesk',
     data() {
       return {
+        loading: false,
+        initPageUrl: '/vehicle-service/homePage/financialStatement',
+        setreadedUrl:'/vehicle-service/remindMessageRecord/contractPushInfoDetail',
         searchVal: '',
-        notifylist:[]
+        "financialReceivableVO": {
+          "accountsReceivableTotal": 0,
+          "collectionTotal": 0,
+          "unCollectionTotal": 0,
+          "receivableRate": 0
+        },
+        "financialOverdueVO": {
+          "backFinish": 0,
+          "normalProgress": 0,
+          "lateWaitProcessed": 0,
+          "expire": 0,
+          "overdueRate": 0
+        },
+        "receivingOverViewVO": {
+          "newContract": 0,
+          "accountsReceivable": 0,
+          "collection": 0,
+          "dealWith": 0,
+          "paid": 0
+        },
+        "financialToDoVO": {
+          "toRegistered": 0,
+          "toAuditCost": 0,
+          "toAuditChange": 0
+        },
+        "page": {
+          "records": []
+        },
+        headers: {
+          Authorization: getCookie("HTBD_PASS"),
+          language: this.$store.state.language,
+        },
       }
     },
-    methods:{
-
+    methods: {
+      jumpto(url, title,param) {
+        if (url.indexOf('/') < 0) {
+          this.$message(url);
+        } else {
+          openNewTab(this, title, url)
+        }
+      },
+      search() {
+        let searchVal = this.searchVal.replace(/\s/gm, '')
+        if (searchVal) {
+          // this.$parent.$parent.$parent.$parent.addTable({url:''})
+          openNewTab(this, '收租台账', '/rentParameter', {
+            vehicleNo: this.searchVal
+          })
+        }
+      },
+      initPage(callback) {
+        this.loading = true
+        axios({
+            method: "post",
+            url: this.initPageUrl,
+            headers: this.headers,
+            data: null,
+          })
+          .then((result) => {
+            // console.log(result.data);
+            this.loading = false
+            if (result.data.status == 0) {
+              this.financialReceivableVO = result.data.data.financialReceivableVO;
+              this.financialOverdueVO = result.data.data.financialOverdueVO;
+              this.receivingOverViewVO = result.data.data.receivingOverViewVO;
+              this.financialToDoVO = result.data.data.financialToDoVO;
+              this.page = result.data.data.page;
+              callback(this);
+            } else {
+              this.$message({
+                message: res.data.message,
+                center: true,
+                type: "error",
+              });
+            }
+          })
+          .catch((err) => {
+            //console.error(err);
+            this.loading = false
+            this.$message({
+              message: err.message,
+              center: true,
+              type: "error",
+            });
+          });
+      },
+      setreaded(item,event){
+        var $currentTarget=event.currentTarget
+        if(item.messageStatus==1){
+          axios({
+              method: "post",
+              url: this.setreadedUrl,
+              headers: this.headers,
+              data: {id:item.id},
+            })
+            .then((result) => {
+              debugger
+              $currentTarget.children[1].children[0].children[1].remove()
+            })
+        }
+      }
     },
     mounted() {
-      document.getElementById('searchin').style.border = 'none'
-      for(let i=1;i<=6;++i){
-        this.notifylist.push({order:i,title:'合同到期提醒',content:'合同TFA23423442到期，还有30天',time:'2020-09-02 14:32'})
-      }
+      this.$refs.searchin.$el.children[0].style.border = 'none'
+      this.initPage(function($) {
+        let financialReceivableVO = $.financialReceivableVO;
+        for (let pname in financialReceivableVO) {
+          if (typeof financialReceivableVO[pname] == 'number' && pname != "receivableRate") {
+            financialReceivableVO[pname] = formatJE(financialReceivableVO[pname]);
+          }
+        } 
+        let receivingOverViewVO = $.receivingOverViewVO;
+        for (let pname in receivingOverViewVO) {
+          if (typeof receivingOverViewVO[pname] == 'number' && pname != "newContract") {
+            receivingOverViewVO[pname] = formatJE(receivingOverViewVO[pname]);
+          }
+        }
+        let records = $.page.records;
+        for (let i = 1; i <= records.length; ++i) {
+          records[i - 1].order = i;
+        }
+      })
+      openNewTab(this,'财务','/financialWorkDesk')
     }
   }
 </script>
 
 <style scoped>
+  .box-container {
+    margin-left: -20px;
+    padding-left: 20px;
+    margin-right: -20px;
+    padding-right: 20px;
+    height: calc(100% - 40px);
+    overflow: auto;
+    margin-bottom: -20px;
+  }
+
   .box {
-    width: calc(100% - 30px);
+    width: calc(100% - 15px);
     border: 1px solid #E5E5E5;
     padding: 16px 15px;
     margin-top: 16px;
@@ -244,6 +374,10 @@
     justify-content: space-between;
   }
 
+  .panel-list-title {
+    display: inline-block;
+  }
+
   .panel-list-order,
   .panel-list-content-t,
   .panel-list-content-b,
@@ -260,12 +394,12 @@
     display: inline-block;
     vertical-align: middle;
     width: 30px;
-    line-height: 36px;
+    text-align: center;
   }
 
   .panel-list-content {
     display: inline-block;
-    width: calc(100% - 200px);
+    width: calc(100% - 150px);
   }
 
   .panel-list-content-b {
@@ -275,11 +409,20 @@
   .panel-list-contrl {
     display: inline-block;
     color: #999999;
-    line-height: 36px;
   }
 
   .panel-list-contrl>span {
     margin-right: 10px;
+  }
+
+  .red-dot {
+    width: 5px;
+    height: 5px;
+    background-color: red;
+    border-radius: 50%;
+    display: inline-block;
+    margin-bottom: 5px;
+    margin-left: -3px;
   }
 
   .box-title {
@@ -476,6 +619,11 @@
     line-height: 48px;
     margin-top: 14px;
     margin-bottom: 14px;
+    cursor: pointer;
+  }
+
+  .box-item-pain:hover {
+    color: #368CFE;
   }
 
   .divider-raw {

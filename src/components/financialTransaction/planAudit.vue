@@ -115,6 +115,20 @@
         <el-form ref="formContract" :model="formContract" label-width="130px">
           <div class="formNav formNavs" v-if="international.title">
             <el-form-item
+                label="合同类型"
+                prop="contractType"
+                :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
+              >
+                <el-select disabled clearable v-model="formContract.contractType" size="small" placeholder>
+                  <el-option
+                    v-for="item in contractTypes"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item
               label="合同编号"
               prop="contractCode"
               :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
@@ -668,7 +682,8 @@ export default {
         rentEndDateStr: null, //止租日期
         urgentPhoneNumer: null, //紧急联系电话
         efileIdList: [], //合同附件id
-        supplefileIdList: [], //合同补充附件Id集合
+        supplefileIdList: [], //合同补充附件Id集合        
+        contractType:'',//合同类型
 
         //客户信息
         customerName: null, //承租方名称
@@ -727,7 +742,10 @@ export default {
       fileList: [], //合同附件
       fileList1: [], //合同补充附件
       imgIdList: [], //图片id
-      tableData: [],
+      tableData: [],      
+      contractTypes:[
+        {value:1,label:'新签'}, {value:2,label:'续签'}
+      ],
       headers: {
         Authorization: getCookie("HTBD_PASS"),
         language: this.$store.state.language,
@@ -852,6 +870,7 @@ export default {
             this.formVeInformation.userid =
               result.data.data.leaseContractOrderVO.userName; //分配业务员
 
+            this.formContract.contractType = result.data.data.contractType;//合同类型
             this.formContract.contractCode = result.data.data.contractCode; //合同编号
             this.formContract.rentStartDateStr =
               result.data.data.rentStartDateStr; //起租日期

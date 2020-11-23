@@ -75,8 +75,8 @@
         <div class="headerBotton">
           <el-button size="small" type="primary" v-if="searchBtn" class="search" @click="search(null)">查询</el-button>
           <el-button class="reset" size="small" plain @click="reset">重置</el-button>
-          <el-button class="reset" size="small" v-if="taxesBtn" plain @click="handleAbout">即将交租合同</el-button>
-          <el-button class="reset" size="small" v-if="expireBtn" plain @click="handleDataOut">即将到期合同</el-button>
+          <el-button class="reset" size="small" v-if="taxesBtn" plain @click="handleAbout" title="距账单日7天">即将交租合同</el-button>
+          <el-button class="reset" size="small" v-if="expireBtn" plain @click="handleDataOut" title="距到期日30天">即将到期合同</el-button>
         </div>
       </div>
     </div>
@@ -121,13 +121,23 @@
         <!-- <el-button @click="handleExamine" size="small" :class="{ active: !isDisable }" :disabled="isDisable">
           <i class="iconfont icon-edit"></i>租金抵扣
         </el-button>-->
-        <el-button
+        <el-button class="daochu"
           @click="handleInsurance"
           size="small"
           v-if="exportBtn"
         >
           <i class="iconfont icon-daochu"></i>导出
         </el-button>
+          <el-upload
+            class="upload"
+            v-if="ImporBtn"
+            action="/vehicle-service/leaseContractInfo/importContractInfo"
+            :headers="headers"
+            :on-success="handleSuccess"
+            :show-file-list="false"
+            >
+            <span class="upload_txt"><i class="iconfont icon-daoru"></i>导入</span>
+            </el-upload>
       </div>
       <div class="footerTable">
         <div class="footer_informatian">
@@ -270,6 +280,7 @@ export default {
       auditBtn: false,//计划审核
       checkBtn: false,//计划查看
       exportBtn: false,//导出
+      ImporBtn: false,//导入
       tableHeight: window.innerHeight - 445 +'',
       headers: {
         Authorization: getCookie("HTBD_PASS"),
@@ -278,6 +289,27 @@ export default {
     };
   },
   methods: {
+
+    ImportFile(){//导入
+
+    },
+    handleSuccess(response, file, fileList) {
+      //导入
+      if(response.status == 0){
+        this.$message.success({
+          message:response.data,
+          center:true,
+          type:'true',
+          type: 'success'
+        })
+        this.reset();
+      }else{
+        this.$message.error({
+          message:response.message,
+          center:true,
+        })
+      }
+    },
     handleSizeChange(val) {
       this.loading = true
       axios({
@@ -618,7 +650,7 @@ export default {
                 let link = document.createElement("a");
                 let evt = document.createEvent("HTMLEvents");
                 evt.initEvent("click", false, false);
-                link.href = URL.createObjectURL(blob); 
+                link.href = URL.createObjectURL(blob);
                 link.download = "合同登记信息.xls";
                 link.style.display = "none";
                 document.body.appendChild(link);
@@ -735,6 +767,7 @@ export default {
             if(item.name == '计划审核') this.auditBtn = true
             if(item.name == '计划查看') this.checkBtn = true
             if(item.name == '导出') this.exportBtn = true
+            if(item.name == '导入') this.ImporBtn = true
           })
       },
       immediate:true,
@@ -850,19 +883,38 @@ export default {
   display: flex;
   align-items: center;
 }
-.footerBottom .el-button:last-child {
+.upload_txt{
+    display: flex;
+    width: 70px;
+    height: 30px;
+    justify-content: center;
+    align-items: center;
+    color: #368cfe;
+    border-radius: 4px;
+    font-size: 12px;
+    border: 1px solid rgba(54, 140, 254, 0.5);
+    margin-left: 10px;
+}
+.upload_txt i{
+    font-size: 12px;
+    margin-right: 2px;
+}
+.upload{
+  display:inline-block
+}
+.footerBottom .el-button:last-child ,.footerBottom .daochu{
   color: #368cfe;
   border-radius: 4px;
   border: 1px solid rgba(54, 140, 254, 0.5);
 }
-.footerBottom .el-button:last-child:hover {
+.footerBottom .el-button:last-child:hover ,.footerBottom .daochu:hover {
   color: #368cfe !important;
   border-radius: 4px;
   border: 1px solid rgba(54, 140, 254, 0.5);
 }
-.footerBottom .el-button:hover {
-  color: #c0c4cc !important;
-}
+/* .footerBottom .el-button:hover {
+  color: #c0c4cc !important;  
+} */
 .active {
   color: #368cfe !important;
   border-radius: 4px;

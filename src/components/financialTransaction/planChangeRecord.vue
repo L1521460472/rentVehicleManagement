@@ -72,7 +72,7 @@
             <el-table-column prop="contractCode" width="150" label="合同编号"></el-table-column>
             <el-table-column prop="vehicleNo" width="100" label="车牌号"></el-table-column>
             <el-table-column prop="changeTypeStr" width="100" label="变更项"></el-table-column>
-            <el-table-column prop="beforeChange" width="150" label="变更前">
+            <el-table-column prop="beforeChange" width="190" label="变更前">
             </el-table-column>
             <el-table-column prop="afterChange" width="190" label="变更后">
             </el-table-column>
@@ -269,7 +269,7 @@ export default {
                 item.beforeChange = item.beforeChange.replace('第0期','押金')
               }
               if(item.afterChange.substring(0,3) == '第0期'){
-                item.beforeChange = item.afterChange.replace('第0期','押金')
+                item.afterChange = item.afterChange.replace('第0期','押金')
               }
               return item;
             });

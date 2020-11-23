@@ -39,6 +39,7 @@
             <el-form-item
               label="发动机号"
               prop="engineNo"
+              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur'}]"
             >
               <el-input
                 class="formItem"
@@ -187,6 +188,129 @@
               <el-dialog :visible.sync="dialogVisible" width="500px">
                 <img class="imgList" :src="dialogImageUrl" alt />
               </el-dialog>
+            </el-form-item>
+          </div>
+        </el-form>
+        <div class="footerTitle">
+          <span>运营信息</span>
+        </div>
+        <el-form ref="formVeInformation" :model="formVeInformation" label-width="130px">
+          <div class="formNav">
+            <el-form-item
+              label="所属门店"
+              prop="enterpriseId"
+              :rules="[
+                {
+                  required: true,
+                  message: international.global.global_contNotEmpty,
+                  trigger: 'blur',
+                },
+              ]"
+            >
+              <el-select
+                v-model="formVeInformation.enterpriseId"
+                size="small"
+                @change="handleEnterpriseId"
+                :disabled="isOperation"
+                placeholder
+              >
+                <el-option
+                  v-for="item in companyOptions"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="车辆使用方式"
+              prop="vehicleUsageMode"
+            >
+              <el-select
+                v-model="formVeInformation.vehicleUsageMode"
+                size="small"
+                :disabled="isOperation"
+                placeholder
+              >
+                <el-option
+                  v-for="item in vehicleUseOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="存车地点"
+              prop="parkingLotId"
+            >
+              <el-select
+                v-model="formVeInformation.parkingLotId"
+                size="small"
+                :disabled="isOperation"
+                placeholder
+              >
+                <el-option
+                  v-for="item in vehiclePlaceOptions"
+                  :key="item.id"
+                  :label="item.parkingLotName"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="业务员"
+              prop="userId"
+            >
+              <el-select
+                v-model="formVeInformation.userId"
+                size="small"
+                :disabled="isOperation"
+                placeholder
+              >
+                <el-option
+                  v-for="item in salesmanOptions"
+                  :key="item.id"
+                  :label="item.salesmanName"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="车辆出租状态"
+              prop="vehicleUsageStatus"
+            >
+              <el-select
+                v-model="formVeInformation.vehicleUsageStatus"
+                size="small"
+                :disabled="isOperation"
+                placeholder
+              >
+                <el-option
+                  v-for="item in leaseStateOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item
+              label="维修状态"
+              prop="vehicleRepairStatus"
+            >
+              <el-select
+                v-model="formVeInformation.vehicleRepairStatus"
+                size="small"
+                :disabled="isOperation"
+                placeholder
+              >
+                <el-option
+                  v-for="item in maintenanceStateOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </div>
         </el-form>
@@ -363,128 +487,6 @@
                 :src="item.url"
                 :preview-src-list="[item.url]"
               ></el-image>
-            </el-form-item>
-          </div>
-        </el-form>
-        <div class="footerTitle">
-          <span>运营信息</span>
-        </div>
-        <el-form ref="formVeInformation" :model="formVeInformation" label-width="130px">
-          <div class="formNav">
-            <el-form-item
-              label="所属门店"
-              prop="enterpriseId"
-              :rules="[
-                {
-                  required: true,
-                  message: international.global.global_contNotEmpty,
-                  trigger: 'blur',
-                },
-              ]"
-            >
-              <el-select
-                v-model="formVeInformation.enterpriseId"
-                size="small"
-                :disabled="isOperation"
-                placeholder
-              >
-                <el-option
-                  v-for="item in companyOptions"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              label="车辆使用方式"
-              prop="vehicleUsageMode"
-            >
-              <el-select
-                v-model="formVeInformation.vehicleUsageMode"
-                size="small"
-                :disabled="isOperation"
-                placeholder
-              >
-                <el-option
-                  v-for="item in vehicleUseOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              label="存车地点"
-              prop="parkingLotId"
-            >
-              <el-select
-                v-model="formVeInformation.parkingLotId"
-                size="small"
-                :disabled="isOperation"
-                placeholder
-              >
-                <el-option
-                  v-for="item in vehiclePlaceOptions"
-                  :key="item.id"
-                  :label="item.parkingLotName"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              label="业务员"
-              prop="userId"
-            >
-              <el-select
-                v-model="formVeInformation.userId"
-                size="small"
-                :disabled="isOperation"
-                placeholder
-              >
-                <el-option
-                  v-for="item in salesmanOptions"
-                  :key="item.id"
-                  :label="item.salesmanName"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              label="车辆出租状态"
-              prop="vehicleUsageStatus"
-            >
-              <el-select
-                v-model="formVeInformation.vehicleUsageStatus"
-                size="small"
-                :disabled="isOperation"
-                placeholder
-              >
-                <el-option
-                  v-for="item in leaseStateOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item
-              label="维修状态"
-              prop="vehicleRepairStatus"
-            >
-              <el-select
-                v-model="formVeInformation.vehicleRepairStatus"
-                size="small"
-                :disabled="isOperation"
-                placeholder
-              >
-                <el-option
-                  v-for="item in maintenanceStateOptions"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
             </el-form-item>
           </div>
         </el-form>
@@ -697,7 +699,7 @@
         </el-table>
       </div>
       <div class="footerButton">
-        <el-button size="small" @click="cancel">返回</el-button>
+        <el-button size="small" type="primary" @click="cancel">返回</el-button>
       </div>
       <!-- 查看附件 -->
       <el-dialog :visible.sync="dialogVisibleImg" width="500px">
@@ -916,6 +918,7 @@ export default {
       companyOptions: [
         //所属门店
       ],
+      companyOptionsId:[],//品牌id
       vehicleUseOptions: [
         //车辆使用方式
         {
@@ -926,6 +929,10 @@ export default {
           value: 1,
           label: "替换",
         },
+        {
+          value: 2,
+          label: "样车",
+        }
       ],
       vehiclePlaceOptions: [
         //存车地点
@@ -1081,7 +1088,7 @@ export default {
           message: "请输入车牌号码",
           center: true,
           type: "error",
-        }); 
+        });
         return;
       }
       if( this.formVeInformation.vinNo == "" || this.formVeInformation.vinNo == null )
@@ -1090,8 +1097,8 @@ export default {
           message: "请输入车架号",
           center: true,
           type: "error",
-        }); 
-        return;       
+        });
+        return;
       }
       if (this.formVehicleType.vehicleTypeName == "" ||
         this.formVehicleType.brandName == ""
@@ -1122,7 +1129,7 @@ export default {
           message: "出厂日期大于运营日期",
           center: true,
           type: "error",
-        }); 
+        });
         return;
       }
       // this.$refs.formVeInformation.validate((valid) => {
@@ -1172,7 +1179,7 @@ export default {
           message: "请输入车牌号码",
           center: true,
           type: "error",
-        }); 
+        });
         return;
       }
       if( this.formVeInformation.vinNo == "" || this.formVeInformation.vinNo == null )
@@ -1181,8 +1188,8 @@ export default {
           message: "请输入车架号",
           center: true,
           type: "error",
-        }); 
-        return;       
+        });
+        return;
       }
       if (this.formVehicleType.vehicleTypeName == "" ||
         this.formVehicleType.brandName == ""
@@ -1213,7 +1220,7 @@ export default {
           message: "出厂日期大于运营日期",
           center: true,
           type: "error",
-        }); 
+        });
         return;
       }
       this.formVeInformation.id = this.$route.query.id;
@@ -1271,17 +1278,39 @@ export default {
           this.formVehicleType.vehicleTypeName = "";
           this.formVehicleType.vehicleLength = "";
           this.formVehicleType.width = "";
-          this.formVehicleType.height = ""; 
+          this.formVehicleType.height = "";
           this.formVehicleType.axisbase = "";
           this.formVehicleType.wheelbase = "";
           this.formVehicleType.totalMass = "";
           this.formVehicleType.maxLoad = "";
           this.formVehicleType.maxPassengers = "";
           this.formVehicleType.maxSpeed = "";
-          this.formVehicleType.vehicleRange = ""; 
-          this.formVehicleType.chargingTime = ""; 
+          this.formVehicleType.vehicleRange = "";
+          this.formVehicleType.chargingTime = "";
           this.formVehicleType.batteryCapacity = "";
           this.fileList = [];
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$message({
+            message: err.response.data.message,
+            center: true,
+            type: "error",
+          });
+        });
+    },
+    getVehicleType1() {
+      //获取车型
+      axios({
+        method: "get",
+        url:
+          "/vehicle-service/vehicleTypeInfo/queryVehicleTypeListByBrandId?id=" +
+          this.formVehicleType.brandName,
+        headers: this.headers,
+      })
+        .then((result) => {
+          // console.log(result.data);
+          this.vehicleTypeNameOptions = result.data.data;
         })
         .catch((err) => {
           console.error(err);
@@ -1372,7 +1401,32 @@ export default {
       })
         .then((result) => {
           // console.log(result.data);
+          this.companyOptionsId = [];
           this.companyOptions = result.data.data;
+          this.formVeInformation.enterpriseId = result.data.data[0].id;
+          this.companyOptionsId.push(this.formVeInformation.enterpriseId);
+          this.getbrandInfo();
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$message({
+            message: err.response.data.message,
+            center: true,
+            type: "error",
+          });
+        });
+    },
+    getCompany1() {
+      //所属门店
+      axios({
+        method: "get",
+        url: "/vehicle-service/comboBoxController/getEnterpriseBox",
+        headers: this.headers,
+      })
+        .then((result) => {
+          // console.log(result.data);
+          this.companyOptions = result.data.data;
+          this.getbrandInfo();
         })
         .catch((err) => {
           console.error(err);
@@ -1428,6 +1482,49 @@ export default {
           });
         });
     },
+    getbrandInfo(){
+      axios({
+      //品牌
+      method: "post",
+      url: "/vehicle-service/brandInfo/brandInfoListQuery",
+      headers: this.headers,
+      data:{
+        enterpriseIds:this.companyOptionsId,
+      }
+    })
+      .then((result) => {
+        // console.log(result.data);
+        this.brandNameOptions = result.data.data;
+      })
+      .catch((err) => {
+        console.error(err);
+        this.$message({
+          message: err.response.data.message,
+          center: true,
+          type: "error",
+        });
+      });
+    },
+    handleEnterpriseId(){
+      this.companyOptionsId = [];
+      this.companyOptionsId.push(this.formVeInformation.enterpriseId);
+      this.getbrandInfo();
+      this.formVehicleType.brandName = '';
+      this.formVehicleType.vehicleTypeName = "";
+      this.formVehicleType.vehicleLength = "";
+      this.formVehicleType.width = "";
+      this.formVehicleType.height = "";
+      this.formVehicleType.axisbase = "";
+      this.formVehicleType.wheelbase = "";
+      this.formVehicleType.totalMass = "";
+      this.formVehicleType.maxLoad = "";
+      this.formVehicleType.maxPassengers = "";
+      this.formVehicleType.maxSpeed = "";
+      this.formVehicleType.vehicleRange = "";
+      this.formVehicleType.chargingTime = "";
+      this.formVehicleType.batteryCapacity = "";
+      this.fileList = [];
+    },
     addVehicleCard() {
       //新增证件信息
 
@@ -1441,7 +1538,7 @@ export default {
       //     center: true,
       //     type: "error",
       //   });
-      //   return;     
+      //   return;
       // }
 
       // console.log(this.vehicleId)
@@ -1816,7 +1913,7 @@ export default {
       this.$router.push({
         path: "/addAS",
         // query: { form: "add",vehicleNo: this.formVeInformation.vehicleNo,brand:this.formVehicleType.brandName},
-        query: { form: "look", id: row.id },
+        query: { form: "look", id: row.vehicleId },
       });
     },
     handleEdit(index, row) {
@@ -1891,8 +1988,8 @@ export default {
       this.formVeInformation.vehicleUsageMode = null;
       this.formVeInformation.parkingLotId = null;
       this.formVeInformation.userId = null;
-      this.formVeInformation.vehicleUsageStatus = null;
-      this.formVeInformation.vehicleRepairStatus = null;
+      this.formVeInformation.vehicleUsageStatus = 1;
+      this.formVeInformation.vehicleRepairStatus = 0;
       // 车辆证件资料
       this.formVehicleCard.drilicNo = null;
       this.formVehicleCard.dateOfRegistration = null;
@@ -1978,7 +2075,7 @@ export default {
             this.formVeInformation.efileIdCode = this.imgIdList.join(",");
             // 车型信息
             this.formVehicleType.brandName = result.data.data.brandId;
-            this.getVehicleType();
+            this.getVehicleType1();
             this.formVehicleType.vehicleTypeName = result.data.data.typeId;
             this.typeId = result.data.data.typeId;
             // console.log(this.formVehicleType.vehicleTypeName)
@@ -1986,7 +2083,7 @@ export default {
             // setTimeout(()=>{
             //   that.getVehicleTypeDetails();
             // },300)
-            
+
             // 运营信息
             this.formVeInformation.enterpriseId =
               result.data.data.enterpriseId;
@@ -2030,30 +2127,12 @@ export default {
             type: "error",
           });
         });
-      this.getCompany();
+      this.getCompany1();
       this.getSalesman();
       this.getVehiclePlace();
       this.getASData();
       this.getInsuranceData();
     }
-    axios({
-      //品牌
-      method: "post",
-      url: "/vehicle-service/brandInfo/brandInfoListQuery",
-      headers: this.headers,
-    })
-      .then((result) => {
-        // console.log(result.data);
-        this.brandNameOptions = result.data.data;
-      })
-      .catch((err) => {
-        console.error(err);
-        this.$message({
-          message: err.response.data.message,
-          center: true,
-          type: "error",
-        });
-      });
   },
   computed: {
     // 计算国际化标题和按钮
@@ -2167,32 +2246,6 @@ export default {
   text-align: right;
   color: #333333;
 }
-/* .nav {
-  width: 25%;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  float: left;
-}
-.nav .el-input {
-  width: 170px;
-}
-.nav .el-input__inner {
-  width: 170px;
-}
-.nav >>> .el-input--suffix {
-  width: 170px;
-}
-.nav span {
-  color: #333333;
-  font-family: Microsoft YaHei;
-  font-weight: regular;
-  font-size: 12px;
-  line-height: 18px;
-  margin-left: 20px;
-  margin-right: 5px;
-} */
-
 .formNav {
   width: 100%;
   height: calc(100% - 60px);

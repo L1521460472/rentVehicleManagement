@@ -84,7 +84,7 @@
             <el-table-column prop="phoneNumber" label="用户账号/手机号" width="120" show-overflow-tooltip></el-table-column>
             <el-table-column prop="userName" label="用户姓名" width="110" show-overflow-tooltip></el-table-column>
             <el-table-column prop="reportInfo" label="上传信息" width="90" show-overflow-tooltip></el-table-column>
-            <el-table-column prop="violators" label="上传附件" width="140" show-overflow-tooltip>
+            <el-table-column prop="violators" label="上传附件" width="170" show-overflow-tooltip>
               <template slot-scope="scope">
                 <el-image v-for="item in scope.row.pefileUrls" :key='item.id' style="width: 16px; height: 16px" :src="item.efileAddr" :preview-src-list="[item.efileAddr]"></el-image>
                 <!-- <el-image v-for="item in scope.row.pefileUrls" @click="lookImageAction(item.efileAddr)" :key='item.id' style="width: 16px; height: 16px" :src="item.efileAddr" ></el-image> -->
@@ -109,7 +109,7 @@
         </div>
         <!-- 处理 -->
         <el-dialog class="dealWithToast" :visible.sync="dealWithToast" width="500px" title="处理备注">
-          <el-input type="textarea" :autosize="{ minRows: 5, maxRows: 7}" placeholder="输入处理备注" v-model="processingNote"></el-input>
+          <el-input type="textarea" :autosize="{ minRows: 5, maxRows: 7}" maxlength="300" show-word-limit placeholder="输入处理备注" v-model="processingNote"></el-input>
           <span slot="footer" class="dialog-footer">
               <el-button size="small" @click="dealWithToast = false">取 消</el-button>
               <el-button size="small" type="primary" @click="dealWithConfirm">确 定</el-button>

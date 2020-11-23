@@ -138,7 +138,7 @@
                 <span :class="disabled ? 'disabled_txt':'upload_txt'">身份证反面</span>
               </el-upload>
             </div>
-            <div class="attachmentRight">
+            <div class="attachmentRight" :class="showCompany ? '':'closeCompany'">
               <el-upload
                 class="upload"
                 action="/vehicle-service/efileInfo/uploadImgFile?fileType=1"

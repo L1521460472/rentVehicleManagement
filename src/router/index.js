@@ -245,6 +245,12 @@ const routes = [
         name: 'payFee',
         component: () => import('../components/businessProcess/contractProduce/payFee.vue')
       },
+      // 重新缴费提交
+      {
+        path:'/repayFee',
+        name: 'repayFee',
+        component: () => import('../components/businessProcess/contractProduce/repayFee.vue')
+      },
       // 缴费记录
       {
         path:'/paymentRecord',
@@ -436,6 +442,48 @@ const routes = [
         path:'/remindProcess',
         name: 'remindProcess',
         component: () => import('../components/remind/remindProcess.vue')
+      },
+      //修改密码
+      {
+        path:'/changePassword',
+        name: 'changePassword',
+        component: () => import('../components/changePassword.vue')
+      } ,
+      //推荐车型设置
+      {
+        path:'/recommendVehicleType',
+        name: 'recommendVehicleType',
+        component: () => import('../components/recommendVehicleType.vue')
+      },
+      //个人中心
+      {
+        path:'/myCenter',
+        name: 'myCenter',
+        component: () => import('../components/myCenter.vue')
+      },
+      //账号管理
+      {
+        path:'/accountManager',
+        name: 'accountManager',
+        component: () => import('../components/accountManager/accountManager.vue')
+      },
+      //角色配置
+      {
+        path:'/roleSetting',
+        name: 'roleSetting',
+        component: () => import('../components/accountManager/roleSetting.vue')
+      },
+      //账号管理-新增用户
+      {
+        path:'/accountManagerAddUser',
+        name: 'accountManagerAddUser',
+        component: () => import('../components/accountManager/accountManagerAddUser.vue')
+      },
+      //账号管理-新增角色
+      {
+        path:'/roleaddFunSetting',
+        name: 'roleaddFunSetting',
+        component: () => import('../components/accountManager/roleaddFunSetting.vue')
       }
     ]
   }

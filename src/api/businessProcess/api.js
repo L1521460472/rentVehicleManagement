@@ -94,6 +94,10 @@ export const payFeeDetail = (params,headers) => {//跳转缴费提交页面
     return axios.get('/vehicle-service/leaseContractInfo/goLeaseContractInfoRentCollectionPage',
 {params:params,headers:headers}).then(res => res.data)};
 
+export const repayFeeDetail = (params,headers) => {//跳转重新缴费提交页面
+    return axios.get('/vehicle-service/rentCollectionInfo/goPayCostResubmit',
+{params:params,headers:headers}).then(res => res.data)};
+
 export const submitPayment = (params,headers) => {//缴费提交
     return axios.post('/vehicle-service/leaseContractInfo/leaseContractInfoSubmitPayment',
 params,{headers}).then(res => res.data)};

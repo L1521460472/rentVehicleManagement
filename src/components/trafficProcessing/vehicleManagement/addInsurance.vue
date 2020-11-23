@@ -22,13 +22,13 @@
             <el-form-item label="品牌车型">
               <el-input class="formItem" size="small" disabled maxlength="100" v-model="form.brand"></el-input>
             </el-form-item>
-            
+
             <el-form-item
               label="交强险保单号"
               prop="policyNo0"
               :rules="[
                 {
-                  required: true,
+                  required: this.showredstar,
                   message: international.global.global_contNotEmpty,
                   trigger: 'blur',
                 },
@@ -47,7 +47,7 @@
               prop="policyStartDate0"
               :rules="[
                 {
-                  required: true,
+                  required: this.showredstar,
                   message: international.global.global_contNotEmpty,
                   trigger: 'blur',
                 },
@@ -68,7 +68,7 @@
               prop="policyEndDate0"
               :rules="[
                 {
-                  required: true,
+                  required: this.showredstar,
                   message: international.global.global_contNotEmpty,
                   trigger: 'blur',
                 },
@@ -87,13 +87,6 @@
             <el-form-item
               label="交强险保费"
               prop="premium0"
-              :rules="[
-                {
-                  required: true,
-                  message: international.global.global_contNotEmpty,
-                  trigger: 'blur',
-                },
-              ]"
             >
               <el-input
                 class="formItem"
@@ -108,7 +101,7 @@
               prop="companyName0"
               :rules="[
                 {
-                  required: true,
+                  required: this.showredstar,
                   message: international.global.global_contNotEmpty,
                   trigger: 'blur',
                 },
@@ -136,14 +129,6 @@
             <el-form-item
               label="附加照片"
               class="formItem"
-               prop="efileIdCode0"
-              :rules="[
-                {
-                  required: true,
-                  message: international.global.global_contNotEmpty,
-                  trigger: 'blur',
-                },
-              ]"
             >
               <el-upload
                 class="upload"
@@ -174,7 +159,7 @@
               prop="policyNo1"
               :rules="[
                 {
-                  required: true,
+                  required: this.showredstar,
                   message: international.global.global_contNotEmpty,
                   trigger: 'blur',
                 },
@@ -193,7 +178,7 @@
               prop="policyStartDate1"
               :rules="[
                 {
-                  required: true,
+                  required: this.showredstar,
                   message: international.global.global_contNotEmpty,
                   trigger: 'blur',
                 },
@@ -214,7 +199,7 @@
               prop="policyEndDate1"
               :rules="[
                 {
-                  required: true,
+                  required: this.showredstar,
                   message: international.global.global_contNotEmpty,
                   trigger: 'blur',
                 },
@@ -233,13 +218,6 @@
             <el-form-item
               label="商业险保费"
               prop="premium1"
-              :rules="[
-                {
-                  required: true,
-                  message: international.global.global_contNotEmpty,
-                  trigger: 'blur',
-                },
-              ]"
             >
               <el-input
                 class="formItem"
@@ -254,7 +232,7 @@
               prop="companyName1"
               :rules="[
                 {
-                  required: true,
+                  required: this.showredstar,
                   message: international.global.global_contNotEmpty,
                   trigger: 'blur',
                 },
@@ -282,13 +260,6 @@
             <el-form-item
               label="续保处理人"
               prop="dealMan"
-              :rules="[
-                {
-                  required: true,
-                  message: international.global.global_contNotEmpty,
-                  trigger: 'blur',
-                },
-              ]"
             >
               <el-input
                 class="formItem"
@@ -301,14 +272,6 @@
             <el-form-item
               label="附加照片"
               class="formItem"
-              prop="efileIdCode1"
-              :rules="[
-                {
-                  required: true,
-                  message: international.global.global_contNotEmpty,
-                  trigger: 'blur',
-                },
-              ]"
             >
               <el-upload
                 class="upload"
@@ -379,6 +342,7 @@ export default {
         insploinfoId0: "",
         insploinfoId1: "",
       },
+      showredstar:true,//控制查看不现实红星
       isShow: false,
       imgIdList0: [], //图片id
       imgIdList1: [], //图片id
@@ -478,25 +442,25 @@ export default {
     },
     editConfirm() {
       //确定修改
-      
-      if(this.form.efileIdCode0.length == 0)
-      {
-        this.$message({
-          type: "error",
-          message: "请上传强保险图片",
-          center: true,
-        });
-        return;
-      }
-      if( this.form.efileIdCode1.length == 0 )
-      {
-        this.$message({
-          type: "error",
-          message: "请上传商业险图片",
-          center: true,
-        });
-        return;
-      }
+
+      // if(this.form.efileIdCode0.length == 0)
+      // {
+      //   this.$message({
+      //     type: "error",
+      //     message: "请上传强保险图片",
+      //     center: true,
+      //   });
+      //   return;
+      // }
+      // if( this.form.efileIdCode1.length == 0 )
+      // {
+      //   this.$message({
+      //     type: "error",
+      //     message: "请上传商业险图片",
+      //     center: true,
+      //   });
+      //   return;
+      // }
 
       this.form.id = this.$route.query.id;
       axios({
@@ -674,6 +638,7 @@ export default {
       this.form.efileIdCode1 = "";
       this.form.dealMan = "";
     } else if (this.$route.query.form == "look") {
+      this.showredstar=false;
       this.showButton = false;
       this.showMsg = "查看 保险信息";
       this.isShow = true;
