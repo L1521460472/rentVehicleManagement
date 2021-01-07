@@ -1,9 +1,14 @@
 <template>
   <div id="home">
+    <!--强制修改密码 -->
+    <el-dialog title="修改密码" :visible.sync="dialogTableVisible" :show-close="false" :close-on-press-escape="false"
+    :close-on-click-modal="false">
+     <changePassword :iscomponent="true"></changePassword>
+    </el-dialog>
     <el-container>
       <el-header>
         <div class="top-bar">
-          <div class="logo">
+          <div class="logo" @click="jumptodefualtPage">
             <h1>
               <img :src="$store.state.logoAddress" alt="" v-if="$store.state.logoAddress">
               <img src="../assets/logo.png" alt="" v-else>
@@ -22,97 +27,64 @@
               <el-button type="text" class='setting-popover-item' @click="changePassword">修改密码</el-button>
               <el-button type="text" class="setting-popover-item" @click="logout">退出</el-button>
             </el-popover>
-            <el-button type="text" v-popover:setting-btn-popover class="logout"> {{userName}} <i class="el-icon-arrow-down"/></el-button>
+            <el-button type="text" v-popover:setting-btn-popover class="logout setting-popover-item"> {{userName}} <i class="el-icon-arrow-down"/></el-button>
           </div>
         </div>
       </el-header>
       <el-container style="height: calc(100% - 48px);">
         <el-aside width="null">
-          <el-menu
-            :default-active="$route.path"
-            class="el-menu-vertical-demo"
-            unique-opened
-            :default-openeds="openeds_value"
-            @open="handleOpen"
-            @close="handleClose"
-            :collapse="isCollapse"
-            background-color="#FAFAFA"
-            text-color="#333333"
-            active-text-color="#368CFE"
-            router
-          >
+          <el-menu :default-active="$route.path" class="el-menu-vertical-demo" unique-opened :default-openeds="openeds_value"
+            @open="handleOpen" @close="handleClose" :collapse="isCollapse" background-color="#FAFAFA"
+            text-color="#333333" active-text-color="#368CFE" router >
             <!-- 一级菜单 -->
             <template v-for="item in menuItems">
-              <el-submenu
-                v-if="item.children && item.children.length && item.show"
-                :index="item.url"
-                :key="item.id"
-              >
+              <el-submenu v-if="item.children && item.children.length && item.show" :index="item.url" :key="item.id">
                 <template slot="title">
                   <i :class="'iconfont ' + item.icon"></i>
                   <span>{{ item.name }}</span>
                 </template>
+
                 <!-- 二级菜单 -->
                 <template v-for="subItem in item.children" @click="addTable(subItem)">
-                  <el-submenu
-                    v-if="subItem.children && subItem.children.length && subItem.show"
-                    :index="subItem.url"
-                    :key="subItem.id"
-                  >
+                  <el-submenu v-if="subItem.children && subItem.children.length && subItem.show" :index="subItem.url" :key="subItem.id">
                     <template slot="title">
                       <i :class="'iconfont ' + subItem.icon"></i>
                       <span>{{ subItem.name }}</span>
                     </template>
 
                     <!-- 三级菜单 -->
-                    <el-menu-item
-                      class="threeMenu"
-                      v-for="threeItem in subItem.children"
-                      :index="threeItem.url"
-                      :key="threeItem.id"
-                      @click="addTable(threeItem)"
-                      ><i :class="'iconfont ' + threeItem.icon"></i
-                      ><span slot="title">{{
-                        threeItem.name
-                      }}</span></el-menu-item
-                    >
+                    <el-menu-item class="threeMenu" v-for="threeItem in subItem.children"
+                     :index="threeItem.url" :key="threeItem.id" @click="addTable(threeItem)">
+                      <i :class="'iconfont ' + threeItem.icon"></i>
+                      <span slot="title">{{ threeItem.name }}</span>
+                    </el-menu-item>
                   </el-submenu>
 
-                  <el-menu-item v-else :index="subItem.url" :key="subItem.id" @click="addTable(subItem)"
-                    ><i :class="'iconfont ' + subItem.icon"></i
-                    ><span slot="title">{{ subItem.name }}</span></el-menu-item
-                  >
+                  <el-menu-item v-else :index="subItem.url" :key="subItem.id" @click="addTable(subItem)">
+                    <i :class="'iconfont ' + subItem.icon"></i>
+                    <span slot="title">{{ subItem.name }}</span>
+                  </el-menu-item>
                 </template>
+
               </el-submenu>
 
-              <el-menu-item v-else :index="item.url" :key="item.id"
-                ><i :class="'iconfont ' + item.icon"></i
-                ><span slot="title">{{ item.name }}</span></el-menu-item
-              >
+              <el-menu-item v-else :index="item.url" :key="item.id">
+                <i :class="'iconfont ' + item.icon"></i>
+                <span slot="title">{{ item.name }}</span>
+              </el-menu-item>
             </template>
           </el-menu>
         </el-aside>
         <el-main>
           <div class="mainHerder">
-            <el-tabs
-              v-model="editableTabsValue"
-              type="card"
-              @tab-click="tabClick"
-              closable
-              @tab-remove="removeTab"
-            >
-              <el-tab-pane
-                v-for="(item, index) in editableTabs"
-                :key="item.name"
-                :label="item.title"
-                :name="item.name"
-              >
+            <el-tabs v-model="editableTabsValue" type="card" @tab-click="tabClick" closable @tab-remove="removeTab">
+              <el-tab-pane v-for="(item, index) in editableTabs" :key="item.name" :label="item.title" :name="item.name">
               </el-tab-pane>
             </el-tabs>
           </div>
           <keep-alive
           :include=includeList
-          exclude="addOperationUser,addPlatformUser,addDepartment,addOrganization,addOperation,addFunSetting,addAppUserSetting,addUserArchives,addDataPermission,editDataPermission,addillegal,dealWithillegal,auditillegal,addCustomerInfo,addOrder,auditOrder,addInfo,addVehicleMaintenance,addVehicleManagement,addInsurance,addAS,planRegister,checkContract,payFee,planChange,planAudit,planLook,addAccount,audit,lookContractPayment,advancesReceived,backVehicle,backVehicleAudit,lookVehicle,vehicleMonitoring,backLookVehicle,mainWorkDesk,vehicleWorkDesk,businessWorkDesk,financialWorkDesk" v-if="isKeep">
+          exclude="addOperationUser,addPlatformUser,addDepartment,addOrganization,addOperation,addFunSetting,addAppUserSetting,addUserArchives,addDataPermission,editDataPermission,addillegal,dealWithillegal,auditillegal,addCustomerInfo,addOrder,auditOrder,addInfo,addVehicleMaintenance,addVehicleManagement,addInsurance,addAS,planRegister,checkContract,payFee,planChange,planAudit,planLook,addAccount,audit,lookContractPayment,advancesReceived,backVehicle,backVehicleAudit,lookVehicle,vehicleMonitoring,backLookVehicle,mainWorkDesk,vehicleWorkDesk,businessWorkDesk,financialWorkDesk,rentParameter" v-if="isKeep">
             <router-view v-if="isRouterAlive" />
           </keep-alive>
         </el-main>
@@ -125,8 +97,12 @@
 import axios from "axios";
 import { getCookie, setCookie, removeCookie, getMenuBtnList,openNewTab } from "../public";
 import { mapState, mapActions, mapMutations } from "vuex";
+import changePassword from '../components/changePassword.vue'
 export default {
   name: "home",
+  components:{
+    changePassword
+  },
   data() {
     return {
       value: "zh-cn",
@@ -147,7 +123,8 @@ export default {
         // },
       ],
       tabIndex: 2,
-      includeList:[]//需要缓存的组件名
+      includeList:[],//需要缓存的组件名
+      dialogTableVisible:false
     };
   },
   methods: {
@@ -164,12 +141,8 @@ export default {
         },
       })
         .then((result) => {
-          // console.log(result.data);
           this.menuItems = result.data.data;
-          // this.setMenuData({menuData: result.data.data});
-          // this.updateMenuData(result.data.data)
           this.$store.state.menuData = result.data.data;
-          // openNewTab(this, result.data.data[0].children[0].children[0].name, result.data.data[0].children[0].children[0].url);
         })
         .catch((err) => {
           this.$message({
@@ -313,6 +286,14 @@ export default {
     //个人中心
     jumptomycenter(){
         openNewTab(this,"个人中心","/myCenter")
+    },
+    jumptodefualtPage(){
+        if(this.$store.state.defualtPage){
+          openNewTab(this,this.$store.state.defualtPage.name,this.$store.state.defualtPage.url)
+        }
+        else{
+           openNewTab(this,"个人中心","/myCenter")
+        }
     }
   },
   beforeMount() {
@@ -324,10 +305,18 @@ export default {
     this.$store.commit("changeValue", this.value);
     // this.$router.push("/contractRegistration");
     this.includeList.push(this.$route.name);
+    this.$nextTick(()=>{
+      if(this.isUpdatePwdFlag==1){
+        this.dialogTableVisible=true
+      }
+    })
   },
   computed:{
     openNewTab:function(){
       return this.$store.state.openNewTab;
+    },
+    isUpdatePwdFlag:function(){
+      return this.$store.state.isUpdatePwdFlag
     }
   },
   watch: {
@@ -472,6 +461,7 @@ li {
   width: 100px !important;
 } */
 .logo {
+  cursor: pointer;
   width: 200px;
   box-sizing: border-box;
   padding-left: 20px;
@@ -526,6 +516,9 @@ li {
   display: block !important;
   line-height: 10px !important;
   /* border: 1px solid #212121 !important; */
+}
+.setting-popover-item span{
+  font-size: 14px;
 }
 .el-popover .el-button--text {
   color: #333 !important;

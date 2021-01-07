@@ -3,8 +3,12 @@
     id="header"
     v-loading="loading"
   >
-    <div class="header">
+    <div class="header scoped">
       <div class="headerTop">
+      <div class="nav">
+          <span class="demonstration">所属公司</span>
+          <company v-model="enterpriseId"></company>
+      </div>
         <div class="nav">
           <span class="demonstration">订单编号</span>
           <el-input v-model="orderNo" size="small" maxlength="50" placeholder></el-input>
@@ -140,7 +144,7 @@
             </el-upload>
       </div>
       <div class="footerTable">
-        <div class="footer_informatian">
+        <div class="">
           <el-table
             :data="dataList"
             border
@@ -155,6 +159,7 @@
             <el-table-column prop width="60" label="序号" align="center">
               <template slot-scope="scope">{{ scope.$index + (currentPage - 1) * pageSize + 1 }}</template>
             </el-table-column>
+            <el-table-column prop="enterpriseName" label="所属公司" width="140" show-overflow-tooltip></el-table-column>
             <el-table-column prop="orderNo" width="140" label="订单编号" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="brandName" width="110" label="品牌" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="vehicleTypeName" width="110" label="车型" :show-overflow-tooltip="true"></el-table-column>
@@ -198,10 +203,15 @@
 <script>
 import axios from "axios";
 import { getCookie, dateToString, getMenuBtnList ,formatJE} from "../../public";
+import company from "@/components/aacommon/getEnterpriseBox.vue"
 export default {
   name: "contractRegistration",
+    components:{
+      company
+    },
   data() {
     return {
+      enterpriseId:"",
       loading: false,
       orderNo: "", //订单编号
       customerContacts: "", //联系人姓名
@@ -330,6 +340,7 @@ export default {
           userId: this.userId,
           vehicleNo: this.vehicleNo,
           currentPage: this.currentPage,
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           pageSize: val,
         },
       })
@@ -368,6 +379,7 @@ export default {
         url: "/vehicle-service/leaseContractInfo/queryPageLeaseContractInfo",
         headers: this.headers,
         data: {
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           auditStatus: this.auditStatus,
           contactsPhoneNumber: this.contactsPhoneNumber,
           contractCode: this.contractCode,
@@ -425,13 +437,13 @@ export default {
         url: "/vehicle-service/leaseContractInfo/queryPageLeaseContractInfo",
         headers: this.headers,
         data: {
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           auditStatus: this.auditStatus,
           contactsPhoneNumber: this.contactsPhoneNumber,
           contractCode: this.contractCode,
           contractStatus: this.contractStatus,
           customerContacts: this.customerContacts,
           endContractMode: this.endContractMode,
-          enterpriseIdList: null,
           id: null,
           type:this.type,
           orderNo: this.orderNo,
@@ -474,6 +486,7 @@ export default {
         });
     },
     reset() {
+      this.enterpriseId=""
       this.initData();
       this.auditStatus = "";
       this.contactsPhoneNumber = "";
@@ -619,7 +632,7 @@ export default {
           contractStatus: this.contractStatus,
           customerContacts: this.customerContacts,
           endContractMode: this.endContractMode,
-          enterpriseIdList: null,
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           id: null,
           type:this.type,
           orderNo: this.orderNo,
@@ -675,13 +688,13 @@ export default {
         url: "/vehicle-service/leaseContractInfo/queryPageLeaseContractInfo",
         headers: this.headers,
         data: {
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           auditStatus: null,
           contactsPhoneNumber: null,
           contractCode: null,
           contractStatus: null,
           customerContacts: null,
           endContractMode: null,
-          enterpriseIdList: [],
           id: null,
           orderNo: null,
           rentEndDateStr: null,
@@ -798,7 +811,6 @@ export default {
   box-sizing: border-box;
   overflow: hidden;
   /* padding-bottom: 15px; */
-  margin-bottom: 16px;
 }
 .demonstration {
   display: inline-block;
@@ -913,7 +925,7 @@ export default {
   border: 1px solid rgba(54, 140, 254, 0.5);
 }
 /* .footerBottom .el-button:hover {
-  color: #c0c4cc !important;  
+  color: #c0c4cc !important;
 } */
 .active {
   color: #368cfe !important;

@@ -1,6 +1,6 @@
 <template>
   <div id="dealWithillegal">
-    <div class="header">
+    <div class="header scoped">
       <span>违章处理</span>
     </div>
     <div class="footer" v-if="international.title">

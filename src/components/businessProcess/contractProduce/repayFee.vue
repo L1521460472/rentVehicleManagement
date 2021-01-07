@@ -1,6 +1,6 @@
 <template>
   <div id="payFee">
-    <div class="header">
+    <div class="header scoped">
       <span>审核操作</span>
     </div>
     <div class="footer" v-if="international.title">

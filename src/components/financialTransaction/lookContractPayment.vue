@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-    <div class="header">
+    <div class="header scoped">
       <span>{{ showMsg }}</span>
     </div>
     <div class="footer">

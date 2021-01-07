@@ -2,7 +2,7 @@
   <div id="header">
     <div class="userRight">
       <div class="header" v-if="international.global">
-        <div class="headerTop">
+        <div class="headerTop scoped">
           <div class="nav">
             <span>所属公司</span>
             <el-select  clearable v-model="enterpriseId" size="small" placeholder="请选择">
@@ -57,7 +57,7 @@
            size="small"> <i class="iconfont icon-gongneng-"></i>分配角色</el-button>
         </div>
         <div class="footerTable">
-          <div class="footer_informatian" v-if="international.field">
+          <div class="" v-if="international.field">
             <el-table ref="multipleTable" size="small" border stripe
               :data="tableData" :header-cell-style="{ background: '#F5F7FA', color: '#333333' }"
               tooltip-effect="dark" style="width: 100%;" @selection-change="handleSelectionChange"

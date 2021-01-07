@@ -1,6 +1,10 @@
 <template>
   <div class="box-container" v-loading="loading">
-    <div class="box">
+    <div style="text-align: right;margin-right: -17px;">
+      <span style="font-size: 14px;">所属公司</span>
+      <company v-model="searchdata.enterpriseId"></company>
+    </div>
+    <div class="box" style="margin-top: 2px;">
       <div class="box-title">工作进度</div>
       <div class="box-item">
         <div class="box-item-tab" style="width: calc(100% - 100px)">
@@ -90,7 +94,7 @@
         </div>
         <div class="box-item-col">
           <div class="box-item-label">
-            <div class="box-item-label-left" style="background: #e4daec;color: #7F40B1;">保障/维修车辆</div>
+            <div class="box-item-label-left" style="background: #e4daec;color: #7F40B1;">保险/维修车辆</div>
             <div class="box-item-label-right" style="color: #7F40B1;"> {{guaRepairVehicleNumbers}} </div>
           </div>
         </div>
@@ -177,32 +181,41 @@
     openNewTab
   } from '../../public.js'
   import axios from 'axios';
+  import company from "@/components/aacommon/getEnterpriseBox.vue"
   export default {
     name: 'vehicleWorkDesk',
+    components:{
+      company
+    },
     data() {
       return {
+        searchdata:{
+          "enterpriseId":getCookie("UserEnterpriseId"),
+          "years": "",
+           "type":"1"
+        },
         loading:true,
         searchVal: '',
         notifylist: [],
-        accidentVehicleNumbers: '', //事故/出险车辆
-        forRentVehicleNumbers: '', //待租车
-        guaRepairVehicleNumbers: '', //保障/维修车辆
-        lateLockVehicleNumbers: '', //逾期锁车
-        maintainVehicleNumbers: '', //保养车辆
-        normalVehicleNumbers: '', //正常状态
-        offlineVehicleNumbers: '', //设备离线
-        onRentVehicleNumbers: '', //在租车
-        onlineVehicleNumbers: '', //设备在线
-        renOfInsVehicleNumbers: '', //需续保车辆
-        repairVehicleNumbers: '', //维修状态
-        reportRecordNoHandleNumbers: '', //一键上传待处理
-        spareVehicleNumbers: '', //备用车
-        vehicleOnlineRate: '', //车辆在线率
-        vehicleRegisterNumbers: '', //车辆登记
-        vehicleRepairRate: '', //车辆维修率
-        vehicleUseRate: '', //车辆利用率
-        violationVehicleNumbers: '', //违章车辆
-        yearlyInsVehicleNumbers: '', //需年检车辆
+        accidentVehicleNumbers: '0', //事故/出险车辆
+        forRentVehicleNumbers: '0', //待租车
+        guaRepairVehicleNumbers: '0', //保障/维修车辆
+        lateLockVehicleNumbers: '0', //逾期锁车
+        maintainVehicleNumbers: '0', //保养车辆
+        normalVehicleNumbers: '0', //正常状态
+        offlineVehicleNumbers: '0', //设备离线
+        onRentVehicleNumbers: '0', //在租车
+        onlineVehicleNumbers: '0', //设备在线
+        renOfInsVehicleNumbers: '0', //需续保车辆
+        repairVehicleNumbers: '0', //维修状态
+        reportRecordNoHandleNumbers: '0', //一键上传待处理
+        spareVehicleNumbers: '0', //备用车
+        vehicleOnlineRate: '0', //车辆在线率
+        vehicleRegisterNumbers: '0', //车辆登记
+        vehicleRepairRate: '0', //车辆维修率
+        vehicleUseRate: '0', //车辆利用率
+        violationVehicleNumbers: '0', //违章车辆
+        yearlyInsVehicleNumbers: '0', //需年检车辆
         headers: {
           Authorization: getCookie("HTBD_PASS"),
           language: this.$store.state.language,
@@ -212,32 +225,35 @@
     methods: {
       initData() {
         axios({
-          method: 'get',
+          method: 'post',
           url: '/vehicle-service/vehicleManagement/getData',
           headers: this.headers,
+          data:this.searchdata
         }).then((result) => {
           // console.log(result.data);
           this.loading = false;
-          this.accidentVehicleNumbers = result.data.data.accidentVehicleNumbers; //事故/出险车辆
-          this.forRentVehicleNumbers = result.data.data.forRentVehicleNumbers; //待租车
-          this.guaRepairVehicleNumbers = result.data.data.guaRepairVehicleNumbers; //保障/维修车辆
-          this.lateLockVehicleNumbers = result.data.data.lateLockVehicleNumbers; //逾期锁车
-          this.maintainVehicleNumbers = result.data.data.maintainVehicleNumbers; //保养车辆
-          this.normalVehicleNumbers = result.data.data.normalVehicleNumbers; //正常状态
-          this.offlineVehicleNumbers = result.data.data.offlineVehicleNumbers; //设备离线
-          this.onRentVehicleNumbers = result.data.data.onRentVehicleNumbers; //在租车
-          this.onlineVehicleNumbers = result.data.data.onlineVehicleNumbers; //设备在线
-          this.renOfInsVehicleNumbers = result.data.data.renOfInsVehicleNumbers; //需续保车辆
-          this.repairVehicleNumbers = result.data.data.repairVehicleNumbers; //维修状态
-          this.reportRecordNoHandleNumbers = result.data.data.reportRecordNoHandleNumbers; //一键上传待处理
-          this.spareVehicleNumbers = result.data.data.spareVehicleNumbers; //备用车
-          this.vehicleOnlineRate = result.data.data.vehicleOnlineRate; //车辆在线率
-          this.vehicleRegisterNumbers = result.data.data.vehicleRegisterNumbers; //车辆登记
-          this.vehicleRepairRate = result.data.data.vehicleRepairRate; //车辆维修率
-          this.vehicleUseRate = result.data.data.vehicleUseRate; //车辆利用率
-          this.violationVehicleNumbers = result.data.data.violationVehicleNumbers; //违章车辆
-          this.yearlyInsVehicleNumbers = result.data.data.yearlyInsVehicleNumbers; //需年检车辆
-          this.notifylist = result.data.data.page.records;
+          if(result.data.data){
+            this.accidentVehicleNumbers = result.data.data.accidentVehicleNumbers; //事故/出险车辆
+            this.forRentVehicleNumbers = result.data.data.forRentVehicleNumbers; //待租车
+            this.guaRepairVehicleNumbers = result.data.data.guaRepairVehicleNumbers; //保障/维修车辆
+            this.lateLockVehicleNumbers = result.data.data.lateLockVehicleNumbers; //逾期锁车
+            this.maintainVehicleNumbers = result.data.data.maintainVehicleNumbers; //保养车辆
+            this.normalVehicleNumbers = result.data.data.normalVehicleNumbers; //正常状态
+            this.offlineVehicleNumbers = result.data.data.offlineVehicleNumbers; //设备离线
+            this.onRentVehicleNumbers = result.data.data.onRentVehicleNumbers; //在租车
+            this.onlineVehicleNumbers = result.data.data.onlineVehicleNumbers; //设备在线
+            this.renOfInsVehicleNumbers = result.data.data.renOfInsVehicleNumbers; //需续保车辆
+            this.repairVehicleNumbers = result.data.data.repairVehicleNumbers; //维修状态
+            this.reportRecordNoHandleNumbers = result.data.data.reportRecordNoHandleNumbers; //一键上传待处理
+            this.spareVehicleNumbers = result.data.data.spareVehicleNumbers; //备用车
+            this.vehicleOnlineRate = result.data.data.vehicleOnlineRate; //车辆在线率
+            this.vehicleRegisterNumbers = result.data.data.vehicleRegisterNumbers; //车辆登记
+            this.vehicleRepairRate = result.data.data.vehicleRepairRate; //车辆维修率
+            this.vehicleUseRate = result.data.data.vehicleUseRate; //车辆利用率
+            this.violationVehicleNumbers = result.data.data.violationVehicleNumbers; //违章车辆
+            this.yearlyInsVehicleNumbers = result.data.data.yearlyInsVehicleNumbers; //需年检车辆
+            this.notifylist = result.data.data.page.records;
+          }          
         }).catch(err => {
           console.log(err)
         })
@@ -322,6 +338,15 @@
       // for(let i=1;i<=6;++i){
       //   this.notifylist.push({order:i,title:'合同到期提醒',content:'合同TFA23423442到期，还有30天',time:'2020-09-02 14:32'})
       // }
+    },
+    watch:{
+      searchdata:{
+        handler(){
+          this.initData()
+        },
+        immediate:true,
+        deep:true
+      }
     }
   }
 </script>

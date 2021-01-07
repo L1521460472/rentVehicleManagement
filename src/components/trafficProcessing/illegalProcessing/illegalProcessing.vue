@@ -2,6 +2,13 @@
   <div id="illegalProcessing" v-loading="loading">
     <div class="headerTop">
       <div class="nav">
+        <span class="demonstration" style="margin-right: 12px;">&nbsp;&nbsp;&nbsp;新增来源</span>
+        <el-select v-model="newSource" clearable="" size="small" placeholder=''>
+          <el-option value="0" label="手动"></el-option>
+          <el-option value="1" label="自动"></el-option>
+        </el-select>
+      </div>
+      <div class="nav">
         <span class="demonstration">所属公司</span>
         <el-select filterable clearable size="small"  v-model="belongCompany" placeholder=''>
           <el-option
@@ -45,10 +52,10 @@
       <div class="nav">
         <span class="demonstration">处理用时</span>
         <el-select clearable size="small" v-model="handleTime" placeholder=''>
-          <el-option 
-            v-for="item in handleTimeList" 
-            :key="item.id" 
-            :label="item.value" 
+          <el-option
+            v-for="item in handleTimeList"
+            :key="item.id"
+            :label="item.value"
             :value="item.id"
           ></el-option>
         </el-select>
@@ -56,10 +63,10 @@
       <div class="nav">
         <span class="demonstration">处理来源</span>
         <el-select clearable size="small" v-model="handleSource" placeholder=''>
-          <el-option 
-            v-for="item in handleSourceList" 
-            :key="item.id" 
-            :label="item.value" 
+          <el-option
+            v-for="item in handleSourceList"
+            :key="item.id"
+            :label="item.value"
             :value="item.id"
           ></el-option>
         </el-select>
@@ -85,7 +92,7 @@
       <div class="top">
         <el-button size="small" @click="addAction" v-if="addBtn">
           <i class="iconfont icon-add"></i>
-          新增
+          手动新增
         </el-button>
         <el-button size="small" v-if="editBtn" :class="{ 'active': !isDisable }" :disabled="isDisable" @click="editAction">
           <i class="iconfont icon-edit"></i>
@@ -115,17 +122,11 @@
       </div>
       <div class="bottom">
         <div class="footerTable">
-          <el-table
-            border
-            stripe
-            :header-cell-style="{background:'#F5F7FA',color:'#333333'}"
-            size="small"
-            :data="tableData"
-            @selection-change="handleSelectionChange"
-            :height="tableHeight"
-            style="width: 100%; height: 100%;"
-          >
+          <el-table border stripe :header-cell-style="{background:'#F5F7FA',color:'#333333'}"
+            size="small" :data="tableData" @selection-change="handleSelectionChange" :height="tableHeight"
+            style="width: 100%; height: 100%;" >
             <el-table-column type="selection" align="center" width="60"></el-table-column>
+            <el-table-column prop="newSource" label="新增来源"></el-table-column>
             <el-table-column prop="enterpriseName" label="所属公司" width="120" show-overflow-tooltip></el-table-column>
             <el-table-column prop="vehicleNo" label="车牌号码" width="90" show-overflow-tooltip></el-table-column>
             <el-table-column prop="contractCode" label="合同编号" width="140" show-overflow-tooltip></el-table-column>
@@ -178,7 +179,7 @@
             <el-carousel-item v-for="item in imageUrlList" :key="item.id">
               <img class="imgList" :src="item.efileAddr" alt="" srcset="">
             </el-carousel-item>
-          </el-carousel>        
+          </el-carousel>
         </el-dialog>
       </div>
     </div>
@@ -197,6 +198,7 @@ export default {
       currentPage: 1, //当前页数
       pageSize: 10, //每页长度
       total: 0, //数据总条数
+      newSource:null,
       belongCompany:'',
       idCar:'',
       contractNumber:'',
@@ -263,7 +265,7 @@ export default {
       dealWithBtn:false,//处理按钮是否有权限显示
       auditBtn:false,//审核按钮是否有权限显示
       checkBtn:false,//查看按钮是否有权限显示
-      tableHeight: window.innerHeight - 400 +'',
+      tableHeight: window.innerHeight - 445 +'',
       headers: {
         Authorization: getCookie("HTBD_PASS"),
         language: this.$store.state.language,
@@ -284,7 +286,8 @@ export default {
         violationTimeEndStr:this.illegalTime[1] ? (this.illegalTime[1] + ' '+ '00:00') : '',
         violationTimeStartStr:this.illegalTime[0] ? (this.illegalTime[0] +' '+ '00:00') : '',
         currentPage: this.currentPage,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        newSource:this.newSource
       }
       getIllegalData(params,this.headers).then(res=>{
         this.loading = false
@@ -344,6 +347,7 @@ export default {
         this.illegalTime = '',
         this.currentPage = 1,
         this.pageSize = 10
+        this.newSource = ""
         this.getIllegalDataList()
     },
     // 新增
@@ -589,7 +593,7 @@ export default {
   float: left;
   color: #368cfe !important;
   background: rgba(54, 140, 254, 0.1) !important;
-  border-color: #b3d8ff; 
+  border-color: #b3d8ff;
 }
 
 .search:hover {
@@ -602,7 +606,7 @@ export default {
 /* ------------ footer -------------- */
 .footer {
   width: 100%;
-  height: calc(100% - 110px);
+  height: calc(100% - 155px);
   box-sizing: border-box;
   border: 1px solid #e5e5e5;
 }

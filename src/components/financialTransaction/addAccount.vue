@@ -1,6 +1,6 @@
 <template>
   <div id="addAccount">
-    <div class="header">
+    <div class="header scoped">
       <span >{{ showMes }}</span>
     </div>
     <div class="footer">

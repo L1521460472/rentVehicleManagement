@@ -1,6 +1,10 @@
 <template>
   <div v-loading="loading" class="box-container">
-    <div class="box">
+    <div style="text-align: right;margin-right: -17px;">
+      <span style="font-size: 14px;">所属公司</span>
+      <company v-model="searchdata.enterpriseId"></company>
+    </div>
+    <div class="box" style="margin-top: 2px;">
       <div class="box-title">工作进度</div>
       <div class="box-item">
         <div class="box-item-tab">
@@ -16,7 +20,7 @@
           <hr class="divider-col">
           <div class="box-item-tab-right">
             <div class="box-item-tab-right-value"><span v-html="financialReceivableVO.collectionTotal"></span></div>
-            <div class="box-item-tab-right-title">总已收款</div>
+            <div class="box-item-tab-right-title">总核销金额</div>
           </div>
         </div>
         <div class="box-item-tab" style="width: calc(100% - 522px)">
@@ -46,35 +50,43 @@
           </div>
         </div>
       </div>
-      <div class="box-item" style="margin-top: 39px;">
-        <div class="box-item-col" style="margin-right: 28px;">
-          <div class="box-item-label">
-            <div class="box-item-label-left">本月新增合同</div>
-            <div class="box-item-label-right"><span v-html="receivingOverViewVO.newContract"></span></div>
-          </div>
-          <div class="box-item-label">
-            <div class="box-item-label-left" style="background: #f7e4ce;color: #F08D19;">本月退车应付（预计）</div>
-            <div class="box-item-label-right" style="color: #F08D19;"><span v-html="receivingOverViewVO.dealWith"></span></div>
-          </div>
-        </div>
-        <div class="box-item-col" style="margin-right: 28px;">
-          <div class="box-item-label">
-            <div class="box-item-label-left" style="background: #e4daec;color: #7F40B1;">本月应收款（元）</div>
-            <div class="box-item-label-right" style="color: #7F40B1;"><span v-html="receivingOverViewVO.accountsReceivable"></span></div>
-          </div>
-          <div class="box-item-label">
-            <div class="box-item-label-left" style="background: #ece2d6;color: #B27427;">本月退车已付（元）</div>
-            <div class="box-item-label-right" style="color: #B27427;"><span v-html="receivingOverViewVO.paid"></span></div>
-          </div>
-        </div>
-        <div class="box-item-col">
-          <div class="box-item-label">
-            <div class="box-item-label-left" style="background: #cfe0f7;color: #1B6AD2;">本月已收款（元）</div>
-            <div class="box-item-label-right" style="color: #1B6AD2;"><span v-html="receivingOverViewVO.collection"></span></div>
-          </div>
-        </div>
-      </div>
     </div>
+	<div class="box">
+    <div class="box-title">当月合同收付款总览
+    <div style="font-size: 14px;display: inline-block;margin-left: 20px;">
+      <span>选择月份</span>
+      <el-date-picker v-model="searchdata.years" type="month" placeholder="" value-format="yyyy-MM"></el-date-picker>
+    </div>
+    </div>
+		<div class="box-item">
+		  <div class="box-item-col" style="margin-right: 28px;">
+		    <div class="box-item-label">
+		      <div class="box-item-label-left">本月新增合同</div>
+		      <div class="box-item-label-right"><span v-html="receivingOverViewVO.newContract"></span></div>
+		    </div>
+		    <div class="box-item-label">
+		      <div class="box-item-label-left" style="background: #f7e4ce;color: #F08D19;">本月退车应付（预计）</div>
+		      <div class="box-item-label-right" style="color: #F08D19;"><span v-html="receivingOverViewVO.dealWith"></span></div>
+		    </div>
+		  </div>
+		  <div class="box-item-col" style="margin-right: 28px;">
+		    <div class="box-item-label">
+		      <div class="box-item-label-left" style="background: #e4daec;color: #7F40B1;">本月应收款（元）</div>
+		      <div class="box-item-label-right" style="color: #7F40B1;"><span v-html="receivingOverViewVO.accountsReceivable"></span></div>
+		    </div>
+		    <div class="box-item-label">
+		      <div class="box-item-label-left" style="background: #ece2d6;color: #B27427;">本月退车已付（元）</div>
+		      <div class="box-item-label-right" style="color: #B27427;"><span v-html="receivingOverViewVO.paid"></span></div>
+		    </div>
+		  </div>
+		  <div class="box-item-col">
+		    <div class="box-item-label">
+		      <div class="box-item-label-left" style="background: #cfe0f7;color: #1B6AD2;">本月已收款（元）</div>
+		      <div class="box-item-label-right" style="color: #1B6AD2;"><span v-html="receivingOverViewVO.collection"></span></div>
+		    </div>
+		  </div>
+		</div>
+	</div>
     <div class="box">
       <div class="box-title">待办事项</div>
       <div class="box-item">
@@ -96,7 +108,7 @@
         <div class="box-item-card" style="background: linear-gradient(129.09deg, #FF4444 0%, #F56C6C 100%);">
           <div class="box-item-card-icon"><img src="../../assets/workdesk/Frame-15.png"></div>
           <div class="box-item-card-title">待开票</div>
-          <div class="box-item-card-value"><span style="font-size: 18px;display: flow-root;">暂无数据</span></div>
+          <div class="box-item-card-value"><span v-html="financialToDoVO.toBeInvoiced"></span></div>
         </div>
       </div>
     </div>
@@ -159,6 +171,7 @@
 
 <script>
   import axios from "axios";
+  import company from "@/components/aacommon/getEnterpriseBox.vue"
   import {
     formatJE,
     getCookie,
@@ -167,8 +180,16 @@
   } from '../../public.js'
   export default {
     name: 'financialWorkDesk',
+    components:{
+      company
+    },
     data() {
       return {
+        searchdata:{
+          "enterpriseId":getCookie("UserEnterpriseId"),
+          "years":  formatDate(new Date(),'yyyy-MM'),
+           "type":"1"
+        },
         loading: false,
         initPageUrl: '/vehicle-service/homePage/financialStatement',
         setreadedUrl:'/vehicle-service/remindMessageRecord/contractPushInfoDetail',
@@ -224,13 +245,13 @@
           })
         }
       },
-      initPage(callback) {
+      initPage() {
         this.loading = true
         axios({
             method: "post",
             url: this.initPageUrl,
             headers: this.headers,
-            data: null,
+            data: this.searchdata,
           })
           .then((result) => {
             // console.log(result.data);
@@ -241,10 +262,25 @@
               this.receivingOverViewVO = result.data.data.receivingOverViewVO;
               this.financialToDoVO = result.data.data.financialToDoVO;
               this.page = result.data.data.page;
-              callback(this);
+              let financialReceivableVO = this.financialReceivableVO;
+              for (let pname in financialReceivableVO) {
+                if (typeof financialReceivableVO[pname] == 'number' && pname != "receivableRate") {
+                  financialReceivableVO[pname] = formatJE(financialReceivableVO[pname]);
+                }
+              }
+              let receivingOverViewVO = this.receivingOverViewVO;
+              for (let pname in receivingOverViewVO) {
+                if (typeof receivingOverViewVO[pname] == 'number' && pname != "newContract") {
+                  receivingOverViewVO[pname] = formatJE(receivingOverViewVO[pname]);
+                }
+              }
+              let records = this.page.records;
+              for (let i = 1; i <= records.length; ++i) {
+                records[i - 1].order = i;
+              }
             } else {
               this.$message({
-                message: res.data.message,
+                message: result.data.message,
                 center: true,
                 type: "error",
               });
@@ -278,25 +314,17 @@
     },
     mounted() {
       this.$refs.searchin.$el.children[0].style.border = 'none'
-      this.initPage(function($) {
-        let financialReceivableVO = $.financialReceivableVO;
-        for (let pname in financialReceivableVO) {
-          if (typeof financialReceivableVO[pname] == 'number' && pname != "receivableRate") {
-            financialReceivableVO[pname] = formatJE(financialReceivableVO[pname]);
-          }
-        } 
-        let receivingOverViewVO = $.receivingOverViewVO;
-        for (let pname in receivingOverViewVO) {
-          if (typeof receivingOverViewVO[pname] == 'number' && pname != "newContract") {
-            receivingOverViewVO[pname] = formatJE(receivingOverViewVO[pname]);
-          }
-        }
-        let records = $.page.records;
-        for (let i = 1; i <= records.length; ++i) {
-          records[i - 1].order = i;
-        }
-      })
+      this.initPage()
       openNewTab(this,'财务','/financialWorkDesk')
+    },
+    watch:{
+      searchdata:{
+        handler(){
+          this.initPage()
+        },
+        immediate:true,
+        deep:true
+      }
     }
   }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div id="operationManagement" v-loading="loading"  element-loading-text="loading">
       <div class="header" v-if="international.global">
-        <div class="headerTop">
+        <div class="headerTop scoped">
             <div class="nav">
                 <span class="demonstration">{{international.content.content_operationManagement_managementCode}}</span>
                 <el-input maxlength="50" size="small" v-model="searchCode" :placeholder="international.content.content_operationManagement_managementCode"></el-input>

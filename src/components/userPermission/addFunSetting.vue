@@ -1,6 +1,6 @@
 <template>
   <div id="addFunSetting">
-    <div class="header">
+    <div class="header scoped">
       <span v-if="international.title">{{ showMes }}</span>
     </div>
     <div class="footer">
@@ -9,16 +9,16 @@
       </div>
       <div class="footerNav" v-if="international.title">
         <el-form ref="form" :model="form" label-width="125px" class="from" label-position="right">
-            <el-form-item 
+            <el-form-item
             class="formItem"
-            prop="roleName" 
+            prop="roleName"
             :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'blur'}]"
             :label="international.content.content_functionPermissionSettings_role" >
                 <el-input maxlength="100" size="small"  v-model="form.roleName"></el-input>
             </el-form-item>
-            <el-form-item 
+            <el-form-item
             class="formItem"
-            prop="roleType" 
+            prop="roleType"
             :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'change'}]"
             :label="international.content.content_functionPermissionSettings_roleType">
                 <el-select size="small" v-model="form.roleType"  placeholder="" >
@@ -32,6 +32,9 @@
             </el-form-item>
             <el-form-item class="formItem" :label="international.content.content_functionPermissionSettings_content">
                 <el-input maxlength="300" size="small"    v-model="form.content"></el-input>
+            </el-form-item>
+            <el-form-item class="formItem" :label="international.content.content_functionPermissionSettings_content">
+                 <el-checkbox v-model="isDefaultRole">是否为默认角色</el-checkbox>
             </el-form-item>
         </el-form>
         <div class="footerButton">
@@ -66,7 +69,8 @@ export default {
         headers: {
         Authorization: getCookie("HTBD_PASS"),
         language: this.$store.state.language,
-      },
+        },
+        isDefaultRole:false
     }
   },
   methods: {
@@ -76,7 +80,8 @@ export default {
                 let params = {
                     content: this.form.content,
                     roleName: this.form.roleName,
-                    roleType: this.form.roleType
+                    roleType: this.form.roleType,
+                    isDefaultRole:this.isDefaultRole?1:0
                 }
                 addFunSetting(params,this.headers).then(res=>{
                     if(res.status == 0){
@@ -105,7 +110,8 @@ export default {
                     content: this.form.content,
                     id: this.$route.query.id,
                     roleName: this.form.roleName,
-                    roleType: this.form.roleType
+                    roleType: this.form.roleType,
+                    isDefaultRole:this.isDefaultRole?1:0
                 }
                 editFunSetting(params,this.headers).then(res=>{
                     if(res.status == 0){
@@ -148,11 +154,13 @@ export default {
         this.form.content = "";
         this.form.roleName = "";
         this.form.roleType = "";
+        this.isDefaultRole=false
       }else{
         getFunDeail({id:this.$route.query.id},this.headers).then(res=>{
             this.form.content = res.data.content;
             this.form.roleName = res.data.roleName;
             this.form.roleType = res.data.roleType;
+            this.isDefaultRole=res.data.isDefaultRole==1?true:false
         }).catch(err=>{
             console.log(err)
             this.$message({

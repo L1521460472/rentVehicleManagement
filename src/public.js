@@ -431,7 +431,7 @@ module.exports = {
   getCookie,
   removeCookie,
   dateToString,
-  getMenuBtnList,
+  getMenuBtnList, 
   regexpCode,
   regexpMobile,
   regexpEmail,

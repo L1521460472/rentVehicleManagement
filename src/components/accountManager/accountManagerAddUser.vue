@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-    <div class="header">
+    <div class="header scoped">
       <span v-if="international.title">{{ showMes }}</span>
     </div>
     <div class="footer">
@@ -37,6 +37,13 @@
             </el-form-item>
             <el-form-item :label="international.content.content_userProfile_post">
               <el-input size="small" maxlength="8" v-model="form.post"></el-input>
+            </el-form-item>
+            <el-form-item label="是否为业务员">
+              <b id="xlabel">*</b>
+              <el-select v-model="form.isSalesman">
+                <el-option :value="0" label="否"></el-option>
+                <el-option :value="1" label="是"></el-option>
+              </el-select>
             </el-form-item>
             <el-form-item :label="international.content.content_userProfile_status">
               <b id="xlabel">*</b>
@@ -83,6 +90,7 @@ export default {
         enterpriseId: "", //所属公司
         userStatus: "",
         userType: 234,
+        isSalesman:0
       },
       international: {},
       optionsStatusList: [], //状态列表
@@ -132,7 +140,7 @@ export default {
           headers: _this.headers,
           data: _this.form,
         })
-          .then((result) => { 
+          .then((result) => {
             if (result.data.status === 0) {
               _this.$store.commit("changeIsStatus", true);
               _this.$message({
@@ -214,7 +222,7 @@ export default {
           });
         });
     },
-    getSelete() { 
+    getSelete() {
       //所属公司
       axios({
         method: "get",
@@ -247,6 +255,7 @@ export default {
       this.form.departmentId = "";
       this.form.userStatus = 232;
       this.form.userType = 234;
+      this.form.isSalesman = 0;
     } else {
       this.showButton = false;
       axios({
@@ -261,9 +270,10 @@ export default {
             this.form.email = result.data.data.email;
             this.form.mobile = result.data.data.mobile;
             this.form.post = result.data.data.post;
-            this.form.enterpriseId = result.data.data.enterpriseId; 
+            this.form.enterpriseId = result.data.data.enterpriseId;
             this.form.userStatus = result.data.data.userStatus;
             this.form.userType = result.data.data.userType;
+            this.form.isSalesman=result.data.data.isSalesman;
             getDepartmentList(
               { enterpriseId: this.form.enterpriseId },
               this.headers

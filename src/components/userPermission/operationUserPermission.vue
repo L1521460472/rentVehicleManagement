@@ -6,7 +6,7 @@
     element-loading-spinner="el-icon-loading"
   >
     <div class="header" v-if="international.global">
-      <div class="headerTop">
+      <div class="headerTop scoped">
         <div class="nav">
           <span>{{
             international.content.content_operationUserPermission_email
@@ -350,7 +350,7 @@
         >
       </div>
       <div class="footerTable">
-        <div class="footer_informatian" v-if="international.field">
+        <div class="" v-if="international.field">
           <el-table
             border
             stripe

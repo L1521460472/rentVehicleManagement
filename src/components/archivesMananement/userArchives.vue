@@ -1,297 +1,178 @@
 <template>
   <div id="header">
     <div class="userLeft">
-      <!-- indent="0" 是否缩进 -->
+      <!-- 一行代码不要分多行显示，看着累，一目十行，快速定位代码,开发讲究效率 -->
       <el-tree :data="data" ref="tree" :indent="0" :props="defaultProps" highlight-current
       :expand-on-click-node="false" node-key="id" default-expand-all @node-click="handleNodeClick"></el-tree>
     </div>
     <div class="userRight">
       <div class="header" v-if="international.global">
-        <div class="headerTop">
+        <div class="headerTop scoped">
           <div class="nav">
-            <span>{{
-              international.content.content_userProfile_industryTitle
-            }}</span>
-            <el-input
-              v-model="departmentName"
-              size="small"
-              maxlength="50"
-              :placeholder="
-                international.content.content_userProfile_industryTitle
-              "
-            ></el-input>
+            <span>{{international.content.content_userProfile_industryTitle}}</span>
+            <el-input v-model="departmentName" size="small" maxlength="50"
+            :placeholder=" international.content.content_userProfile_industryTitle"></el-input>
           </div>
           <div class="nav">
-            <span>{{
-              international.content.content_userProfile_userAccount
-            }}</span>
-            <el-input
-              v-model="username"
-              size="small"
-              maxlength="50"
-              :placeholder="
-                international.content.content_userProfile_userAccount
-              "
-            ></el-input>
+            <span>{{international.content.content_userProfile_userAccount}}</span>
+            <el-input v-model="username" size="small" maxlength="50"
+            :placeholder="international.content.content_userProfile_userAccount"></el-input>
           </div>
           <div class="nav">
             <span>{{ international.content.content_userProfile_status }}</span>
             <el-select v-model="status" clearable size="small" placeholder="">
-              <el-option
-                v-for="item in optionsStatusList"
-                :key="item.id"
-                :label="item.value"
-                :value="item.id"
-              >
-              </el-option>
+              <el-option v-for="item in optionsStatusList" :key="item.id" :label="item.value" :value="item.id"></el-option>
             </el-select>
           </div>
           <div class="nav">
-            <span>{{
-              international.content.content_userProfile_userType
-            }}</span>
+            <span>{{international.content.content_userProfile_userType}}</span>
             <el-select v-model="userType" clearable size="small" placeholder="">
-              <el-option
-                v-for="item in optionsUserType"
-                :key="item.id"
-                :label="item.value"
-                :value="item.id"
-              >
-              </el-option>
+              <el-option v-for="item in optionsUserType" :key="item.id" :label="item.value" :value="item.id"></el-option>
             </el-select>
           </div>
-          <div style="display: block;">
-            <el-button
-              class="search"
-              type="primary"
-              @click="search"
-              size="small"
-              v-if="searchBtn"
-              >{{ international.global.global_search }}</el-button
-            >
-            <el-button
-              class="reset"
-              type="primary"
-              plain
-              @click="reset"
-              size="small"
-              >{{ international.global.global_reset }}</el-button
-            >
+          <div class="nav">
+            <el-button class="search" type="primary" @click="search" size="small" v-if="searchBtn" >
+            {{ international.global.global_search }}</el-button>
+            <el-button class="reset" type="primary" plain @click="reset" size="small">
+            {{ international.global.global_reset }}</el-button>
           </div>
         </div>
       </div>
       <div class="footer" v-if="international.global">
         <div class="footerBottom">
           <el-button @click="handleAdd" size="small" v-if="addBtn">
-            <i class="iconfont icon-add"></i>
-            {{ international.global.global_add }}</el-button
-          >
-          <el-button
-            @click="handleEdit"
-            size="small"
-            :class="{ active: !isDisable }"
-            :disabled="isDisable"
-            v-if="editBtn"
-          >
+            <i class="iconfont icon-add"></i> {{ international.global.global_add }}
+            </el-button>
+          <el-button @click="handleEdit" size="small" :class="{ active: !isDisable }" :disabled="isDisable" v-if="editBtn">
             <i class="iconfont icon-edit"></i>
-            {{ international.global.global_edit }}</el-button
-          >
-          <el-button
-            @click="handleDisable"
-            size="small"
-            :class="{ active: !isDisable }"
-            :disabled="isDisable"
-            v-if="deactiveBtn"
-          >
+            {{ international.global.global_edit }}
+          </el-button>
+          <el-button @click="handleDisable" size="small" :class="{ active: !isDisable }" :disabled="isDisable"
+            v-if="deactiveBtn">
             <i class="iconfont icon-stop"></i>
-            {{ international.global.global_disabled }}</el-button
-          >
-          <el-button
-            @click="handleEnable"
-            :class="{ active: !isDisable }"
-            :disabled="isDisable"
-            size="small"
-            v-if="activeBtn"
-          >
+            {{ international.global.global_disabled }}
+          </el-button>
+          <el-button @click="handleEnable" :class="{ active: !isDisable }" :disabled="isDisable" size="small"
+            v-if="activeBtn">
             <i class="iconfont icon-wanchengyunda"></i>
-            {{ international.global.global_enable }}</el-button
-          >
-          <el-button
-            @click="handleReset"
-            :class="{ active: !isDisable }"
-            :disabled="isDisable"
-            size="small"
-            v-if="resetPasswordBtn"
-          >
+            {{ international.global.global_enable }}
+          </el-button >
+          <el-button @click="fpjsBtnEvent" :class="{ active: !isfpjsDisable }" :disabled="isfpjsDisable" size="small"
+            v-if="fpjsBtn">
+            <i class="iconfont icon-gongneng-"></i> 分配账号角色
+          </el-button >
+          <el-button @click="handleReset" :class="{ active: !isDisable }" :disabled="isDisable" size="small"
+            v-if="resetPasswordBtn">
             <i class="iconfont icon-zhongzhimima"></i>
-            <!-- <i class="iconfont icon-chongzhimima"></i> -->
-            {{ international.global.global_resetPassword }}</el-button
-          >
+            {{ international.global.global_resetPassword }}
+          </el-button>
         </div>
         <div class="footerTable">
-          <div class="footer_informatian" v-if="international.field">
-            <el-table
-              ref="multipleTable"
-              size="small"
-              border
-              stripe
-              :data="tableData"
+          <div class="" v-if="international.field">
+            <el-table ref="multipleTable" size="small" border stripe :data="tableData"
               :header-cell-style="{ background: '#F5F7FA', color: '#333333' }"
-              tooltip-effect="dark"
-              style="width: 100%;"
-              @selection-change="handleSelectionChange"
-              :height="tableHeight"
-              :default-sort="{ prop: 'date', order: 'descending' }"
-            >
+              tooltip-effect="dark" style="width: 100%;" @selection-change="handleSelectionChange"
+              :height="tableHeight" :default-sort="{ prop: 'date', order: 'descending' }">
               <el-table-column type="selection" align="center" width="60">
               </el-table-column>
-              <el-table-column
-                prop="id"
-                :label="international.field.field_userProfileList_number"
-                align="center"
-                width="60"
-              >
+              <el-table-column prop="id" :label="international.field.field_userProfileList_number"
+                align="center"  width="60">
                 <template slot-scope="scope">
                   {{ scope.$index + (currentPage - 1) * pageSize + 1 }}
                 </template>
               </el-table-column>
-              <el-table-column
-                prop="email"
-                :label="international.field.field_userProfileList_email"
-                width="180"
-                show-overflow-tooltip
-              >
+              <el-table-column prop="userTypeText" :label="international.field.field_userProfileList_userType"
+                width="100" show-overflow-tooltip>
               </el-table-column>
-
-              <el-table-column
-                prop="loginName"
-                :label="international.field.field_userProfileList_userAccount"
-                width="130"
-                show-overflow-tooltip
-              >
+              <el-table-column prop="roleName" label="角色名称"
+                width="100" show-overflow-tooltip>
               </el-table-column>
-              <el-table-column
-                prop="userTypeText"
-                :label="international.field.field_userProfileList_userType"
-                width="100"
-                show-overflow-tooltip
-              >
+              <el-table-column prop="loginName" :label="international.field.field_userProfileList_userAccount"
+                width="130" show-overflow-tooltip>
               </el-table-column>
-              <el-table-column
-                prop="username"
-                :label="international.field.field_userProfileList_username"
-                width="130"
-                show-overflow-tooltip
-              >
+              <el-table-column  prop="username" :label="international.field.field_userProfileList_username"
+                width="130" show-overflow-tooltip>
               </el-table-column>
-              <el-table-column
-                prop="mobile"
-                :label="international.field.field_userProfileList_iphone"
-                width="130"
-                show-overflow-tooltip
-              >
+              <el-table-column prop="mobile" :label="international.field.field_userProfileList_iphone"
+                width="130" show-overflow-tooltip>
               </el-table-column>
-              <el-table-column
-                prop="statusText"
-                :label="international.field.field_userProfileList_status"
-                width="80"
-                show-overflow-tooltip
-              >
+              <el-table-column prop="statusText" :label="international.field.field_userProfileList_status"
+                width="80" show-overflow-tooltip>
                 <template slot-scope="scope">
-                  <span
-                    :class="
-                      scope.row.userStatus == 232
-                        ? 'activeStatus'
-                        : 'deactiveStatus'
-                    "
-                    >{{ scope.row.statusText }}</span
-                  >
+                  <span :class="scope.row.userStatus == 232 ? 'activeStatus' : 'deactiveStatus' " >
+                  {{ scope.row.statusText }}
+                  </span>
                 </template>
               </el-table-column>
-              <el-table-column
-                prop="departmentName"
-                :label="international.field.field_userProfileList_topDepartment"
-                width="150"
-                show-overflow-tooltip
-              >
+              <el-table-column prop="departmentName" :label="international.field.field_userProfileList_topDepartment"
+                width="150" show-overflow-tooltip>
               </el-table-column>
-              <el-table-column
-                prop="enterpriseName"
-                :label="international.field.field_userProfileList_affiliation"
-                min-width="150"
-                show-overflow-tooltip
-              >
+              <el-table-column prop="enterpriseName" :label="international.field.field_userProfileList_affiliation"
+                min-width="150" show-overflow-tooltip>
+              </el-table-column>
+              <el-table-column prop="email" :label="international.field.field_userProfileList_email"
+                width="180" show-overflow-tooltip>
+              </el-table-column>
+              <el-table-column prop="" label="操作人" width="80" show-overflow-tooltip>
+                <template slot-scope="scope">
+                  <span v-if="scope.row.updatedByStr">{{scope.row.updatedByStr}}</span>
+                  <span v-else>{{scope.row.createdByStr}}</span>
+                </template>
               </el-table-column>
             </el-table>
           </div>
           <div class="footer_page">
-            <el-pagination
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="currentPage"
-              :page-sizes="[10, 20, 30, 40, 50]"
-              :page-size="pageSize"
-              :pager-count="5"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="total"
-            >
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+              :current-page="currentPage" :page-sizes="[10, 20, 30, 40, 50]"
+              :page-size="pageSize" :pager-count="5" layout="total, sizes, prev, pager, next, jumper"
+              :total="total">
             </el-pagination>
           </div>
         </div>
       </div>
       <!-- 重置密码 -->
-      <el-dialog
-        v-if="international.title"
-        :title="international.title.title_appUserSettings_resetPassword"
-        :visible.sync="showPassword"
-        width="320px"
-        top="30vh"
-        @close="clearPassword"
-      >
-        <el-form
-          ref="editPassword"
-          label-width="70px"
-          class="from"
-          label-position="left"
-        >
+      <el-dialog v-if="international.title" :title="international.title.title_appUserSettings_resetPassword"
+        :visible.sync="showPassword" width="320px" top="30vh" @close="clearPassword">
+        <el-form ref="editPassword" label-width="70px" class="from" label-position="left">
           <div class="formItem">
-            <el-form-item
-              :label="international.content.content_userProfile_resetPassword"
-            >
-              <el-input
-                size="small"
-                type="password"
-                maxlength="8"
-                v-model="editPassword.resetPassStr1"
-              ></el-input>
+            <el-form-item :label="international.content.content_userProfile_resetPassword">
+              <el-input size="small" type="password" maxlength="8"
+                v-model="editPassword.resetPassStr1"></el-input>
             </el-form-item>
-            <el-form-item
-              :label="international.content.content_userProfile_repeatPassword"
-            >
-              <el-input
-                size="small"
-                type="password"
-                maxlength="8"
-                v-model="editPassword.resetPassStr2"
-              ></el-input>
+            <el-form-item :label="international.content.content_userProfile_repeatPassword">
+              <el-input size="small" type="password" maxlength="8" v-model="editPassword.resetPassStr2"></el-input>
             </el-form-item>
           </div>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <el-button
-            size="small"
-            class="confirm"
-            type="primary"
-            @click="passwordConfirm"
-            >{{ international.global.global_confirm }}</el-button
-          >
-          <el-button
-            size="small"
-            class="cancel"
-            @click="showPassword = false"
-            >{{ international.global.global_cancel }}</el-button
-          >
+          <el-button size="small" class="confirm" type="primary" @click="passwordConfirm">
+          {{ international.global.global_confirm }}</el-button>
+          <el-button size="small" class="cancel" @click="showPassword = false">
+          {{ international.global.global_cancel }}</el-button>
         </span>
+      </el-dialog>
+      <!-- 数据权限分配 -->
+      <el-dialog v-if="fpjsBtn" title="分配账号角色" :visible.sync="dialogVisibleData" width="600px"
+      :close-on-click-modal="false" :before-close="handleClose" >
+        <el-table :data="fpjsdata" border size="mini" style="width: 80%; margin-left: 10%;min-height:350px ;"
+          @selection-change="handleSelectionChangeData">
+          <el-table-column label="选择" width="60" align="center">
+            <template slot-scope="scope">
+              <el-radio :label="scope.row.id" v-model="functionRadio"
+               @change.native="getCurrentRow(scope.row, 'function')">&nbsp;</el-radio>
+            </template>
+          </el-table-column>
+          <el-table-column prop="id" label="序号" width="60" align="center">
+            <template slot-scope="scope">{{ scope.$index + 1 }}</template>
+          </el-table-column>
+          <el-table-column prop="roleName" label="角色名称" align="center" min-width="150"></el-table-column>
+          <el-table-column prop="roleStatusStr" label="状态" width="100" align="center" show-overflow-tooltip>
+          </el-table-column>
+        </el-table>
+        <div slot="footer" style="display: flex;justify-content: center;">
+          <el-button style="margin-right: 5px;" class="cancel" size="small" @click="cancelData">关闭</el-button>
+          <el-button style="margin-left: 5px;"  class="confirm" size="small" type="primary" @click="confirmData">确定</el-button>
+        </div>
       </el-dialog>
     </div>
   </div>
@@ -321,6 +202,7 @@ export default {
       userType: "", //用户类型
       optionsStatusList: [], //状态列表
       isDisable: true,
+      isfpjsDisable:true,
       tableData: [],
       addform: {
         id: "",
@@ -339,7 +221,7 @@ export default {
         resetPassStr1: "",
         resetPassStr2: "",
       },
-      optionsAffiliation: [], //归属机构
+      // optionsAffiliation: [], //归属机构
       optionsAttributionDepartment: [], //归属部门
       optionsStatus: [], //状态
       optionsUserType: [], //用户类型
@@ -359,6 +241,12 @@ export default {
       deactiveBtn: true/*false*/, //失效按钮是否显示
       activeBtn: true/*false*/, //激活按钮是否显示
       resetPasswordBtn: true/*false*/, //重置密码
+      fpjsdata:null,
+      fpjsBtn: false/*false*/, //分配账号角色
+      dialogVisibleData: false/*false*/, //分配账号角色选择框
+      functionRadio: "", //功能权限分配单选
+      multipleSelectiondata:[],//功能权限分配单选
+      userIds:"",//功能权限分配单选用户id
       tableHeight: window.innerHeight - 375 +'',
       headers: {
         Authorization: getCookie("HTBD_PASS"),
@@ -374,6 +262,80 @@ export default {
     };
   },
   methods: {
+    handleClose(done) {
+      //关闭弹框前
+      done();
+    },
+    fpjsBtnEvent(){
+      //数据权限分配
+      this.dialogVisibleData = true;
+      this.functionRadio = "";
+      this.userIds=this.multipleSelection.map((item)=>{
+        return item.id
+      })
+      axios({
+        method: "post",
+        url:"/platform-base-service/platformBaseRole/listUserRoleByType",
+        headers: this.headers,
+        data: {
+          currentPage: 1,
+          pageSize: 500,
+          roleType:this.multipleSelection[0].userType
+        },
+      })
+        .then((result) => {
+          this.fpjsdata = result.data.data.records;
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$message({
+            message: err.response.data.message,
+            center: true,
+            type: "error",
+          });
+        });
+    },
+   handleSelectionChangeData(val) {
+     this.multipleSelectiondata = val;
+   },
+    // 弹窗表格单选
+    getCurrentRow(row, from) {
+      if (from == "function") {
+        this.functionRadio = row.id;
+      }
+    },
+    cancelData(){
+       this.dialogVisibleData = false;
+    },
+    confirmData(){
+      //数据权限分配确定
+      axios({
+        method: "post",
+        url:"/platform-base-service/platformBaseRole/roleBind",
+        headers: this.headers,
+        data: {
+          roleId: this.functionRadio,
+          userIds: this.userIds,
+        },
+      })
+        .then((result) => {
+          this.dialogVisibleData = false;
+          this.$message({
+              type: "success",
+              message: '分配成功',
+              center: true,
+            });
+           this.getListData()
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$message({
+            message: '服务器繁忙，请稍后再试',
+            center: true,
+            type: "error",
+          });
+        });
+    },
     //重置密码框后清楚填写的重置密码
     clearPassword(){
       this.editPassword.id="";
@@ -494,6 +456,7 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
       this.isDisable = this.multipleSelection.length < 1 ? true : false;
+       this.isfpjsDisable = this.multipleSelection.length != 1 ? true : false;
     },
     // 编辑
     handleEdit() {
@@ -630,8 +593,8 @@ export default {
       this.getListData()
     },
     //选择页数
-    handleCurrentChange(val) { 
-        this.currentPage=val; 
+    handleCurrentChange(val) {
+        this.currentPage=val;
         this.getListData()
     },
     getSelete() {
@@ -641,27 +604,8 @@ export default {
         url: "/platform-base-service/dictionaryType/listInternalLangByDictionaryType?type=roleType",
         headers: this.headers,
       })
-        .then((result) => { 
-          this.optionsUserType = result.data.data;
-        })
-        .catch((err) => {
-          console.error(err);
-          this.$message({
-            message: err.response.data.message,
-            center: true,
-            type: "error",
-          });
-        });
-      //归属机构
-      axios({
-        method: "get",
-        url:
-          "/platform-base-service/platformBaseEnterprise/belongManagementQuery?enterpriseType=2",
-        headers: this.headers,
-      })
         .then((result) => {
-          //   console.log(result.data);
-          this.optionsAffiliation = result.data.data;
+          this.optionsUserType = result.data.data;
         })
         .catch((err) => {
           console.error(err);
@@ -732,6 +676,9 @@ export default {
               this.activeBtn = true;
             if (item.name == this.international.global.global_resetPassword)
               this.resetPasswordBtn = true;
+            if(item.name=="分配角色权限"){
+              this.fpjsBtn=true
+            }
           });
         }
       },

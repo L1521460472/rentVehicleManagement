@@ -1,7 +1,7 @@
 <template>
   <div id="functionPermissionSettings" v-loading="loading"  element-loading-text="loading">
       <div class="header" v-if="international.global">
-        <div class="headerTop">
+        <div class="headerTop scoped">
             <div class="nav">
                 <span class="demonstration">{{international.content.content_functionPermissionSettings_role}}</span>
                 <el-input maxlength="50" size="small" v-model="roleName" :placeholder="international.content.content_functionPermissionSettings_role"></el-input>
@@ -89,10 +89,18 @@
           </div>
       </div>
     <el-dialog v-if="international.content" :title="international.global.global_authorityDistribut"
-        :visible.sync="showFunctionToast" width="60%">
-        <tree-transfer :title="title" pid="parentId" :from_data='undistributeList'  :to_data='distributeList'
+        :visible.sync="showFunctionToast" width="60%" top="4vh">
+        <div style="text-align: right;margin-bottom: 5px;">
+          <span>系统默认角色</span>
+          <el-select :disabled="defaultroledisabled"
+           placeholder="选择系统默认角色" v-model="defaultrole" clearable @change="setdefaultrole">
+            <el-option v-for="(item,index) in defaultroleOptions" :key="index" :value="item.id" :label="item.roleName"></el-option>
+          </el-select>
+        </div>
+        <tree-transfer pid="parentId" :from_data='undistributeList'  :to_data='distributeList'
         :defaultProps="{label:'name'}"  @addBtn='addFuncBtn'  @removeBtn='removeFuncBtn'
-        :mode='mode'  height='450px'  openAll>
+        :mode='mode'  height='450px'  openAll
+        :title="['未分配权限','已分配权限']">
         </tree-transfer>
         <span slot="footer" class="dialog-footer" >
             <el-button size="small" type="primary" @click="confirmFun">{{international.global.global_confirm}}</el-button>
@@ -112,6 +120,9 @@ export default {
     components:{ treeTransfer },
     data() {
         return {
+            defaultroledisabled:true,
+            defaultrole:"",
+            defaultroleOptions:[],
             mode: "transfer",
             total:0, //数据总条数
             currentPage:1,//当前页数
@@ -156,6 +167,39 @@ export default {
         }
     },
     methods: {
+        setdefaultrole(){
+          if(!this.defaultrole)return
+          this.$confirm('请确定采用系统默认的角色权限？', '提示', {
+             confirmButtonText: '确定',
+             cancelButtonText: '取消',
+             type: 'warning'
+           }).then(() => {
+             let params = {roleId:this.defaultrole}
+             // 获取默认角色权限
+             getDistribute(params,this.headers).then(res=>{
+                 this.distributeList = res.data
+                 let ids = []
+                 res.data.map(item=>{
+                     if(item.type == 2){ids.push(Math.abs(item.id))}
+                     item.children.map(item2=>{
+                         if(item2.type == 2){ids.push(Math.abs(item2.id))}
+                         item2.children.map(item3=>{
+                             if(item3.type == 2){ids.push(Math.abs(item3.id))}
+                             item3.children.map(item4=>{
+                                 ids.push(Math.abs(item4.id))
+                             })
+                         })
+                     })
+                 })
+                 this.btnsId = ids
+                 this.$alert("已加载系统默认的权限到右边框！")
+             }).catch(err=>{
+                 console.log(err)
+             })
+           }).catch(() => {
+             console.log("用户已取消发送锁车")
+           });
+        },
         // 获取分页数据
         getListData(){
             this.loading = true
@@ -318,10 +362,12 @@ export default {
                         })
                     })
                     this.btnsId = ids
+                    this.defaultroledisabled=false
                 }).catch(err=>{
                     console.log(err)
                 })
                 this.showFunctionToast = true
+                this.defaultrole=""
             }else{
                 this.$message.warning({
                     message:this.international.content.content_functionPermissionSetting_DistributNotMoreChoose,
@@ -452,6 +498,21 @@ export default {
             .catch((err) => {
               this.$message({
                 message: err.response.data.message,
+                center: true,
+                type: "error",
+              });
+            });
+        axios({//获取系统默认角色
+            method: "get",
+            url: "/platform-base-service/platformBaseRole/defaultRolesQuery",
+            headers: this.headers,
+          })
+            .then((result) => {
+              this.defaultroleOptions = result.data.data;
+            })
+            .catch((err) => {
+              this.$message({
+                message: err.message,
                 center: true,
                 type: "error",
               });

@@ -1,6 +1,6 @@
 <template>
   <div id="checkContract">
-    <div class="header">
+    <div class="header scoped">
       <span>合同查看</span>
     </div>
     <div class="footer" v-if="international.title">

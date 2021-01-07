@@ -5,12 +5,16 @@ import App from './App'
 import router from './router'
 import store from './store'
 import "babel-polyfill";
-import ElementUI from "element-ui";
+import components from '@/components/aacommon/aacommon.js'
 import 'element-ui/lib/theme-chalk/index.css';
+import ElementUI from "element-ui";
 import './assets/icon/iconfont.css'
+import './theme/dartgray.css'
+
 Vue.config.productionTip = false
-Vue.prototype.$ELEMENT = { size: 'small' };
-Vue.use(ElementUI);
+Vue.use(ElementUI,{ size: 'small' });
+
+Vue.use(components);
 
 /* eslint-disable no-new */
 new Vue({

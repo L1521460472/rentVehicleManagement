@@ -1,6 +1,6 @@
 <template>
   <div id="addInfo">
-    <div class="header">
+    <div class="header scoped">
       <span>{{showMes}}</span>
     </div>
     <div class="footer" v-if="international.title">

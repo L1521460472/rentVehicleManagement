@@ -4,7 +4,19 @@
     v-loading="loading"
   >
     <div class="header">
-      <div class="headerTop">
+      <div class="headerTop scoped">
+        <div class="nav">
+          <span class="demonstration">所属公司</span>
+          <el-select  clearable v-model="companyValue" size="small" placeholder="">
+            <el-option
+              v-for="item in companyOptions"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </div>
         <div class="nav">
           <span class="demonstration">品牌</span>
           <el-select
@@ -44,18 +56,6 @@
             maxlength="50"
             placeholder=""
           ></el-input>
-        </div>
-        <div class="nav">
-          <span class="demonstration">所属公司</span>
-          <el-select  clearable v-model="companyValue" size="small" placeholder="">
-            <el-option
-              v-for="item in companyOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            >
-            </el-option>
-          </el-select>
         </div>
         <div class="nav">
           <span class="demonstration">使用方式</span>
@@ -203,6 +203,9 @@
         <el-button @click="handleEdit" v-if="editBtn" size="small" :class="{ active: !isDisable }" :disabled="isDisable">
           <i class="iconfont icon-edit"></i>修改
         </el-button>
+        <el-button @click="handleDel" v-if="delBtn" size="small" :class="{ active: !isDisable }" :disabled="isDisable">
+          <i class="iconfont icon-shanchu"></i>删除
+        </el-button>
         <el-button @click="handleExamine" v-if="addAsBtn" size="small" :class="{ active: !isDisable }" :disabled="isDisable">
           <i class="iconfont icon-cheliangnianjian"></i>新增年检记录
         </el-button>
@@ -227,8 +230,9 @@
           <i class="iconfont icon-daochu"></i>导出
         </el-button>
       </div>
-      <div class="footerTable">
-        <div class="footer_informatian">
+      <iframe src="http://172.18.11.68:8015/nncity/index" height="100%" width="100%"/>
+      <!-- <div class="footerTable">
+        <div class="">
           <el-table :data="dataList" border stripe :header-cell-style="{ background: '#F5F7FA', color: '#333333' }"
             size="small" style="width: 100%; height: 100%;" @selection-change="handleSelectionChange" :height="tableHeight"
             :row-class-name="setrowstyle"
@@ -296,7 +300,7 @@
             layout="total, sizes, prev, pager, next, jumper" :total="total">
           </el-pagination>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -435,6 +439,7 @@ export default {
       addInsuranceBtn : false, //新增保险记录权限按钮
       importVehicleBtn: false,
       exportVehicleBtn: false,
+      delBtn:false,
       headers: {
         Authorization: getCookie("HTBD_PASS"),
         language: this.$store.state.language,
@@ -442,6 +447,62 @@ export default {
     };
   },
   methods: {
+    handleDel(){
+	  let caldel=true;
+      let ids=this.multipleSelection.map((item)=>{
+			if(item.contractCode){
+				caldel=false
+			}
+            return item.id
+	  })
+	  if(!caldel){
+		  this.$message({
+		    message: "存在合同编号车辆不能删除！",
+		    center: true,
+		    type: "error",
+		  });
+      return
+	  }
+      this.$confirm('确定删除所选的车辆？', '删除车辆', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }).then(() => {
+                axios({
+                  method:'post',
+                  url:'/vehicle-service/vehicleInfo/deleteVehicle',
+                  data:{
+                    "vehicleIds":ids
+                  },
+                  headers:this.headers
+                }).then((result)=>{
+                  if (result.data.status == 0) {
+                    this.$message({
+                      message: '删除成功',
+                      center: true,
+                      type: "success",
+                    });
+                    this.currentPage=1
+                    this.search()
+                  } else {
+                    this.$message({
+                      message: result.data.message,
+                      center: true,
+                      type: "error",
+                    });
+                  }
+                }).catch((err)=>{
+                  this.$message({
+                    message: "服务器繁忙，请稍后再试",
+                    center: true,
+                    type: "error",
+                  });
+                })
+              })
+              .catch(()=>{
+
+              })
+    },
     getrowstyle(minval){
       let classname=1
       if(minval>30){
@@ -454,6 +515,23 @@ export default {
         classname=3
       }
       return classname
+    },
+    setrowstyle(rowdata){
+      let row=rowdata.row
+      let classname1=0
+      let classname2=0
+      let classname3=0
+      if(row.termOfValidityStr){
+          classname1 = this.getrowstyle(row.remainingDaysValid)
+      }
+      if(row.policyEndDate0Str){
+          classname2 = this.getrowstyle(row.remainingDaysPolicyEndDate0)
+      }
+      if(row.policyEndDate1Str){
+          classname3 = this.getrowstyle(row.remainingDaysPolicyEndDate1)
+      }
+      let level=classname1>classname2?classname1:classname2>classname3?classname2:classname3;
+      return level==1?"black":level==2?"green":level==3?"red":""
     },
     setrowstyle(rowdata){
       let row=rowdata.row
@@ -663,6 +741,7 @@ export default {
         });
     },
     reset() {
+      this.enterpriseId="";
       this.initData();
       this.vehicleValue = '';
       this.companyValue = '';
@@ -883,6 +962,7 @@ export default {
             if(item.name == '新增保险记录') this.addInsuranceBtn = true
             if(item.name == '导入') this.importVehicleBtn = true
             if(item.name == '导出') this.exportVehicleBtn = true
+            if(item.name == '删除') this.delBtn = true
           })
       },
       immediate:true,

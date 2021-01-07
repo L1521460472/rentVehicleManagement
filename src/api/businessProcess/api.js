@@ -91,8 +91,8 @@ export const checkContractData = (params,headers) => {//合同查看
 {params:params,headers:headers}).then(res => res.data)};
 
 export const payFeeDetail = (params,headers) => {//跳转缴费提交页面
-    return axios.get('/vehicle-service/leaseContractInfo/goLeaseContractInfoRentCollectionPage',
-{params:params,headers:headers}).then(res => res.data)};
+ return axios.post('/vehicle-service/leaseContractInfo/goLeaseContractInfoRentCollectionPage',
+params,{headers:headers}).then(res => res.data)};
 
 export const repayFeeDetail = (params,headers) => {//跳转重新缴费提交页面
     return axios.get('/vehicle-service/rentCollectionInfo/goPayCostResubmit',
@@ -117,8 +117,3 @@ params,{headers}).then(res => res.data)};
 export const conversionURL = (params,headers) => {//附件查看地址转换
     return axios.get('/vehicle-service/efileInfo/findConversionURL',
 {params:params,headers:headers}).then(res => res.data)};
-
-
-
-
-

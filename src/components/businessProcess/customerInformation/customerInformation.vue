@@ -2,6 +2,10 @@
   <div id="customerInformation" v-loading="loading">
     <div class="headerTop">
       <div class="nav">
+          <span class="demonstration" style="margin-left: 31px;">所属公司</span>
+          <company v-model="enterpriseId"></company>
+      </div>
+      <div class="nav">
         <span class="demonstration">客户类型</span>
         <el-select clearable size="small"  v-model="customerType" placeholder=''>
           <el-option
@@ -27,10 +31,10 @@
       <div class="nav">
         <span class="demonstration">客户来源</span>
         <el-select clearable size="small" v-model="customerSource" placeholder=''>
-          <el-option 
-            v-for="item in customerSourceList" 
-            :key="item.id" 
-            :label="item.value" 
+          <el-option
+            v-for="item in customerSourceList"
+            :key="item.id"
+            :label="item.value"
             :value="item.id"
           ></el-option>
         </el-select>
@@ -39,7 +43,7 @@
       <el-button class="reset" type="primary"  size="small" @click="resetAction">重置</el-button>
     </div>
     <div class="footer">
-      <div class="top">     
+      <div class="top">
         <el-button size="small" @click="addAction" v-if="addBtn">
           <i class="iconfont icon-add"></i>
           新增
@@ -51,6 +55,10 @@
         <el-button size="small" v-if="editBtn" :class="{ 'active': !isDisable }" :disabled="isDisable" @click="detailAction">
           <i class="iconfont icon-chakan"></i>
           详情
+        </el-button>
+        <el-button size="small" v-if="delBtn" :class="{ 'active': !isDisable }" :disabled="isDisable" @click="delAction">
+          <i class="iconfont icon-shanchu"></i>
+          删除
         </el-button>
         <el-button size="small" class="active" @click="brokenPromises">
           <i class="iconfont icon-chengxinchaxun"></i>
@@ -68,8 +76,9 @@
             :height="tableHeight"
             @selection-change="handleSelectionChange"
             style="width: 100%; height: 100%;"
-          >         
+          >
             <el-table-column type="selection" align="center" width="60"></el-table-column>
+            <el-table-column prop="enterpriseName" label="所属公司" width="140" show-overflow-tooltip></el-table-column>
             <el-table-column prop="customerSourceStr" label="客户来源" width="120" show-overflow-tooltip></el-table-column>
             <el-table-column prop="customerTypeStr" label="客户类型" width="120" show-overflow-tooltip></el-table-column>
             <el-table-column prop="customerName" label="客户名称" width="140" show-overflow-tooltip></el-table-column>
@@ -101,7 +110,7 @@
             <el-carousel-item v-for="item in imageUrlList" :key="item.id">
               <img class="imgList" :src="item.efileAddr" alt="" srcset="">
             </el-carousel-item>
-          </el-carousel>        
+          </el-carousel>
       </el-dialog>
       </div>
     </div>
@@ -109,12 +118,18 @@
 </template>
 
 <script>
+import axios from 'axios'
 import {getCustomerData} from '../../../api/businessProcess/api'
 import {getCookie,setCookie,removeCookie,getMenuBtnList} from "../../../public";
+import company from "@/components/aacommon/getEnterpriseBox.vue"
 export default {
   name: "customerInformation",
+    components:{
+      company
+    },
   data() {
     return {
+      enterpriseId:"",
       loading:false,//是否显示loading
       isDisable: true, //是否禁用修改、处理、审核、查看按钮
       currentPage: 1, //当前页数
@@ -152,6 +167,7 @@ export default {
       searchBtn:false,//查询按钮是否有权限显示
       addBtn:false,//新增按钮是否有权限显示
       editBtn:false,//修改按钮是否有权限显示
+      delBtn:false,
       tableHeight: window.innerHeight - 400 +'',
       headers: {
         Authorization: getCookie("HTBD_PASS"),
@@ -168,6 +184,7 @@ export default {
         customerType: this.customerType !== "" ? this.customerType:null,
         personInCharge: this.contact !== "" ? this.contact:null,
         phoneNumber: this.phone !== "" ? this.phone:null,
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
         currentPage: this.currentPage,
         pageSize: this.pageSize
       }
@@ -193,6 +210,7 @@ export default {
     },
     // 重置
     resetAction(){
+      this.enterpriseId="",
       this.customerType ='',
       this.customerNameKey ='',
       this.customerSource ='',
@@ -238,6 +256,66 @@ export default {
           path:'/addCustomerInfo',
           query:{from:'detail',id:this.selectData[0].id}
       });
+    },
+    delAction(){
+       let caldel=true;
+       let str=""
+         let ids=this.selectData.map((item)=>{
+         if(item.isCanDeleteFlag==1){
+           caldel=false
+           if(item.customerName){
+             str+=item.customerName+","
+           }
+         }
+         return item.id
+       })
+       if(!caldel){
+         this.$message({
+           message: str+"客户信息不能删除！",
+           center: true,
+           type: "error",
+         });
+         return
+       }
+         this.$confirm('确定删除所选的客户信息？', '删除客户信息', {
+                   confirmButtonText: '确定',
+                   cancelButtonText: '取消',
+                   type: 'warning'
+                 }).then(() => {
+                   axios({
+                     method:'post',
+                     url:'/vehicle-service/customerInfo/deleteCustomer',
+                     data:{
+                       "customerIds":ids
+                     },
+                     headers:this.headers
+                   }).then((result)=>{
+                     if (result.data.status == 0) {
+                       this.$message({
+                         message: '删除成功',
+                         center: true,
+                         type: "success",
+                       });
+                       this.currentPage=1
+                       this.searchAction()
+                     } else {
+                       this.$message({
+                         message: result.data.message,
+                         center: true,
+                         type: "error",
+                       });
+                     }
+                   }).catch((err)=>{
+                     this.$message({
+                       message: "服务器繁忙，请稍后再试",
+                       center: true,
+                       type: "error",
+                     });
+                   })
+                 })
+                 .catch(()=>{
+
+                 })
     },
     // 失信查询
     brokenPromises(){
@@ -297,6 +375,7 @@ export default {
               if(item.name == '查询') this.searchBtn = true
               if(item.name == '新增') this.addBtn = true
               if(item.name == '修改') this.editBtn = true
+              if(item.name == '删除') this.delBtn = true
             })
         },
         immediate:true,

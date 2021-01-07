@@ -1,6 +1,6 @@
 <template>
   <div id="addOperation">
-    <div class="header">
+    <div class="header scoped">
       <span v-if="international.title">{{ showMes }}</span>
     </div>
     <div class="footer">

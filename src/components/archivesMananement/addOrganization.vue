@@ -1,6 +1,6 @@
 <template>
   <div id="addOrganization">
-    <div class="header">
+    <div class="header scoped">
       <span v-if="international.title">{{ showMes }}</span>
     </div>
     <div class="footer">
@@ -182,13 +182,16 @@ export default {
                 }
                 // 联系电话正则验证
                 if(this.form.mobile){
-                    if(!regexpMobile(this.form.mobile)){
-                        this.$message.error({
-                            message:'联系电话格式不确',
-                            center:true
-                        })
-                        return
-                    }
+                   let phones=this.form.mobile.replace('，',",").split(',')
+                   for(let phone of phones){
+                     if(!regexpMobile(phone)){
+                         this.$message.error({
+                             message:'联系电话格式不确，多个电话号码请用逗号（,）隔开',
+                             center:true
+                         })
+                         return
+                     }
+                   }                   
                 }
                 // 邮箱正则验证
                 if(this.form.email){
@@ -260,13 +263,16 @@ export default {
                 }
                 // 联系电话正则验证
                 if(this.form.mobile){
-                    if(!regexpMobile(this.form.mobile)){
-                        this.$message.error({
-                            message:'联系电话格式不确',
-                            center:true
-                        })
-                        return
-                    }
+                    let phones=this.form.mobile.replace('，',",").split(',')
+                    for(let phone of phones){
+                      if(!regexpMobile(phone)){
+                          this.$message.error({
+                              message:'联系电话格式不确，多个电话号码请用逗号（,）隔开',
+                              center:true
+                          })
+                          return
+                      }
+                    }         
                 }
                 // 邮箱正则验证
                 if(this.form.email){
@@ -407,7 +413,7 @@ export default {
             this.form.email = res.data.email;
             this.form.openAccounts=res.data.openAccounts;
             this.form.logoAddress=res.data.logoAddress;
-            if(res.data.logoAddress){              
+            if(res.data.logoAddress){
               this.imgList.push({name:'logo',url:res.data.logoAddress});
             }
             this.form.dueDate=res.data.dueDate;

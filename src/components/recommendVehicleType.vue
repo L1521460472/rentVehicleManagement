@@ -1,32 +1,27 @@
 <template>
-  <div
-    id="header"
-    v-loading="loading"
-  >
-    <div class="header">
-      <div class="headerTop">
-        <div class="nav">
-          <span class="demonstration">推荐状态</span>
-          <el-select clearable v-model="searchdata.recommendStstus" size="small"  placeholder="请选择" >
-            <el-option v-for="item in shangjiastates" :key="item.value" :label="item.name" :value="item.value" ></el-option>
-          </el-select>
-        </div>
-        <div class="nav">
-          <span class="demonstration">所属公司</span>
-          <el-select  clearable v-model="searchdata.enterpriseId" size="small" placeholder="请选择"   @change="changecompanyname">
-            <el-option v-for="item in companyOptions" :key="item.id" :label="item.name" :value="item.id" > </el-option>
-          </el-select>
-        </div>
-        <div class="nav">
-          <span class="demonstration">品牌</span>
-          <el-select clearable v-model="searchdata.brandId" size="small" placeholder="请选择" @change="changebrandName">
-            <el-option v-for="item in brandNameOptions" :key="item.id" :label="item.brandName" :value="item.id"></el-option>
-          </el-select>
-        </div>
-        <div class="headerBotton" style="margin-left: 45px;">
-          <el-button size="small" type="primary" v-if="searchBtn" class="search" @click="search">查询</el-button>
-          <el-button class="reset" size="small" plain @click="reset">重置</el-button>
-        </div>
+  <div id="header" v-loading="loading">
+    <div class="headerTop">
+      <div class="nav">
+        <span class="demonstration">推荐状态</span>
+        <el-select clearable v-model="searchdata.recommendStstus" size="small"  placeholder="请选择" >
+          <el-option v-for="item in shangjiastates" :key="item.value" :label="item.name" :value="item.value" ></el-option>
+        </el-select>
+      </div>
+      <div class="nav">
+        <span class="demonstration">所属公司</span>
+        <el-select  clearable v-model="searchdata.enterpriseId" size="small" placeholder="请选择"   @change="changecompanyname">
+          <el-option v-for="item in companyOptions" :key="item.id" :label="item.name" :value="item.id" > </el-option>
+        </el-select>
+      </div>
+      <div class="nav">
+        <span class="demonstration">品牌</span>
+        <el-select clearable v-model="searchdata.brandId" size="small" placeholder="请选择" @change="changebrandName">
+          <el-option v-for="item in brandNameOptions" :key="item.id" :label="item.brandName" :value="item.id"></el-option>
+        </el-select>
+      </div>
+      <div class="headerBotton" style="margin-left: 45px;">
+        <el-button size="small" type="primary" v-if="searchBtn" class="search" @click="search">查询</el-button>
+        <el-button class="reset" size="small" plain @click="reset">重置</el-button>
       </div>
     </div>
     <div class="footer">
@@ -39,7 +34,7 @@
         </el-button>
         <el-checkbox
           v-model="specialType"
-         v-if="upBtn"
+         v-if="recommendBtn"
          :disabled="!upclass"
          style="margin-left: 10px;margin-right: 10px;"><span style="font-size: 12px;">推荐为定制APP</span></el-checkbox>
         <el-input
@@ -62,8 +57,8 @@
         <el-table-column prop="monthRent" label="月租金(元/辆/月)"></el-table-column>
       </el-table>
       <div class="footer_page">
-        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="this.searchdata.currentPage"
-          :page-sizes="[10, 20, 30, 40, 50]" :page-size="this.searchdata.pageSize" :pager-count="5"
+        <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="searchdata.currentPage"
+          :page-sizes="[10, 20, 30, 40, 50]" :page-size="searchdata.pageSize" :pager-count="5"
           layout="total, sizes, prev, pager, next, jumper" :total="total" ></el-pagination>
       </div>
     </div>
@@ -99,6 +94,7 @@ export default {
         searchBtn : false,//查询权限按钮
         upBtn : false,//上架
         downBtn : false,//下架
+        recommendBtn:false,//推荐为指定app
         tableHeight: window.innerHeight - 445 +'',
         headers: {
           Authorization: getCookie("HTBD_PASS"),
@@ -113,13 +109,17 @@ export default {
   },
   methods: {
     commitdata(type){
+      let msgstr="上架"
+      if(type==0){
+        msgstr="下架"
+      }
       if(this.vehicletypeids.length>0){
         let data={
               specialType:this.specialTypeValue?Number(this.specialTypeValue):0,
               type: type,
               vehicleTypeIds: this.vehicletypeids
         }
-        this.$confirm('是否对所选车型，进行上架操作？', '车辆上架', {
+        this.$confirm(`是否对所选车型，进行${msgstr}操作？`, `车辆${msgstr}`, {
                   confirmButtonText: '确定',
                   cancelButtonText: '取消',
                   type: 'warning'
@@ -149,7 +149,7 @@ export default {
                      .catch((err) => {
                        this.loading = false
                        this.$message({
-                         message: "上架失败，请稍后再试",
+                         message: `${msgstr}失败，请稍后再试`,
                          center: true,
                          type: "error",
                        });
@@ -225,7 +225,7 @@ export default {
       }
     },
     search() {
-      this.currentPage=1;
+      this.searchdata.currentPage=1;
       this.getlist();
     },
     getlist(){
@@ -241,7 +241,6 @@ export default {
           if (result.data.status == 0) {
             this.dataList = result.data.data.records;
             this.total = result.data.data.total;
-            this.currentPage = result.data.data.current;
           } else {
             this.$message({
               message: result.data.message,
@@ -265,6 +264,8 @@ export default {
             this.searchdata[pname]=''
          }
        }
+       this.searchdata.currentPage=1
+       this.search()
     },
   },
   mounted() {
@@ -318,6 +319,7 @@ export default {
             if(item.name == '查询') this.searchBtn = true
             if(item.name == '上架') this.upBtn = true
             if(item.name == '下架') this.downBtn = true
+            if(item.name == '推荐为指定app') this.recommendBtn = true
           })
       },
       immediate:true,

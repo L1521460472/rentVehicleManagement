@@ -1,6 +1,6 @@
 <template>
   <div id="addFunSetting">
-    <div class="header">
+    <div class="header scoped">
       <span v-if="international.title">{{ showMes }}</span>
     </div>
     <div class="footer">
@@ -31,7 +31,10 @@
             <el-form-item class="formItem" :label="international.content.content_functionPermissionSettings_content">
                 <el-input maxlength="300" size="small"    v-model="form.content"></el-input>
             </el-form-item>
-            <div  class="el-form-item formItem" style="color: red;margin-left: 60px;font-size: 14px;">(请注意：业务员的“角色名称”固定为“业务”，不可用其他。)</div>
+        <!--    <div  class="el-form-item formItem" style="color: red;margin-left: 60px;font-size: 14px;">(请注意：业务员的“角色名称”固定为“业务”，不可用其他。)</div> -->
+       <!-- <el-form-item class="formItem" :label="international.content.content_functionPermissionSettings_content">
+             <el-checkbox v-model="isDefaultRole">是否为默认角色</el-checkbox>
+        </el-form-item> -->
         </el-form>
         <div class="footerButton">
             <el-button type="primary" size="small" @click="$route.query.from == 'add' ? addConfirm():editConfirm()" >{{
@@ -57,7 +60,7 @@ export default {
             content: '',
             roleName:'',
             roleType:234,
-            enterpriseId:''
+            enterpriseId:'',
         },//新增数据
         statusList:[],
         roleTypeList:[],//状态列表
@@ -69,6 +72,7 @@ export default {
         Authorization: getCookie("HTBD_PASS"),
         language: this.$store.state.language,
       },
+        isDefaultRole:false
     }
   },
   methods: {
@@ -97,7 +101,8 @@ export default {
                     content: this.form.content,
                     roleName: this.form.roleName,
                     roleType: this.form.roleType,
-                    enterpriseId:this.form.enterpriseId
+                    enterpriseId:this.form.enterpriseId,
+                    isDefaultRole:this.isDefaultRole?1:0
                 }
                 addFunSetting2(params,this.headers).then(res=>{
                     if(res.status == 0){
@@ -127,7 +132,8 @@ export default {
                     id: this.$route.query.id,
                     roleName: this.form.roleName,
                     roleType: this.form.roleType,
-                    enterpriseId:this.form.enterpriseId
+                    enterpriseId:this.form.enterpriseId,
+                    isDefaultRole:this.isDefaultRole?1:0
                 }
                 editFunSetting(params,this.headers).then(res=>{
                     if(res.status == 0){
@@ -170,12 +176,14 @@ export default {
         this.form.content = "";
         this.form.roleName = "";
         this.form.roleType = 234;
+        this.isDefaultRole=false
       }else{
         getFunDeail({id:this.$route.query.id},this.headers).then(res=>{
             this.form.content = res.data.content;
             this.form.roleName = res.data.roleName;
             this.form.roleType = res.data.roleType;
             this.form.enterpriseId=res.data.enterpriseId
+            this.isDefaultRole=res.data.isDefaultRole==1?true:false
         }).catch(err=>{
             console.log(err)
             this.$message({

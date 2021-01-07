@@ -1,18 +1,21 @@
 <template>
   <div id="organization" v-loading="loading"  element-loading-text="loading">
       <div class="header" v-if="international.global">
-        <div class="headerTop">
+        <div class="headerTop scoped">
             <div class="nav">
                 <span class="demonstration">{{international.content.content_organization_organizationCode}}</span>
-                <el-input maxlength="50" size="small" v-model="searchCode" :placeholder="international.content.content_organization_organizationCode"></el-input>
+                <el-input maxlength="50" size="small" v-model="searchCode"
+                :placeholder="international.content.content_organization_organizationCode"></el-input>
             </div>
             <div class="nav">
                 <span class="demonstration">{{international.content.content_organization_organizationName}}</span>
-                <el-input maxlength="50" size="small" v-model="searchName" :placeholder="international.content.content_organization_organizationName"></el-input>
+                <el-input maxlength="50" size="small" v-model="searchName"
+                 :placeholder="international.content.content_organization_organizationName"></el-input>
             </div>
             <div class="nav">
                 <span class="demonstration">{{international.content.content_organization_status}}</span>
-                <el-select clearable  size="small" v-model="status" value-key="value"  :placeholder="international.content.content_organization_status" >
+                <el-select clearable  size="small" v-model="status" value-key="value"
+                :placeholder="international.content.content_organization_status" >
                     <el-option
                     v-for="item in statusList"
                     :key="item.id"
@@ -21,7 +24,8 @@
                     </el-option>
                 </el-select>
             </div>
-            <el-button class="search" type="primary" size="small" v-if="searchBtn" @click="search">{{international.global.global_search}}</el-button>
+            <el-button class="search" type="primary" size="small" v-if="searchBtn"
+             @click="search">{{international.global.global_search}}</el-button>
             <el-button class="reset" type="primary" size="small" @click="reset">{{international.global.global_reset}}</el-button>
         </div>
       </div>
@@ -49,7 +53,8 @@
                 <el-table border stripe :header-cell-style="{background:'#F5F7FA',color:'#333333'}" size="small" :data="tableData"
                 @selection-change="handleSelectionChange" style="width: 100%; height: 100%;" :height="tableHeight">
                     <el-table-column type="selection"  align="center" width="60"></el-table-column>
-                    <el-table-column prop="id" :label="international.field.field_organizationList_serialNumber" align="center" width="60">
+                    <el-table-column prop="id" :label="international.field.field_organizationList_serialNumber"
+                    align="center" width="60">
                         <template slot-scope="scope">
                             {{ scope.$index + (currentPage - 1) * pageSize + 1 }}
                         </template>
@@ -65,7 +70,8 @@
                     <el-table-column prop="statusText" :label="international.field.field_organizationList_status" align="center"
                     width="80" show-overflow-tooltip>
                         <template slot-scope="scope">
-                            <span :class="scope.row.enterpriseStatus == 230 ? 'activeStatus':'deactiveStatus'">{{scope.row.statusText}}</span>
+                            <span :class="scope.row.enterpriseStatus == 230 ? 'activeStatus':'deactiveStatus'">
+                            {{scope.row.statusText}}</span>
                         </template>
                     </el-table-column>
                     <el-table-column prop="parentEnterpriseName"
@@ -75,6 +81,7 @@
                     <el-table-column  prop="headOfPerson" :label="international.field.field_organizationList_principal"
                     width="130" show-overflow-tooltip>
                     </el-table-column>
+                    <el-table-column prop="accountBalance" label="企业余额"></el-table-column>
                     <el-table-column prop="mobile" :label="international.field.field_organizationList_phone"
                     width="130" show-overflow-tooltip>
                     </el-table-column>
@@ -88,7 +95,13 @@
                           <span v-html="scope.row.openAccounts==0?'无限制':scope.row.openAccounts"></span>
                       </template>
                     </el-table-column>
-                    <el-table-column prop="openedAccounts" label="已开账号个数" min-width="100" show-overflow-tooltip align="center"></el-table-column>
+                    <el-table-column prop="openedAccounts" label="已开账号个数" min-width="100" show-overflow-tooltip align="center">                    </el-table-column>
+                    <el-table-column prop="" label="操作人" width="80" show-overflow-tooltip>
+                      <template slot-scope="scope">
+                        <span v-if="scope.row.updatedByStr">{{scope.row.updatedByStr}}</span>
+                        <span v-else>{{scope.row.createdByStr}}</span>
+                      </template>
+                    </el-table-column>
                 </el-table>
             </div>
             <div class="footer_page">
@@ -105,7 +118,7 @@
 </template>
 
 <script>
-import { getCookie, setCookie, removeCookie ,getMenuBtnList,formatDate} from "../../public";
+import { getCookie, setCookie, removeCookie ,getMenuBtnList,formatDate,formatJE} from "../../public";
 import {getOrganizationData,getStatusList ,activeOrganization,loseEefficacyOrganization} from '../../api/fileManagement/api'
 export default {
     name:'organization',
@@ -163,6 +176,9 @@ export default {
                       if(pname=="dueDate")
                       {
                         item.dueDate=formatDate(item.dueDate,'yyyy-MM-dd');
+                      }
+                      if(pname=="accountBalance"){
+                         item.accountBalance=formatJE(item.accountBalance);
                       }
                     }
                   }

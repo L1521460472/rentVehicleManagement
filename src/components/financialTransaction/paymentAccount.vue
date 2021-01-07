@@ -1,9 +1,9 @@
 <template>
   <div id="paymentAccount" v-loading="loading"  element-loading-text="loading">
       <div class="header" >
-        <div class="headerTop">
+        <div class="headerTop scoped">
             <div class="nav">
-                <span class="demonstration">所属门店</span>
+                <span class="demonstration">所属公司</span>
                 <el-select clearable  size="small" v-model="belongCompany"   placeholder="" >
                     <el-option
                     v-for="item in companyList"
@@ -50,7 +50,7 @@
                     </el-table-column>
                     <el-table-column
                     prop="enterpriseName"
-                    label="所属门店"
+                    label="所属公司"
                     width="140"
                     show-overflow-tooltip>
                     </el-table-column>

@@ -4,7 +4,11 @@
     v-loading="loading"
   >
     <div class="header">
-      <div class="headerTop">
+      <div class="headerTop scoped">
+      <div class="nav">
+          <span>所属公司</span>
+          <company v-model="enterpriseId"></company>
+        </div>
         <div class="nav">
           <span>地点关键字</span>
           <el-input
@@ -52,7 +56,7 @@
         </el-button>
       </div>
       <div class="footerTable">
-        <div class="footer_informatian">
+        <div class="">
           <el-table
             :data="dataList"
             border
@@ -69,6 +73,7 @@
               align="center"
               width="60"
             ></el-table-column>
+            <el-table-column prop="enterpriseName" label="所属公司" width="140" show-overflow-tooltip></el-table-column>
             <el-table-column prop="" width="60" label="序号" align="center">
               <template slot-scope="scope">
                 {{ scope.$index + (currentPage - 1) * pageSize + 1 }}
@@ -103,10 +108,15 @@
 <script>
 import axios from "axios";
 import { getCookie, dateToString, getMenuBtnList } from "../../../public";
+import company from "@/components/aacommon/getEnterpriseBox.vue"
 export default {
   name: "saveCarLocation",
+    components:{
+      company
+    },
   data() {
     return {
+      enterpriseId:"",
       loading: false,
       value: "", //车型关键字
       addBtn: true,
@@ -119,7 +129,7 @@ export default {
       isDisable: true,
       searchBtn : false, //查询权限按钮
       addBtn : false, //新增权限按钮
-      editBtn : false, // 修改权限按钮 
+      editBtn : false, // 修改权限按钮
       deleteBtn:false,//删除权限按钮
       tableHeight: window.innerHeight - 356 +'',
       headers: {
@@ -138,6 +148,7 @@ export default {
         data: {
           parkingName: this.value,
           currentPage: this.currentPage,
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           pageSize: val,
         },
       })
@@ -157,7 +168,7 @@ export default {
           }
         })
         .catch((err) => {
-          
+
           this.$message({
             message: err.response.data.message,
             center: true,
@@ -172,6 +183,7 @@ export default {
         url: "/vehicle-service/parkingLotInfo/parkingLotInfoPageQuery",
         headers: this.headers,
         data: {
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           parkingName: this.value,
           currentPage: val,
           pageSize: this.pageSize,
@@ -213,6 +225,7 @@ export default {
         url: "/vehicle-service/parkingLotInfo/parkingLotInfoPageQuery",
         headers: this.headers,
         data: {
+         enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           parkingName: this.value,
           currentPage: this.currentPage,
           pageSize: this.pageSize,
@@ -244,6 +257,7 @@ export default {
         });
     },
     reset() {
+      this.enterpriseId="";
       this.initData();
       this.value = "";
     },
@@ -441,6 +455,7 @@ export default {
         url: "/vehicle-service/parkingLotInfo/parkingLotInfoPageQuery",
         headers: this.headers,
         data: {
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           parkingName: "",
           currentPage: 1,
           pageSize: 10,

@@ -1,6 +1,10 @@
 <template>
   <div v-loading="loading" class="box-container">
-    <div class="box">
+    <div style="text-align: right;margin-right: -17px;">
+      <span style="font-size: 14px;">所属公司</span>
+      <company v-model="searchdata.enterpriseId"></company>
+    </div>
+    <div class="box" style="margin-top: 2px;">
       <el-input class="searchin" size="small" placeholder="请输入车牌号 搜索相关合同" v-model="searchVal" clearable>
       </el-input>
       <el-button @click="search" class="searchbtn" type="primary" size="small">查询</el-button>
@@ -132,7 +136,13 @@
       </div>
     </div>
     <div class="box">
-      <div class="box-title">当月收付款总览</div>
+      <div class="box-title">
+        当月合同收付款总览
+      <div style="font-size: 14px;display: inline-block;margin-left: 20px;">
+        <span>选择月份</span>
+        <el-date-picker v-model="searchdata.years" type="month" placeholder="" value-format="yyyy-MM"></el-date-picker>
+      </div>
+      </div>
       <div class="box-item" style="justify-content: flex-start;">
         <div class="box-item-col"
         style="margin-right: 28px;width: calc(calc(100% / 3) - 50px);margin-bottom: unset;">
@@ -263,17 +273,26 @@
 <script>
   import axios from "axios";
   import echarts from 'echarts'
+  import company from "@/components/aacommon/getEnterpriseBox.vue"
   import {
     formatJE,
     formatJE2,
     getCookie,
     openNewTab,
-    convertObject
+    convertObject,formatDate
   } from '../../public.js'
   export default {
     name: 'mainWorkDesk',
+    components:{
+      company
+    },
     data() {
       return {
+        searchdata:{
+          "enterpriseId":getCookie("UserEnterpriseId"),
+          "years": formatDate(new Date(),'yyyy-MM'),
+           "type":"1"
+        },
         loading: false,
         initPageUrl: '/vehicle-service/homePage/home',
         GetChartDataUrl: '/vehicle-service/homePage/signDynamic?type=',
@@ -352,13 +371,13 @@
       jumptosztz() {
         openNewTab(this, '收租台账', '/rentParameter')
       },
-      initPage(callback) {
+      initPage() {
         this.loading = true
         axios({
             method: "post",
             url: this.initPageUrl,
             headers: this.headers,
-            data: null,
+            data: this.searchdata,
           })
           .then((result) => {
             // console.log(result.data);
@@ -370,10 +389,28 @@
               this.receivingOverViewVO = result.data.data.receivingOverViewVO;
               this.customerOverViewVO = result.data.data.customerOverViewVO;
               this.InitYinFuChart();
-              callback(this);
+
+              let vehicleOverViewVO = this.vehicleOverViewVO;
+              for (let pname in vehicleOverViewVO) {
+                if (typeof vehicleOverViewVO[pname] == 'number' && pname != "percentage"&&pname!="vehicleUtilization") {
+                  vehicleOverViewVO[pname] = formatJE2(vehicleOverViewVO[pname]);
+                }
+              }
+              let receivingOverViewVO = this.receivingOverViewVO;
+              for (let pname in receivingOverViewVO) {
+                if (typeof receivingOverViewVO[pname] == 'number' && pname != "returnRate"&&pname!="newContract") {
+                  receivingOverViewVO[pname] = formatJE(receivingOverViewVO[pname]);
+                }
+              }
+              let messageOverViewVO = this.messageOverViewVO;
+              for (let pname in messageOverViewVO) {
+                if (messageOverViewVO[pname] == '暂无数据') {
+                  messageOverViewVO[pname] = '<span style="font-size:14px">暂无数据</span>'
+                }
+              }
             } else {
               this.$message({
-                message: res.data.message,
+                message: result.data.message,
                 center: true,
                 type: "error",
               });
@@ -390,6 +427,7 @@
           });
       },
       GetChartData(type) {
+        this.searchdata.type=type
         if(type==1){
           this.chartlabelcolor.wcolor='color:#368CFE'
           this.chartlabelcolor.mcolor=''
@@ -406,10 +444,10 @@
           this.chartlabelcolor.ycolor='color:#368CFE'
         }
         axios({
-            method: "get",
+            method: "post",
             url: this.GetChartDataUrl + type,
             headers: this.headers,
-            data: null,
+            data: this.searchdata,
           })
           .then((result) => {
             //console.log(result.data);
@@ -438,7 +476,7 @@
         //客户总览折线图
         let khzl_chart = echarts.init(this.$refs.khzl_chart_id)
         let xAxis_data = []
-        let series_data = [] 
+        let series_data = []
         for (let item of option) {
           xAxis_data.push(item.day.replace(/-/gm, '/'))
           series_data.push(item.total)
@@ -467,7 +505,7 @@
             type: 'line',
             color: ['#FFA030']
           }]
-        }; 
+        };
         khzl_chart.setOption(option);
       },
       InitYinFuChart(){
@@ -524,28 +562,18 @@
       tongzhitixing_percentage.style.fontSize = '32px'
       tongzhitixing_percentage.style.fontFamily = 'fzyaoti'
 
-      this.initPage(function($this) {
-        let vehicleOverViewVO = $this.vehicleOverViewVO;
-        for (let pname in vehicleOverViewVO) {
-          if (typeof vehicleOverViewVO[pname] == 'number' && pname != "percentage"&&pname!="vehicleUtilization") {
-            vehicleOverViewVO[pname] = formatJE2(vehicleOverViewVO[pname]);
-          }
-        }
-        let receivingOverViewVO = $this.receivingOverViewVO;
-        for (let pname in receivingOverViewVO) {
-          if (typeof receivingOverViewVO[pname] == 'number' && pname != "returnRate"&&pname!="newContract") {
-            receivingOverViewVO[pname] = formatJE(receivingOverViewVO[pname]);
-          }
-        }
-        let messageOverViewVO = $this.messageOverViewVO;
-        for (let pname in messageOverViewVO) {
-          if (messageOverViewVO[pname] == '暂无数据') {
-            messageOverViewVO[pname] = '<span style="font-size:14px">暂无数据</span>'
-          }
-        }
-      });
+      this.initPage();
       this.GetChartData(1);
       openNewTab(this,'首页','/mainWorkDesk')
+    },
+    watch:{
+      searchdata:{
+        handler(){
+          this.initPage()
+        },
+        immediate:true,
+        deep:true
+      }
     }
   }
 </script>

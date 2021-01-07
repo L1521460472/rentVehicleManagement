@@ -1,10 +1,11 @@
 <template>
-  <div
-    id="header"
-    v-loading="loading"
-  >
+  <div id="header" v-loading="loading">
     <div class="header">
-      <div class="headerTop">
+      <div class="headerTop scoped">
+        <div class="nav">
+          <span>所属公司</span>
+          <company v-model="enterpriseId"></company>
+        </div>
         <div class="nav">
           <span>品牌</span>
           <el-select clearable v-model="brandValue" size="small" placeholder="">
@@ -55,7 +56,7 @@
         </el-button>
       </div>
       <div class="footerTable">
-        <div class="footer_informatian">
+        <div class="">
           <el-table
             :data="dataList"
             border
@@ -73,6 +74,7 @@
               align="center"
               width="60"
             ></el-table-column>
+            <el-table-column prop="enterpriseName" label="所属公司" width="140" show-overflow-tooltip></el-table-column>
             <el-table-column prop="" width="60" label="序号" align="center">
               <template slot-scope="scope">
                 {{ scope.$index + (currentPage - 1) * pageSize + 1 }}
@@ -145,7 +147,7 @@
             <el-carousel-item v-for="item in imageUrlList" :key="item.id">
               <img class="imgList" :src="item.efileAddr" alt="" srcset="">
             </el-carousel-item>
-          </el-carousel>        
+          </el-carousel>
         </el-dialog>
 
       </div>
@@ -155,10 +157,15 @@
 <script>
 import axios from "axios";
 import { getCookie, dateToString, getMenuBtnList } from "../../../public";
+import company from "@/components/aacommon/getEnterpriseBox.vue"
 export default {
   name: "vehicleMaintenance",
+    components:{
+      company
+    },
   data() {
     return {
+      enterpriseId:"",
       loading: false,
       value: null, //车型关键字
       brandValue: null, //品牌
@@ -178,7 +185,7 @@ export default {
       dialogVisible:false,//查看图片弹窗
       searchBtn : false, //查询权限按钮
       addBtn : false, //新增权限按钮
-      editBtn : false, // 修改权限按钮 
+      editBtn : false, // 修改权限按钮
       tableHeight: window.innerHeight - 356 +'',
       headers: {
         Authorization: getCookie("HTBD_PASS"),
@@ -207,6 +214,7 @@ export default {
           brandName: this.brandValue,
           vehicleTypeName: this.value,
           currentPage: 1,
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           pageSize: val,
         },
       })
@@ -243,6 +251,7 @@ export default {
           brandName: this.brandValue,
           vehicleTypeName: this.value,
           currentPage: val,
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           pageSize: 10,
         },
       })
@@ -276,6 +285,7 @@ export default {
           brandName: this.brandValue,
           vehicleTypeName: this.value,
           currentPage: 1,
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           pageSize: this.pageSize,
         },
       })
@@ -311,6 +321,7 @@ export default {
         });
     },
     reset() {
+      this.enterpriseId="";
       this.initData();
       this.value = "";
       this.brandValue = "";
@@ -361,6 +372,7 @@ export default {
           brandName: null,
           vehicleTypeName: null,
           currentPage: this.currentPage,
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           pageSize: this.pageSize,
         },
       })

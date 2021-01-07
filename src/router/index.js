@@ -191,6 +191,26 @@ const routes = [
         name: 'auditillegal',
         component: () => import('../components/trafficProcessing/illegalProcessing/auditillegal.vue')
       },
+      {
+        path:'/illegalVehicle',
+        name: 'illegalVehicle',
+        component: () => import('../components/trafficProcessing/illegalProcessing/illegalVehicle.vue')
+      },
+      {
+        path:'/illegalbatchQuery',
+        name: 'illegalbatchQuery',
+        component: () => import('../components/trafficProcessing/illegalProcessing/illegalbatchQuery.vue')
+      },
+      {
+        path:'/illegalDetail',
+        name: 'illegalDetail',
+        component: () => import('../components/trafficProcessing/illegalProcessing/illegalDetail.vue')
+      },
+      {
+        path:'/illegalResult',
+        name: 'illegalResult',
+        component: () => import('../components/trafficProcessing/illegalProcessing/illegalResult.vue')
+      },
       // 业务处理
       // 客户信息
       {
@@ -355,6 +375,12 @@ const routes = [
         name: 'backVehicle',
         component: () => import('../components/financialTransaction/backVehicle.vue')
       },
+      //退车结算详情
+      {
+        path:'/backVehicleDetail',
+        name: 'backVehicleDetail',
+        component: () => import('../components/financialTransaction/backVehicleDetail.vue')
+      },
       //退车结算审核
       {
         path:'/backVehicleAudit',
@@ -484,6 +510,96 @@ const routes = [
         path:'/roleaddFunSetting',
         name: 'roleaddFunSetting',
         component: () => import('../components/accountManager/roleaddFunSetting.vue')
+      },
+      //充值页面
+      {
+        path:'/pay',
+        name: 'pay',
+        component: () => import('../components/payCenter/pay.vue')
+      },
+      //在线充值页面
+      {
+        path:'/onlinepay',
+        name: 'onlinepay',
+        component: () => import('../components/payCenter/onlinepay.vue')
+      },
+       //充值记录
+      {
+        path:'/payrecord',
+        name: 'payrecord',
+        component: () => import('../components/payCenter/payrecord.vue')
+      },
+       //扣费记录
+      {
+        path:'/chargerecord',
+        name: 'chargerecord',
+        component: () => import('../components/payCenter/chargerecord.vue')
+      },
+       //用户操作记录
+      {
+        path:'/userOperateLogs',
+        name: 'userOperateLogs',
+        component: () => import('../components/reportManager/userOperateLogs.vue')
+      },
+      //发票管理
+      {
+        path:'/listPage',
+        name: 'listPage',
+        component: () => import('../components/InvoiceRecord/listPage.vue')
+      },
+      //新开发票
+      {
+        path:'/AddInvoice',
+        name: 'AddInvoice',
+        component: () => import('../components/InvoiceRecord/AddInvoice.vue')
+      },
+      //发票记录
+      {
+        path:'/listPageInvoice',
+        name: 'listPageInvoice',
+        component: () => import('../components/InvoiceRecord/listPageInvoice.vue')
+      },
+      //发票记录
+      {
+        path:'/invoiceDetail',
+        name: 'invoiceDetail',
+        component: () => import('../components/InvoiceRecord/invoiceDetail.vue')
+      },
+      //品牌车辆车型数统计报表
+      {
+        path:'/brandVehicleTypeVehicleNum',
+        name: 'brandVehicleTypeVehicleNum',
+        component: () => import('../components/reportManager/brandVehicleTypeVehicleNum.vue')
+      },
+       //存车地点车辆数报表
+      {
+        path:'/parkingLotVehicleNum',
+        name: 'parkingLotVehicleNum',
+        component: () => import('../components/reportManager/parkingLotVehicleNum.vue')
+      },
+       //业务员关联统计报表
+      {
+        path:'/salesManRelationStatistics',
+        name: 'salesManRelationStatistics',
+        component: () => import('../components/reportManager/salesManRelationStatistics.vue')
+      },
+       //渠道账户收款统计报表
+      {
+        path:'/collectionAccountStatistics',
+        name: 'collectionAccountStatistics',
+        component: () => import('../components/reportManager/collectionAccountStatistics.vue')
+      },
+       //锁车记录
+      {
+        path:'/vehicleLockRecord',
+        name: 'vehicleLockRecord',
+        component: () => import('../components/trafficProcessing/vehicleLockRecord/vehicleLockRecord.vue')
+      },
+       //锁车车辆列表
+      {
+        path:'/vehicleLockPageList',
+        name: 'vehicleLockPageList',
+        component: () => import('../components/trafficProcessing/vehicleLockRecord/vehicleLockPageList.vue')
       }
     ]
   }
@@ -492,7 +608,22 @@ const routes = [
 const router = new Router({
   // mode: 'history', // 打包的时候有这句的删掉，没有就不用管
   base: process.env.BASE_URL,
-  routes
+  routes,
+  parseQuery:(query)=>{
+   if(query){
+     return JSON.parse(decodeURIComponent(escape(window.atob(query))))
+   }else{
+     return Object.create(null)
+   }
+  },
+  stringifyQuery:(obj)=>{
+    if(Object.keys(obj).length>0){
+      return `?${window.btoa(unescape(encodeURIComponent(JSON.stringify(obj))))}`
+    }
+    else{
+      return ""
+    }
+  }
 })
 
 router.beforeEach((to, from, next) => {

@@ -72,6 +72,7 @@
       loadmessage(flag, pageSize, currentPage) {
         let nodata = "暂无消息"
         let data = {
+          enterpriseId:getCookie("UserEnterpriseId"),
           currentPage: currentPage | this.currentPage,
           pageSize: pageSize | this.pageSize,
         }

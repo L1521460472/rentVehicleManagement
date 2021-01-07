@@ -2,10 +2,14 @@
   <div id="keyToUpload" v-loading="loading">
     <div class="headerTop">
       <div class="nav">
+          <span class="demonstration">所属公司</span>
+          <company v-model="enterpriseId"></company>
+      </div>
+      <div class="nav">
         <span class="demonstration">用户手机号</span>
         <el-input maxlength="50" size="small" v-model="userPhone" placeholder=''></el-input>
       </div>
-      <div class="nav"> 
+      <div class="nav">
         <span class="demonstration">用户姓名</span>
         <el-input maxlength="50" size="small" v-model="userName" placeholder=''></el-input>
       </div>
@@ -31,10 +35,10 @@
       <div class="nav">
         <span class="demonstration">反馈状态</span>
         <el-select clearable size="small" v-model="feedback" placeholder=''>
-          <el-option 
-            v-for="item in feedbackList" 
-            :key="item.id" 
-            :label="item.value" 
+          <el-option
+            v-for="item in feedbackList"
+            :key="item.id"
+            :label="item.value"
             :value="item.id"
           ></el-option>
         </el-select>
@@ -76,6 +80,7 @@
             style="width: 100%; height: 100%;"
           >
             <el-table-column type="selection" align="center" width="60"></el-table-column>
+            <el-table-column prop="enterpriseName" label="所属公司" width="140" show-overflow-tooltip></el-table-column>
             <el-table-column prop="reportTime" label="上传时间" width="140" show-overflow-tooltip></el-table-column>
             <el-table-column prop="reportType" label="上传类型" width="90" show-overflow-tooltip></el-table-column>
             <el-table-column prop="vehicleNo" label="车牌号" width="100" show-overflow-tooltip></el-table-column>
@@ -130,10 +135,15 @@
 <script>
 import {keyToUploadData,keyToUploadHandle} from '../../../api/trafficProcessing/api'
 import {getCookie,setCookie,removeCookie,getMenuBtnList} from "../../../public";
+import company from "@/components/aacommon/getEnterpriseBox.vue"
 export default {
   name: "keyToUpload",
+    components:{
+      company
+    },
   data() {
     return {
+      enterpriseId:"",
       loading:false,//是否显示loading
       isDisable: true, //是否禁用修改、处理、审核、查看按钮
       currentPage: 1, //当前页数
@@ -183,7 +193,7 @@ export default {
       imageUrl:'',
       searchBtn:false,//查询按钮是否有权限显示
       dealWithBtn:false,//处理按钮是否有权限显示
-      tableHeight: window.innerHeight - 400 +'',
+      tableHeight: window.innerHeight - 450 +'',
       headers: {
         Authorization: getCookie("HTBD_PASS"),
         language: this.$store.state.language,
@@ -203,6 +213,7 @@ export default {
         userName: this.userName,
         vehicleNo: this.vehicleNo,
         currentPage:this.currentPage,
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
         pageSize: this.pageSize
       }
       keyToUploadData(params,this.headers).then(res=>{
@@ -227,6 +238,7 @@ export default {
     },
     // 重置
     resetAction(){
+      this.enterpriseId="",
       this.contractCode = null,
       this.unloadTime = null,
       this.feedback = null,
@@ -342,7 +354,7 @@ export default {
 <style scoped>
 #keyToUpload {
   width: 100%;
-  height: calc(100% - 76px);
+  height: calc(100% - 126px);
 }
 .headerTop {
   border: 1px solid #e5e5e5;
@@ -393,7 +405,7 @@ export default {
   float: left;
   color: #368cfe !important;
   background: rgba(54, 140, 254, 0.1) !important;
-  border-color: #b3d8ff; 
+  border-color: #b3d8ff;
 }
 
 .search:hover {
@@ -412,7 +424,7 @@ export default {
 }
 .footer .top {
   width: 100%;
-  height: 68px;
+  height: 48px;
   box-sizing: border-box;
   padding-left: 25px;
   display: flex;

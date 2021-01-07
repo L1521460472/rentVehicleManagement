@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-    <div class="header">
+    <div class="header scoped">
       <span v-if="international.title">{{ showMes }}</span>
     </div>
     <div class="footer">
@@ -81,6 +81,14 @@
             </el-form-item>
             <!-- </div>
             <div class="formItemNav">-->
+            
+            <el-form-item label="是否为业务员">
+               <b id="xlabel">*</b>
+              <el-select v-model="form.isSalesman">
+                <el-option :value="0" label="否"></el-option>
+                <el-option :value="1" label="是"></el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item :label="international.content.content_userProfile_status">
               <b id="xlabel">*</b>
               <el-select size="small" v-model="form.userStatus" placeholder>
@@ -92,7 +100,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <!-- </div> -->
+            <!-- </div> -->            
           </div>
           <div class="footerButton" v-if="international.content">
             <!-- <el-form-item> -->
@@ -146,6 +154,7 @@ export default {
         departmentId: "", //归属部门
         userStatus: "",
         userType: "",
+        isSalesman:0
       },
       international: {},
       optionsStatusList: [], //状态列表
@@ -396,6 +405,7 @@ export default {
       this.form.departmentId = "";
       this.form.userStatus = 232;
       this.form.userType = 234;
+      this.form.isSalesman=0
     } else {
       this.showButton = false;
       axios({
@@ -416,6 +426,7 @@ export default {
             this.form.departmentId = result.data.data.departmentId;
             this.form.userStatus = result.data.data.userStatus;
             this.form.userType = result.data.data.userType;
+            this.form.isSalesman = result.data.data.isSalesman;
             getDepartmentList(
               { enterpriseId: this.form.enterpriseId },
               this.headers

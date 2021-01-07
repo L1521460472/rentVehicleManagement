@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="table">
-      <div class='header'>
+      <div class='header scoped'>
         <div>类型</div>
         <div>提醒事件</div>
         <div>规则单位</div>
