@@ -4,7 +4,11 @@
     v-loading="loading"
   >
     <div class="header">
-      <div class="headerTop">
+      <div class="headerTop scoped">
+      <div class="nav">
+          <span class="demonstration">所属公司</span>
+          <company v-model="enterpriseId"></company>
+      </div>
         <div class="nav">
           <span class="demonstration">合同编号</span>
           <el-input v-model="contractCode" size="small" maxlength="50" placeholder></el-input>
@@ -69,6 +73,7 @@
             <el-table-column prop width="60" label="序号" align="center">
               <template slot-scope="scope">{{ scope.$index + (currentPage - 1) * pageSize + 1 }}</template>
             </el-table-column> -->
+          <el-table-column prop="enterpriseName" label="所属公司" width="140" show-overflow-tooltip></el-table-column>
             <el-table-column prop="contractCode" width="150" label="合同编号"></el-table-column>
             <el-table-column prop="vehicleNo" width="100" label="车牌号"></el-table-column>
             <el-table-column prop="changeTypeStr" width="100" label="变更项"></el-table-column>
@@ -100,10 +105,15 @@
 <script>
 import axios from "axios";
 import { getCookie, dateToString, getMenuBtnList ,formatJE} from "../../public";
+import company from "@/components/aacommon/getEnterpriseBox.vue"
 export default {
   name: "planChangeRecord",
+    components:{
+      company
+    },
   data() {
     return {
+      enterpriseId:"",
       loading: false,
       contractCode: "", //合同编号
       vehicleNo: "", //车牌号
@@ -132,7 +142,7 @@ export default {
       isDisable: true,
       searchBtn : false, //查询权限按钮
       exportBtn: false,//导出
-      tableHeight: window.innerHeight - 356 +'',
+      tableHeight: window.innerHeight - 396 +'',
       headers: {
         Authorization: getCookie("HTBD_PASS"),
         language: this.$store.state.language,
@@ -147,6 +157,7 @@ export default {
         url: "/vehicle-service/contractChangerecordInfo/queryPageChangeRecordInfo",
         headers: this.headers,
         data: {
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           contractCode: null,
           changeType:null,
           id: null,
@@ -196,6 +207,7 @@ export default {
         url: "/vehicle-service/contractChangerecordInfo/queryPageChangeRecordInfo",
         headers: this.headers,
         data: {
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           contractCode: null,
           changeType:null,
           id: null,
@@ -259,6 +271,7 @@ export default {
           vehicleNo: this.vehicleNo,
           currentPage: this.currentPage,
           pageSize: this.pageSize,
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
         },
       })
         .then((result) => {
@@ -294,6 +307,7 @@ export default {
         });
     },
     reset() {
+      this.enterpriseId=""
       this.initData();
       this.auditStatus = "";
       this.contractCode = "";
@@ -333,7 +347,7 @@ export default {
                 let link = document.createElement("a");
                 let evt = document.createEvent("HTMLEvents");
                 evt.initEvent("click", false, false);
-                link.href = URL.createObjectURL(blob); 
+                link.href = URL.createObjectURL(blob);
                 link.download = "变更记录.xls";
                 link.style.display = "none";
                 document.body.appendChild(link);
@@ -358,6 +372,7 @@ export default {
         url: "/vehicle-service/contractChangerecordInfo/queryPageChangeRecordInfo",
         headers: this.headers,
         data: {
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           contractCode: null,
           changeType:null,
           id: null,
@@ -371,6 +386,9 @@ export default {
         .then((result) => {
           this.loading = false
           if (result.data.status == 0) {
+              setTimeout(() => {
+            window.onload()
+          }, 10)
             this.dataList = result.data.data.records.map((item)=>{
               if(item.beforeChange.substring(0,3) == '第0期'){
                 item.beforeChange = item.beforeChange.replace('第0期','押金')
@@ -438,21 +456,16 @@ export default {
 <style scoped>
 #header {
   width: 100%;
-  height: calc(100% - 76px);
+  height: calc(100% - 116px);
 }
 .header {
   width: 100%;
-  height: 66px;
-  box-sizing: border-box;
-  /* border: 1px solid #e5e5e5; */
+  box-sizing: border-box; 
   margin-bottom: 16px;
 }
 .headerTop {
-  border: 1px solid #e5e5e5;
   box-sizing: border-box;
-  overflow: hidden;
-  /* padding-bottom: 15px; */
-  margin-bottom: 16px;
+  overflow: hidden; 
 }
 .demonstration {
   display: inline-block;

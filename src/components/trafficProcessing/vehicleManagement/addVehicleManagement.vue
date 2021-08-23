@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-    <div class="header">
+    <div class="header scoped">
       <span>{{ showMsg }}</span>
     </div>
     <div class="footer">
@@ -8,17 +8,27 @@
         <div class="footerTitle">
           <span>车辆信息</span>
         </div>
-        <el-form ref="formVeInformation" :model="formVeInformation" label-width="120px">
+        <el-form
+          ref="formVeInformation"
+          :model="formVeInformation"
+          label-width="120px"
+        >
           <div class="formNav formNavs">
             <el-form-item
               label="车牌号码"
               prop="vehicleNo"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur'}]"
+              :rules="[
+                {
+                  required: true,
+                  message: international.global.global_contNotEmpty,
+                  trigger: 'blur',
+                },
+              ]"
             >
               <el-input
                 class="formItem"
                 size="small"
-                :disabled="isOperation"
+                :disabled="disabledVehicleNo"
                 maxlength="100"
                 v-model="formVeInformation.vehicleNo"
               ></el-input>
@@ -26,7 +36,13 @@
             <el-form-item
               label="车架号"
               prop="vinNo"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur'}]"
+              :rules="[
+                {
+                  required: true,
+                  message: international.global.global_contNotEmpty,
+                  trigger: 'blur',
+                },
+              ]"
             >
               <el-input
                 class="formItem"
@@ -39,7 +55,13 @@
             <el-form-item
               label="发动机号"
               prop="engineNo"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur'}]"
+              :rules="[
+                {
+                  required: true,
+                  message: international.global.global_contNotEmpty,
+                  trigger: 'blur',
+                },
+              ]"
             >
               <el-input
                 class="formItem"
@@ -49,10 +71,7 @@
                 v-model="formVeInformation.engineNo"
               ></el-input>
             </el-form-item>
-            <el-form-item
-              label="有无办理营运证"
-              prop="isHasBuslic"
-            >
+            <el-form-item label="有无办理营运证" prop="isHasBuslic">
               <el-select
                 v-model="formVeInformation.isHasBuslic"
                 size="small"
@@ -67,10 +86,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              label="有无ETC"
-              prop="isHasEtc"
-            >
+            <el-form-item label="有无ETC" prop="isHasEtc">
               <el-select
                 v-model="formVeInformation.isHasEtc"
                 size="small"
@@ -85,10 +101,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              label="有无电子标签"
-              prop="isHasRfid"
-            >
+            <el-form-item label="有无电子标签" prop="isHasRfid">
               <el-select
                 v-model="formVeInformation.isHasRfid"
                 size="small"
@@ -103,10 +116,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              label="出厂日期"
-              prop="exFactoryDate"
-            >
+            <el-form-item label="出厂日期" prop="exFactoryDate">
               <el-date-picker
                 v-model="formVeInformation.exFactoryDate"
                 type="date"
@@ -117,10 +127,7 @@
                 placeholder="选择日期"
               ></el-date-picker>
             </el-form-item>
-            <el-form-item
-              label="运营日期"
-              prop="saleDate"
-            >
+            <el-form-item label="运营日期" prop="saleDate">
               <el-date-picker
                 v-model="formVeInformation.saleDate"
                 type="date"
@@ -131,10 +138,7 @@
                 placeholder="选择日期"
               ></el-date-picker>
             </el-form-item>
-            <el-form-item
-              label="颜色"
-              prop="vehicleColor"
-            >
+            <el-form-item label="颜色" prop="vehicleColor">
               <el-select
                 v-model="formVeInformation.vehicleColor"
                 size="small"
@@ -149,10 +153,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              label="备注"
-              prop="remark"
-            >
+            <el-form-item label="备注" prop="remark">
               <el-input
                 class="formItem"
                 size="small"
@@ -161,11 +162,7 @@
                 v-model="formVeInformation.remark"
               ></el-input>
             </el-form-item>
-            <el-form-item
-              label="图片"
-              class="formItem"
-              prop="efileIdCode"
-            >
+            <el-form-item label="图片" class="formItem" prop="efileIdCode">
               <el-upload
                 class="upload"
                 :disabled="isOperation"
@@ -182,7 +179,9 @@
                 :limit="5"
                 multiple
               >
-                <span :class="isOperation ? 'disabled_txt':'upload_txt'">上传图片</span>
+                <span :class="isOperation ? 'disabled_txt' : 'upload_txt'"
+                  >上传图片</span
+                >
                 <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
               </el-upload>
               <el-dialog :visible.sync="dialogVisible" width="500px">
@@ -194,7 +193,11 @@
         <div class="footerTitle">
           <span>运营信息</span>
         </div>
-        <el-form ref="formVeInformation" :model="formVeInformation" label-width="130px">
+        <el-form
+          ref="formVeInformation"
+          :model="formVeInformation"
+          label-width="130px"
+        >
           <div class="formNav">
             <el-form-item
               label="所属门店"
@@ -222,10 +225,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              label="车辆使用方式"
-              prop="vehicleUsageMode"
-            >
+            <el-form-item label="车辆使用方式" prop="vehicleUsageMode">
               <el-select
                 v-model="formVeInformation.vehicleUsageMode"
                 size="small"
@@ -240,10 +240,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              label="存车地点"
-              prop="parkingLotId"
-            >
+            <el-form-item label="存车地点" prop="parkingLotId">
               <el-select
                 v-model="formVeInformation.parkingLotId"
                 size="small"
@@ -258,10 +255,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              label="业务员"
-              prop="userId"
-            >
+            <el-form-item label="业务员" prop="userId">
               <el-select
                 v-model="formVeInformation.userId"
                 size="small"
@@ -276,10 +270,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              label="车辆出租状态"
-              prop="vehicleUsageStatus"
-            >
+            <el-form-item label="车辆出租状态" prop="vehicleUsageStatus">
               <el-select
                 v-model="formVeInformation.vehicleUsageStatus"
                 size="small"
@@ -294,10 +285,7 @@
                 ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              label="维修状态"
-              prop="vehicleRepairStatus"
-            >
+            <el-form-item label="维修状态" prop="vehicleRepairStatus">
               <el-select
                 v-model="formVeInformation.vehicleRepairStatus"
                 size="small"
@@ -317,7 +305,11 @@
         <div class="footerTitle">
           <span>车型信息</span>
         </div>
-        <el-form ref="formVehicleType" :model="formVehicleType" label-width="130px">
+        <el-form
+          ref="formVehicleType"
+          :model="formVehicleType"
+          label-width="130px"
+        >
           <div class="formNav formNavs">
             <el-form-item
               label="品牌"
@@ -483,7 +475,7 @@
               <el-image
                 v-for="(item, index) in fileList"
                 :key="index"
-                style="width: 60px; height: 60px;"
+                style="width: 60px; height: 60px"
                 :src="item.url"
                 :preview-src-list="[item.url]"
               ></el-image>
@@ -491,17 +483,41 @@
           </div>
         </el-form>
         <div class="footerTitles">
-          <el-button size="small" type="primary" v-if="showButton" @click="addVehicleInfo">提交</el-button>
-          <el-button size="small" type="primary" v-else @click="editVehicleInfo">提交</el-button>
-          <el-button size="small" type="primary" @click="isOperationShow">编辑</el-button>
+          <el-button
+            size="small"
+            type="primary"
+            v-if="showButton"
+            @click="addVehicleInfo"
+            >提交</el-button
+          >
+          <el-button size="small" type="primary" v-else @click="editVehicleInfo"
+            >提交</el-button
+          >
+          <el-button size="small" type="primary" @click="isOperationShow"
+            >编辑</el-button
+          >
         </div>
         <div class="footerTitle">
           <span>车辆证件资料</span>
-          <el-button size="small" v-if="showButton || formVehicleCard.id == null" type="primary" @click="addVehicleCard">保存</el-button>
-          <el-button size="small" v-else type="primary" @click="editVehicleCard">保存</el-button>
-          <el-button size="small" type="primary" @click="isVehicleCardShow">编辑</el-button>
+          <el-button
+            size="small"
+            v-if="showButton || formVehicleCard.id == null"
+            type="primary"
+            @click="addVehicleCard"
+            >保存</el-button
+          >
+          <el-button size="small" v-else type="primary" @click="editVehicleCard"
+            >保存</el-button
+          >
+          <el-button size="small" type="primary" @click="isVehicleCardShow"
+            >编辑</el-button
+          >
         </div>
-        <el-form ref="formVehicleCard" :model="formVehicleCard" label-width="130px">
+        <el-form
+          ref="formVehicleCard"
+          :model="formVehicleCard"
+          label-width="130px"
+        >
           <div class="formNav formNavs">
             <el-form-item
               label="行驶证号码"
@@ -592,7 +608,9 @@
                 :limit="2"
                 multiple
               >
-                <span :class="isVehicleCard ? 'disabled_txt':'upload_txt'">上传图片</span>
+                <span :class="isVehicleCard ? 'disabled_txt' : 'upload_txt'"
+                  >上传图片</span
+                >
                 <!-- <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div> -->
               </el-upload>
               <el-dialog :visible.sync="dialogVisibleCard" width="500px">
@@ -602,29 +620,53 @@
           </div>
         </el-form>
         <div class="footerTitle">
-          <span>车辆保养计划表</span>
-          <el-button size="small" v-if="showButton || scheduleTableData[0].id == null" type="primary" @click="addSchedule">保存</el-button>
-          <el-button size="small" v-else type="primary" @click="editSchedule">保存</el-button>
-          <el-button size="small" type="primary" @click="isVehicleScheduleShow">编辑</el-button>
+          <span>车辆保养计划</span>
+          <el-button
+            size="small"
+            v-if="showButton || isSaveBtn"
+            type="primary"
+            @click="addSchedule"
+            >保存</el-button
+          >
+          <el-button size="small" v-else type="primary" @click="editSchedule"
+            >保存</el-button
+          >
+          <el-button size="small" type="primary" @click="isVehicleScheduleShow"
+            >编辑</el-button
+          >
         </div>
-        <el-table :data="scheduleTableData" size="small" border style="width: 100%;">
+        <el-table
+          :data="scheduleTableData"
+          size="small"
+          border
+          style="width: 100%"
+        >
           <el-table-column prop="count" label="保养次数" width="180">
             <template slot-scope="scope">
-              <span v-if="scope.row.count == 1">首保</span>
-              <span v-if="scope.row.count == 2">二保</span>
+              <span>首保</span>
+              <!-- <span v-if="scope.row.count == 2">二保</span>
               <span v-if="scope.row.count == 3">三保</span>
               <span v-if="scope.row.count == 4">四保</span>
-              <span v-if="scope.row.count == 5">常规保养</span>
+              <span v-if="scope.row.count == 5">常规保养</span> -->
             </template>
           </el-table-column>
-          <el-table-column prop="date" label="保养周期" width="220">
+          <el-table-column prop="date" label="保养时间" width="230">
             <template slot-scope="scope">
-              <el-input
+              <el-date-picker
+                style="width: 200px"
+                :disabled="isVehicleSchedule"
+                v-model="scheduleTableData[0].firstMaintTime"
+                type="datetime"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                placeholder="选择日期"
+              >
+              </el-date-picker>
+              <!-- <el-input
                 size="small"
                 :disabled="isVehicleSchedule"
                 v-model="scheduleTableData[scope.$index].date"
                 placeholder
-              ></el-input>  &nbsp;月
+              ></el-input>  &nbsp;月 -->
             </template>
           </el-table-column>
           <el-table-column prop="mileage" label="保养公里">
@@ -632,9 +674,10 @@
               <el-input
                 size="small"
                 :disabled="isVehicleSchedule"
-                v-model="scheduleTableData[scope.$index].mileage"
+                v-model="scheduleTableData[0].firstMaintKilometre"
                 placeholder
-              ></el-input> &nbsp;Km
+              ></el-input>
+              &nbsp;Km
             </template>
           </el-table-column>
         </el-table>
@@ -642,43 +685,106 @@
           <span>车辆年检记录</span>
           <el-button size="small" type="primary" @click="addAS">新增</el-button>
         </div>
-        <el-table :data="inspectionTableData" size="small" border style="width: 100%;">
-          <el-table-column prop="yearlyInspectionDateStr" label="年检办理日期" width="180"></el-table-column>
-          <el-table-column prop="yearlyInspectionMoney" label="年检金额" width="180"></el-table-column>
+        <el-table
+          :data="inspectionTableData"
+          size="small"
+          border
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="yearlyInspectionDateStr"
+            label="年检办理日期"
+            width="180"
+          ></el-table-column>
+          <el-table-column
+            prop="yearlyInspectionMoney"
+            label="年检金额"
+            width="180"
+          ></el-table-column>
           <el-table-column prop="handler" label="年检处理人"></el-table-column>
           <el-table-column prop="ls_EfileIdCodeAddr" label="附件">
             <template slot-scope="scope">
-              <el-button size="mini" type="text" @click="handleClick(scope.row.ls_EfileIdCodeAddr)">查看附件</el-button>
+              <el-button
+                size="mini"
+                type="text"
+                @click="handleClick(scope.row.ls_EfileIdCodeAddr)"
+                >查看附件</el-button
+              >
             </template>
           </el-table-column>
           <el-table-column prop="remark" label="备注"></el-table-column>
           <el-table-column prop="address" label="操作">
             <template slot-scope="scope">
-              <el-button size="mini" @click="handleLook(scope.$index, scope.row)">查看</el-button>
-              <el-button size="mini" type="danger" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+              <el-button
+                size="mini"
+                @click="handleLook(scope.$index, scope.row)"
+                >查看</el-button
+              >
+              <el-button
+                size="mini"
+                type="danger"
+                @click="handleEdit(scope.$index, scope.row)"
+                >修改</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
         <div class="footerTitle">
           <span>车辆保险记录</span>
-          <el-button size="small" type="primary" @click="addInsurance">新增</el-button>
+          <el-button size="small" type="primary" @click="addInsurance"
+            >新增</el-button
+          >
         </div>
-        <el-table :data="insuranceTableData" size="small" border style="width: 100%;">
-          <el-table-column prop="policyStartDate" label="开始日期" width="160"></el-table-column>
-          <el-table-column prop="policyEndDate" label="到期日期" width="160"></el-table-column>
-          <el-table-column prop="companyName" width="100" label="保险公司"></el-table-column>
+        <el-table
+          :data="insuranceTableData"
+          size="small"
+          border
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="policyStartDate"
+            label="开始日期"
+            width="160"
+          ></el-table-column>
+          <el-table-column
+            prop="policyEndDate"
+            label="到期日期"
+            width="160"
+          ></el-table-column>
+          <el-table-column
+            prop="companyName"
+            width="100"
+            label="保险公司"
+          ></el-table-column>
           <el-table-column prop="policyTypeStr" width="80" label="保险种类">
             <!-- <template slot-scope="scope">
               <span v-if="scope.row.policyType == 0">交强险</span>
               <span v-if="scope.row.policyType == 1">商业险</span>
             </template> -->
           </el-table-column>
-          <el-table-column prop="policyNo" width="120" label="保单号"></el-table-column>
-          <el-table-column prop="premium" width="100" label="保费金额"></el-table-column>
-          <el-table-column prop="dealMan" width="90" label="续保处理人"></el-table-column>
+          <el-table-column
+            prop="policyNo"
+            width="120"
+            label="保单号"
+          ></el-table-column>
+          <el-table-column
+            prop="premium"
+            width="100"
+            label="保费金额"
+          ></el-table-column>
+          <el-table-column
+            prop="dealMan"
+            width="90"
+            label="续保处理人"
+          ></el-table-column>
           <el-table-column width="100" label="附件">
             <template slot-scope="scope">
-              <el-button size="mini" type="text" @click="handleClick(scope.row.ls_EfileIdCodeAddr)">查看附件</el-button>
+              <el-button
+                size="mini"
+                type="text"
+                @click="handleClick(scope.row.ls_EfileIdCodeAddr)"
+                >查看附件</el-button
+              >
               <!-- 查看附件 -->
               <!-- <el-dialog :visible.sync="dialogVisibleImg1" width="500px">
                 <el-carousel trigger="click" height="400px">
@@ -689,11 +795,24 @@
               </el-dialog> -->
             </template>
           </el-table-column>
-          <el-table-column prop="remark" width="100" label="备注"></el-table-column>
+          <el-table-column
+            prop="remark"
+            width="100"
+            label="备注"
+          ></el-table-column>
           <el-table-column min-width="100" label="操作">
             <template slot-scope="scope">
-              <el-button size="mini" @click="handleLooks(scope.$index, scope.row)">查看</el-button>
-              <el-button size="mini" type="danger" @click="handleEdits(scope.$index, scope.row)">修改</el-button>
+              <el-button
+                size="mini"
+                @click="handleLooks(scope.$index, scope.row)"
+                >查看</el-button
+              >
+              <el-button
+                size="mini"
+                type="danger"
+                @click="handleEdits(scope.$index, scope.row)"
+                >修改</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -709,7 +828,6 @@
           </el-carousel-item>
         </el-carousel>
       </el-dialog>
-
     </div>
   </div>
 </template>
@@ -721,12 +839,13 @@ import {
   removeCookie,
   dateToString,
   getMenuBtnList,
-  formatJE
+  formatJE,
 } from "../../../public";
 export default {
   name: "addVehicleManagement",
   data() {
     return {
+      disabledVehicleNo: true,
       formVeInformation: {
         //车辆信息
         vehicleNo: null, //车牌号码15
@@ -747,7 +866,7 @@ export default {
         userId: "", //业务员9
         vehicleUsageStatus: "", //出租状态13
         vehicleRepairStatus: "", //维修状态11
-        id:null,//
+        id: null, //
       },
       formVehicleType: {
         //车型信息
@@ -781,34 +900,8 @@ export default {
       scheduleTableData: [
         //车辆保养计划表
         {
-          count: "1",
-          date: null,
-          id: null,
-          mileage: null,
-        },
-        {
-          count: "2",
-          date: null,
-          id: null,
-          mileage: null,
-        },
-        {
-          count: "3",
-          date: null,
-          id: null,
-          mileage: null,
-        },
-        {
-          count: "4",
-          date: null,
-          id: null,
-          mileage: null,
-        },
-        {
-          count: "5",
-          date: null,
-          id: null,
-          mileage: null,
+          firstMaintTime: null,
+          firstMaintKilometre: null,
         },
       ],
       inspectionTableData: [
@@ -918,7 +1011,7 @@ export default {
       companyOptions: [
         //所属门店
       ],
-      companyOptionsId:[],//品牌id
+      companyOptionsId: [], //品牌id
       vehicleUseOptions: [
         //车辆使用方式
         {
@@ -932,7 +1025,15 @@ export default {
         {
           value: 2,
           label: "样车",
-        }
+        },
+        {
+          value: 3,
+          label: "出售",
+        },
+        {
+          value: 4,
+          label: "以租代售",
+        },
       ],
       vehiclePlaceOptions: [
         //存车地点
@@ -969,13 +1070,14 @@ export default {
       isVehicleSchedule: true, //车辆保养禁用
       vehicleId: "", //车辆ID
       userId: "", //用户id
-      typeId:'',//车型id
+      typeId: "", //车型id
       imgIdList: [], //图片id
       imgCardIdList: [], //证件照id
       imageUrlList: [], //查看附件图片
       international: {},
       showMsg: "", //新增修改标题
       showButton: false, //确定新增修改按钮
+      isSaveBtn:true,//是否显示车辆保养新增按钮
       fileVeInfoList: [], //车辆信息图片
       fileList: [], //车型图片
       cardFileList: [], //证件照电子档
@@ -1072,18 +1174,20 @@ export default {
     cancel() {
       //取消新增修改
       this.$store.commit("changeIsStatus", true);
-      if(this.$route.query.form == 'edit'){
+      if (this.$route.query.form == "edit") {
         this.$router.push({
-          path:"/vehicleManagement",
+          path: "/vehicleManagement",
         });
-      }else{
+      } else {
         this.$router.back();
       }
     },
     addVehicleInfo() {
       //新增车辆
-      if( this.formVeInformation.vehicleNo == "" || this.formVeInformation.vehicleNo == null)
-      {
+      if (
+        this.formVeInformation.vehicleNo == "" ||
+        this.formVeInformation.vehicleNo == null
+      ) {
         this.$message({
           message: "请输入车牌号码",
           center: true,
@@ -1091,8 +1195,10 @@ export default {
         });
         return;
       }
-      if( this.formVeInformation.vinNo == "" || this.formVeInformation.vinNo == null )
-      {
+      if (
+        this.formVeInformation.vinNo == "" ||
+        this.formVeInformation.vinNo == null
+      ) {
         this.$message({
           message: "请输入车架号",
           center: true,
@@ -1100,9 +1206,10 @@ export default {
         });
         return;
       }
-      if (this.formVehicleType.vehicleTypeName == "" ||
+      if (
+        this.formVehicleType.vehicleTypeName == "" ||
         this.formVehicleType.brandName == ""
-        ) {
+      ) {
         this.$message({
           message: "请输入车型信息",
           center: true,
@@ -1111,7 +1218,10 @@ export default {
         return;
       }
 
-      if (this.formVeInformation.enterpriseId == "" || this.formVeInformation.enterpriseId == null ) {
+      if (
+        this.formVeInformation.enterpriseId == "" ||
+        this.formVeInformation.enterpriseId == null
+      ) {
         this.$message({
           message: "请输入所属门店",
           center: true,
@@ -1120,11 +1230,10 @@ export default {
         return;
       }
 
-      var time1 = new Date(this.formVeInformation.exFactoryDate).getTime();
-      var time2 = new Date(this.formVeInformation.saleDate).getTime();
+      var time1 = new Date(this.formVeInformation.exFactoryDate).getTime();
+      var time2 = new Date(this.formVeInformation.saleDate).getTime();
 
-      if( time1 > time2 )
-      {
+      if (time1 > time2) {
         this.$message({
           message: "出厂日期大于运营日期",
           center: true,
@@ -1134,47 +1243,49 @@ export default {
       }
       // this.$refs.formVeInformation.validate((valid) => {
       //   if (valid) {
-          axios({
-            method: "post",
-            url: "/vehicle-service/vehicleInfo/insertVehicle",
-            headers: this.headers,
-            data: this.formVeInformation,
-          })
-            .then((result) => {
-              // console.log(result.data.data)
-              if (result.data.status == 0) {
-                this.vehicleId = JSON.parse(result.data.data).id;
-                this.$message({
-                  type: "success",
-                  message: "新增成功!",
-                  center: true,
-                });
-              } else {
-                this.$message({
-                  message: result.data.message,
-                  center: true,
-                  type: "error",
-                });
-              }
-            })
-            .catch((err) => {
-              console.error(err);
-              this.$message({
-                message: err.response.data.message,
-                center: true,
-                type: "error",
-              });
+      axios({
+        method: "post",
+        url: "/vehicle-service/vehicleInfo/insertVehicle",
+        headers: this.headers,
+        data: this.formVeInformation,
+      })
+        .then((result) => {
+          // console.log(result.data.data)
+          if (result.data.status == 0) {
+            this.vehicleId = JSON.parse(result.data.data).id;
+            this.$message({
+              type: "success",
+              message: "新增成功!",
+              center: true,
             });
+          } else {
+            this.$message({
+              message: result.data.message,
+              center: true,
+              type: "error",
+            });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$message({
+            message: err.response.data.message,
+            center: true,
+            type: "error",
+          });
+        });
       //   } else {
       //     console.log("error submit!!");
       //     return false;
       //   }
       // });
     },
-    editVehicleInfo(){
+    editVehicleInfo() {
       //修改车辆
-      if( this.formVeInformation.vehicleNo == "" || this.formVeInformation.vehicleNo == null)
-      {
+      if (
+        this.formVeInformation.vehicleNo == "" ||
+        this.formVeInformation.vehicleNo == null
+      ) {
         this.$message({
           message: "请输入车牌号码",
           center: true,
@@ -1182,8 +1293,10 @@ export default {
         });
         return;
       }
-      if( this.formVeInformation.vinNo == "" || this.formVeInformation.vinNo == null )
-      {
+      if (
+        this.formVeInformation.vinNo == "" ||
+        this.formVeInformation.vinNo == null
+      ) {
         this.$message({
           message: "请输入车架号",
           center: true,
@@ -1191,9 +1304,10 @@ export default {
         });
         return;
       }
-      if (this.formVehicleType.vehicleTypeName == "" ||
+      if (
+        this.formVehicleType.vehicleTypeName == "" ||
         this.formVehicleType.brandName == ""
-        ) {
+      ) {
         this.$message({
           message: "请输入车型信息",
           center: true,
@@ -1202,7 +1316,10 @@ export default {
         return;
       }
 
-      if (this.formVeInformation.enterpriseId == "" || this.formVeInformation.enterpriseId == null ) {
+      if (
+        this.formVeInformation.enterpriseId == "" ||
+        this.formVeInformation.enterpriseId == null
+      ) {
         this.$message({
           message: "请输入所属门店",
           center: true,
@@ -1211,11 +1328,10 @@ export default {
         return;
       }
 
-      var time1 = new Date(this.formVeInformation.exFactoryDate).getTime();
-      var time2 = new Date(this.formVeInformation.saleDate).getTime();
+      var time1 = new Date(this.formVeInformation.exFactoryDate).getTime();
+      var time2 = new Date(this.formVeInformation.saleDate).getTime();
 
-      if( time1 > time2 )
-      {
+      if (time1 > time2) {
         this.$message({
           message: "出厂日期大于运营日期",
           center: true,
@@ -1226,37 +1342,37 @@ export default {
       this.formVeInformation.id = this.$route.query.id;
       // this.$refs.formVeInformation.validate((valid) => {
       //   if (valid) {
-          axios({
-            method: "post",
-            url: "/vehicle-service/vehicleInfo/modifyVehicle",
-            headers: this.headers,
-            data: this.formVeInformation,
-          })
-            .then((result) => {
-              // console.log(result.data);
-              this.isOperation = true;
-              if (result.data.status === 0) {
-                this.$message({
-                  type: "success",
-                  message: "修改成功!",
-                  center: true,
-                });
-              } else {
-                this.$message({
-                  message: result.data.message,
-                  center: true,
-                  type: "error",
-                });
-              }
-            })
-            .catch((err) => {
-              console.error(err);
-              this.$message({
-                message: err.response.data.message,
-                center: true,
-                type: "error",
-              });
+      axios({
+        method: "post",
+        url: "/vehicle-service/vehicleInfo/modifyVehicle",
+        headers: this.headers,
+        data: this.formVeInformation,
+      })
+        .then((result) => {
+          // console.log(result.data);
+          this.isOperation = true;
+          if (result.data.status === 0) {
+            this.$message({
+              type: "success",
+              message: "修改成功!",
+              center: true,
             });
+          } else {
+            this.$message({
+              message: result.data.message,
+              center: true,
+              type: "error",
+            });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$message({
+            message: err.response.data.message,
+            center: true,
+            type: "error",
+          });
+        });
       //   } else {
       //     console.log("error submit!!");
       //     return false;
@@ -1324,8 +1440,7 @@ export default {
     getVehicleTypeDetails() {
       //获取车型详情接口
       // console.log(this.formVehicleType.vehicleTypeName)
-      if(this.formVehicleType.vehicleTypeName == null)
-      {
+      if (this.formVehicleType.vehicleTypeName == null) {
         return;
       }
       axios({
@@ -1343,7 +1458,8 @@ export default {
             this.formVehicleType.id = result.data.data.id;
             this.formVeInformation.typeId = result.data.data.id;
             // this.formVehicleType.brandName = result.data.data.brandName;
-            this.formVehicleType.vehicleTypeName = result.data.data.vehicleTypeName;
+            this.formVehicleType.vehicleTypeName =
+              result.data.data.vehicleTypeName;
             this.formVehicleType.vehicleLength = result.data.data.vehicleLength;
             this.formVehicleType.width = result.data.data.width;
             this.formVehicleType.height = result.data.data.height;
@@ -1482,34 +1598,34 @@ export default {
           });
         });
     },
-    getbrandInfo(){
+    getbrandInfo() {
       axios({
-      //品牌
-      method: "post",
-      url: "/vehicle-service/brandInfo/brandInfoListQuery",
-      headers: this.headers,
-      data:{
-        enterpriseIds:this.companyOptionsId,
-      }
-    })
-      .then((result) => {
-        // console.log(result.data);
-        this.brandNameOptions = result.data.data;
+        //品牌
+        method: "post",
+        url: "/vehicle-service/brandInfo/brandInfoListQuery",
+        headers: this.headers,
+        data: {
+          enterpriseIds: this.companyOptionsId,
+        },
       })
-      .catch((err) => {
-        console.error(err);
-        this.$message({
-          message: err.response.data.message,
-          center: true,
-          type: "error",
+        .then((result) => {
+          // console.log(result.data);
+          this.brandNameOptions = result.data.data;
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$message({
+            message: err.response.data.message,
+            center: true,
+            type: "error",
+          });
         });
-      });
     },
-    handleEnterpriseId(){
+    handleEnterpriseId() {
       this.companyOptionsId = [];
       this.companyOptionsId.push(this.formVeInformation.enterpriseId);
       this.getbrandInfo();
-      this.formVehicleType.brandName = '';
+      this.formVehicleType.brandName = "";
       this.formVehicleType.vehicleTypeName = "";
       this.formVehicleType.vehicleLength = "";
       this.formVehicleType.width = "";
@@ -1544,51 +1660,51 @@ export default {
       // console.log(this.vehicleId)
       this.formVehicleCard.vehicleId = this.vehicleId;
       this.$refs.formVehicleCard.validate((valid) => {
-          if (valid) {
-            if (time1 > time2) {
-              this.$message({
-                message: "行驶证注册日期大于下次年检日期",
-                center: true,
-                type: "error",
-              });
-              return;
-            }
-            axios({
-        method: "post",
-        url: "/vehicle-service/vehicleLicenseInfo/saveVehicleLicense",
-        headers: this.headers,
-        data: this.formVehicleCard,
-      })
-        .then((result) => {
-          // console.log(result.data);
-          if (result.data.status === 0) {
-            this.isVehicleCard = true;
+        if (valid) {
+          if (time1 > time2) {
             this.$message({
-              type: "success",
-              message: "保存成功!",
-              center: true,
-            });
-          } else {
-            this.$message({
-              message: result.data.message,
+              message: "行驶证注册日期大于下次年检日期",
               center: true,
               type: "error",
             });
+            return;
           }
-        })
-        .catch((err) => {
-          console.error(err);
-          this.$message({
-            message: err.response.data.message,
-            center: true,
-            type: "error",
-          });
-        });
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
+          axios({
+            method: "post",
+            url: "/vehicle-service/vehicleLicenseInfo/saveVehicleLicense",
+            headers: this.headers,
+            data: this.formVehicleCard,
+          })
+            .then((result) => {
+              // console.log(result.data);
+              if (result.data.status === 0) {
+                this.isVehicleCard = true;
+                this.$message({
+                  type: "success",
+                  message: "保存成功!",
+                  center: true,
+                });
+              } else {
+                this.$message({
+                  message: result.data.message,
+                  center: true,
+                  type: "error",
+                });
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+              this.$message({
+                message: err.response.data.message,
+                center: true,
+                type: "error",
+              });
+            });
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
     },
     editVehicleCard() {
       //修改证件信息
@@ -1639,34 +1755,29 @@ export default {
     },
     addSchedule() {
       //新增保养计划表
+      console.log("新增保养");
       // console.log(this.scheduleTableData[0].id)
-      for (var i = 0; i < this.scheduleTableData.length; ++i) {
-        if (
-          (this.scheduleTableData[0].date == null &&
-          this.scheduleTableData[0].mileage == null) || (this.scheduleTableData[i].date && this.scheduleTableData[i].mileage == null) || ( this.scheduleTableData[i].date && this.scheduleTableData[i].mileage == '') ||(this.scheduleTableData[i].date == null && this.scheduleTableData[i].mileage) || (this.scheduleTableData[i].date == '' && this.scheduleTableData[i].mileage)
-        ) {
-          this.$message({
-            message: "保养计划表信息空",
-            center: true,
-            type: "error",
-          });
-          return;
-        }
+      if (this.scheduleTableData[0].firstMaintTime == null && this.scheduleTableData[0].firstMaintKilometre == null) {
+        this.$message({
+          message: "保养计划表信息空",
+          center: true,
+          type: "error",
+        });
+        return;
       }
       axios({
         method: "post",
         url: "/vehicle-service/vehicleMaintplanInfo/insertVehicleMaintplan",
         headers: this.headers,
         data: {
-          list: this.scheduleTableData,
+          maintplanInsertDto: this.scheduleTableData[0],
           vehicleId: this.vehicleId,
         },
       })
         .then((result) => {
-          // console.log(result.data);
           this.isVehicleSchedule = true;
           if (result.data.status === 0) {
-            this.getScheduleData();
+            this.getScheduleData(1);
             this.$message({
               type: "success",
               message: "保存成功!",
@@ -1691,25 +1802,23 @@ export default {
     },
     editSchedule() {
       //修改保养计划表
-      for (var i = 0; i < this.scheduleTableData.length; ++i) {
-        if (
-          (this.scheduleTableData[0].date == null &&
-          this.scheduleTableData[0].mileage == null) || (this.scheduleTableData[i].date && this.scheduleTableData[i].mileage == null) || ( this.scheduleTableData[i].date && this.scheduleTableData[i].mileage == '') ||(this.scheduleTableData[i].date == null && this.scheduleTableData[i].mileage) || (this.scheduleTableData[i].date == '' && this.scheduleTableData[i].mileage)
-        ) {
-          this.$message({
-            message: "保养计划表信息空",
-            center: true,
-            type: "error",
-          });
-          return;
-        }
+      if (
+        this.scheduleTableData[0].firstMaintTime == null &&
+        this.scheduleTableData[0].firstMaintKilometre == null
+      ) {
+        this.$message({
+          message: "保养计划表信息空",
+          center: true,
+          type: "error",
+        });
+        return;
       }
       axios({
         method: "post",
         url: "/vehicle-service/vehicleMaintplanInfo/modifyVehicleMaintplan",
         headers: this.headers,
         data: {
-          list: this.scheduleTableData,
+          maintplanInsertDto: this.scheduleTableData[0],
           vehicleId: this.vehicleId,
         },
       })
@@ -1739,53 +1848,31 @@ export default {
           });
         });
     },
-    getScheduleData() {
+    getScheduleData(type) {
+      console.log('值')
+      let detailUrl
+      if(type == 1){
+        detailUrl = `/vehicle-service/vehicleMaintplanInfo/maintplanInfoListQuery?id=${this.vehicleId}`
+      }else if(type == 2){
+        detailUrl = `/vehicle-service/vehicleMaintplanInfo/maintplanInfoListQuery?id=${this.$route.query.id}`
+      }
       //保养计划表详情
       axios({
         method: "get",
-        url:
-          "/vehicle-service/vehicleMaintplanInfo/maintplanInfoListQuery?id=" +
-          this.$route.query.id,
+        url:detailUrl,
         headers: this.headers,
       })
         .then((result) => {
-          // console.log(result.data);
-          if(result.data.data.length == 0){
-            (this.scheduleTableData = [
-        //车辆保养计划表
-        {
-          count: "1",
-          date: null,
-          id: null,
-          mileage: null,
-        },
-        {
-          count: "2",
-          date: null,
-          id: null,
-          mileage: null,
-        },
-        {
-          count: "3",
-          date: null,
-          id: null,
-          mileage: null,
-        },
-        {
-          count: "4",
-          date: null,
-          id: null,
-          mileage: null,
-        },
-        {
-          count: "5",
-          date: null,
-          id: null,
-          mileage: null,
-        },
-      ])
-          }else{
-            this.scheduleTableData = result.data.data;
+          if (result.data.data == null) {
+            //车辆保养计划表
+            this.scheduleTableData = [{
+                firstMaintTime: null,
+                firstMaintKilometre: null}];
+                this.isSaveBtn = true
+          } else {
+            this.isSaveBtn = false
+            this.scheduleTableData = [];
+            this.scheduleTableData.push(result.data.data);
           }
         })
         .catch((err) => {
@@ -1812,9 +1899,9 @@ export default {
       })
         .then((result) => {
           if (result.data.status === 0) {
-            result.data.data.records.map(item=>{
-              item.yearlyInspectionMoney = formatJE(item.yearlyInspectionMoney)
-            })
+            result.data.data.records.map((item) => {
+              item.yearlyInspectionMoney = formatJE(item.yearlyInspectionMoney);
+            });
             this.inspectionTableData = result.data.data.records;
             // this.imageUrlList = result.data.data.records.ls_EfileIdCodeAddr;
             // console.log(this.imageUrlList)
@@ -1851,9 +1938,9 @@ export default {
       })
         .then((result) => {
           if (result.data.status === 0) {
-            result.data.data.records.map(item=>{
-              item.premium = formatJE(item.premium)
-            })
+            result.data.data.records.map((item) => {
+              item.premium = formatJE(item.premium);
+            });
             this.insuranceTableData = result.data.data.records;
             // this.imageUrlList = result.data.data.records.ls_EfileIdCodeAddr;
             // console.log(this.imageUrlList)
@@ -1889,19 +1976,18 @@ export default {
     isVehicleScheduleShow() {
       this.isVehicleSchedule = false;
     },
-      //查看附件
+    //查看附件
     handleClick(imgList) {
-      this.imageUrlList = []
-      if(imgList) this.imageUrlList = imgList
-      if(this.imageUrlList<1){
+      this.imageUrlList = [];
+      if (imgList) this.imageUrlList = imgList;
+      if (this.imageUrlList < 1) {
         this.$message.warning({
-          message:'暂无图片',
-          center:true
-        })
-      }else{
-        this.dialogVisibleImg =true
+          message: "暂无图片",
+          center: true,
+        });
+      } else {
+        this.dialogVisibleImg = true;
       }
-
     },
     // handleClick1() {
     //   //查看附件
@@ -1922,7 +2008,7 @@ export default {
       this.$router.push({
         path: "/addAS",
         // query: { form: "add",vehicleNo: this.formVeInformation.vehicleNo,brand:this.formVehicleType.brandName},
-        query: { id: row.id ,vehicleId:row.vehicleId },
+        query: { id: row.id, vehicleId: row.vehicleId },
       });
     },
     handleLooks(index, row) {
@@ -1942,12 +2028,17 @@ export default {
     },
   },
   mounted() {
+      setTimeout(() => {
+            window.onload()
+          }, 10)
     this.$store.commit("changeIsStatus", false);
     if (this.$route.query.form == "add") {
+      this.disabledVehicleNo = false;
       this.getCompany();
       this.getSalesman();
       this.getVehiclePlace();
       this.showButton = true;
+      this.isSaveBtn = true;
       this.isVehicle = false;
       this.isVehicleType = false;
       this.isOperation = false;
@@ -2000,34 +2091,8 @@ export default {
       (this.scheduleTableData = [
         //车辆保养计划表
         {
-          count: "1",
-          date: null,
-          id: null,
-          mileage: null,
-        },
-        {
-          count: "2",
-          date: null,
-          id: null,
-          mileage: null,
-        },
-        {
-          count: "3",
-          date: null,
-          id: null,
-          mileage: null,
-        },
-        {
-          count: "4",
-          date: null,
-          id: null,
-          mileage: null,
-        },
-        {
-          count: "5",
-          date: null,
-          id: null,
-          mileage: null,
+          firstMaintTime: null,
+          firstMaintKilometre: null,
         },
       ]),
         (this.inspectionTableData = [
@@ -2038,6 +2103,7 @@ export default {
         ]);
     } else {
       this.showButton = false;
+      this.isSaveBtn = false;
       this.isVehicle = true;
       this.isVehicleType = true;
       this.isOperation = true;
@@ -2085,12 +2151,10 @@ export default {
             // },300)
 
             // 运营信息
-            this.formVeInformation.enterpriseId =
-              result.data.data.enterpriseId;
+            this.formVeInformation.enterpriseId = result.data.data.enterpriseId;
             this.formVeInformation.vehicleUsageMode =
               result.data.data.vehicleUsageMode;
-            this.formVeInformation.parkingLotId =
-              result.data.data.parkingLotId;
+            this.formVeInformation.parkingLotId = result.data.data.parkingLotId;
             this.formVeInformation.userId = result.data.data.userId;
             this.formVeInformation.vehicleUsageStatus =
               result.data.data.vehicleUsageStatus;
@@ -2108,10 +2172,10 @@ export default {
             this.fileList = result.data.data.ls_efileIdCodeVehicleTypeAddr; //车型图片
             this.cardFileList =
               result.data.data.ls_efileIdCodeVehicleLicenseAddr; //证件照图片
-            result.data.data.ls_efileIdCodeVehicleLicenseAddr.map((item)=>{
+            result.data.data.ls_efileIdCodeVehicleLicenseAddr.map((item) => {
               return this.imgCardIdList.push(item.id);
-            })
-            this.getScheduleData();
+            });
+            this.getScheduleData(2);
           } else {
             this.$message({
               message: result.data.message,
@@ -2149,12 +2213,12 @@ export default {
       immediate: true,
       deep: true,
     },
-    typeId:function(){
+    typeId: function () {
       var _this = this;
-      _this.$nextTick(()=>{
+      _this.$nextTick(() => {
         _this.getVehicleTypeDetails();
-      })
-    }
+      });
+    },
   },
 };
 </script>
@@ -2279,9 +2343,9 @@ export default {
   text-decoration: underline;
   white-space: nowrap;
 }
-.disabled_txt{
+.disabled_txt {
   color: #999;
-  text-decoration:underline;
+  text-decoration: underline;
   white-space: nowrap;
 }
 
@@ -2312,28 +2376,27 @@ export default {
   width: 60px;
   height: 60px;
 }
-#header >>> .el-dialog__body{
+#header >>> .el-dialog__body {
   padding: 0;
 }
-#header >>> .el-dialog__header{
+#header >>> .el-dialog__header {
   padding: 0;
 }
-#header >>> .el-dialog__headerbtn{
+#header >>> .el-dialog__headerbtn {
   top: -11px;
   right: -15px;
   color: #fff;
   opacity: 1;
 }
-#header>>> .el-dialog__close{
+#header >>> .el-dialog__close {
   color: #fff;
 }
-#header >>>.el-carousel__button{
+#header >>> .el-carousel__button {
   width: 12px;
 }
-.imgList{
+.imgList {
   width: 500px;
-  height: 400px ;
+  height: 400px;
   display: block;
 }
-
 </style>

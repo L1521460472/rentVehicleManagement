@@ -1,6 +1,6 @@
 <template>
   <div id="login">
-    <div class="header">
+    <div class="header scoped">
       <div class="nav">
         <img src="../assets/航通北斗logo2020版(透明格式)-1@1x.png" alt />
         <span>新能源汽车租赁业务系统</span>
@@ -42,7 +42,7 @@
         </div>
       </div>
     </div>
-    <div class="footer">
+    <div class="footer scoped">
       <div>©2020 深圳市航通北斗信息技术有限公司 版权所有 ​​粤ICP备15008917号</div>
     </div>
   </div>
@@ -131,14 +131,22 @@ export default {
             setCookie("HTBD_PASS", result.data.data.token, 1 / 12);
             setCookie("userInfo", result.data.data.userInfoVo.username);
             setCookie("userId", result.data.data.userInfoVo.userId);
-            this.$store.commit('setlogoAddress',result.data.data.userInfoVo.logoAddress) 
+            setCookie("UserEnterpriseId", result.data.data.userInfoVo.enterpriseId);
+            setCookie('setlogoAddress',result.data.data.userInfoVo.logoAddress)
+            setCookie('setsystemTitle',result.data.data.userInfoVo.systemTitle)
+            this.$store.commit('setlogoAddress',result.data.data.userInfoVo.logoAddress)
+            this.$store.commit('setsystemTitle',result.data.data.userInfoVo.systemTitle)
+            this.$store.commit('setUpdatePwdFlag',result.data.data.userInfoVo.isUpdatePwdFlag)
+            this.$store.commit('setUserEnterpriseId',result.data.data.userInfoVo.enterpriseId)
             if(result.data.data.userInfoVo.authorityData
             &&result.data.data.userInfoVo.authorityData.length>0
             &&result.data.data.userInfoVo.authorityData[0].children[0].show){
               this.$router.push(result.data.data.userInfoVo.authorityData[0].children[0].children[0].url)
+              this.$store.commit('setDefualtPage',result.data.data.userInfoVo.authorityData[0].children[0].children[0])
               }else{
                 if(result.data.data.userInfoVo.authorityData&&result.data.data.userInfoVo.authorityData.length>0){
                   this.$router.push(result.data.data.userInfoVo.authorityData[0].children[0].url)
+                  this.$store.commit('setDefualtPage',result.data.data.userInfoVo.authorityData[0].children[0])
                 }
                 else{
                   this.$message.error("该账号暂没开通任何功能业务，请联系系统管理员！")
@@ -178,6 +186,9 @@ export default {
   },
   computed: {},
   mounted() {
+      setTimeout(() => {
+            window.onload()
+          }, 10)
     if(getCookie('HTuserName') && getCookie('HTpassWord')){
       this.checked = true;
       this.username = getCookie('HTuserName');
@@ -344,8 +355,8 @@ export default {
 }
 .username img {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 7px;
+  left: 7px;
   width: 18px;
   height: 18px;
   display: block;
@@ -358,8 +369,8 @@ export default {
 }
 .password img {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 7px;
+  left: 7px;
   width: 18px;
   height: 18px;
   display: block;

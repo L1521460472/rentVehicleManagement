@@ -18,6 +18,12 @@ const state = {
 
   openNewTab:{},//打开新的标签页
   logoAddress:"",//logo地址，默认../assets/logo.png
+  defualtPage:null,//登录系统默认打开页面
+  isUpdatePwdFlag:0,//是否需要修改密码，默认不需要
+  UserEnterpriseId:"",//当前用户所属企业ID
+  IsCollapse:false,
+  systemTitle:"",
+  points:[],
 }
 
 const getters = {
@@ -49,6 +55,9 @@ const mutations = {
   changeIsStatus(state,payload){
     state.isStatus = payload;
   },
+  points(state,payload){
+    state.points = payload;
+  },
   // setMenuData(state,menuData){
   //   sessionStorage.setItem(`menuData`, JSON.stringify(menuData))
   //   state.menuData = menuData
@@ -58,6 +67,21 @@ const mutations = {
   },
   setlogoAddress(state,logoAddress){
     state.logoAddress = logoAddress;
+  },
+  setDefualtPage(state,url){
+    state.defualtPage=url;
+  },
+  setUpdatePwdFlag(state,flag){
+    state.isUpdatePwdFlag=flag;
+  },
+  setUserEnterpriseId(state,enterpriseid){
+    state.UserEnterpriseId=enterpriseid;
+  },
+  setIsCollapse(state,IsCollapse){
+    state.IsCollapse=IsCollapse;
+  },
+  setsystemTitle(state,systemTitle){
+    state.systemTitle=systemTitle;
   }
 }
 
@@ -82,6 +106,9 @@ const actions = {
   },
   changeIsStatus(context){
     context.commit('changeIsStatus')
+  },
+  points(context){
+    context.commit('points')
   },
   // updateMenuData(context,value){
   //   context.commit('setMenuData',value)

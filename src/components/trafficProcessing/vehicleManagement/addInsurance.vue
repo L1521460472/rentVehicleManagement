@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-    <div class="header">
+    <div class="header scoped">
       <span>{{ showMsg }}</span>
     </div>
     <div class="footer">
@@ -595,6 +595,9 @@ export default {
         .then((result) => {
           // console.log(result.data);
           if (result.data.status === 0) {
+              setTimeout(() => {
+            window.onload()
+          }, 10)
             this.form.brand = result.data.data.brandTypeName;
             this.form.vehicleNo = result.data.data.vehicleNo;
             this.form.vehicleId = result.data.data.id;

@@ -1,6 +1,6 @@
 <template>
   <div id="payFee">
-    <div class="header">
+    <div class="header scoped">
       <span>审核操作</span>
     </div>
     <div class="footer" v-if="international.title">
@@ -447,6 +447,9 @@ export default {
         .then((result) => {
           // console.log(result.data);
           if (result.data.status == 0) {
+              setTimeout(() => {
+            window.onload()
+          }, 10)
             this.form.contractCode = result.data.data.leaseContractCurrentBillVO.contractCode; //合同编号
             this.form.customerName = result.data.data.leaseContractCurrentBillVO.customerName; //承租方姓名
             this.form.uncollectionMoneyTotal = result.data.data.leaseContractCurrentBillVO.uncollectionMoneyTotal; //剩余未回款总额

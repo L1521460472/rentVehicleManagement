@@ -1,7 +1,11 @@
 <template>
   <div id="paymentRecord1" ref="contentHeight" v-loading="loading" element-loading-text="loading">
-    <div class="header" ref="headerHeight">
-      <div class="headerTop">
+    <div class="header scoped" ref="headerHeight">
+      <div class="headerTop scoped">
+      <div class="nav">
+          <span class="demonstration">所属公司</span>
+          <company v-model="enterpriseId"></company>
+      </div>
         <div class="nav">
           <span class="demonstration">合同编号</span>
           <el-input maxlength="50" size="small" v-model="contractCode" placeholder></el-input>
@@ -166,10 +170,15 @@ import {
   formatJE
 } from "../../../public";
 import {getSalesmanList,paymentRecord,getImgsrcList} from '../../../api/businessProcess/api'
+import company from "@/components/aacommon/getEnterpriseBox.vue"
 export default {
   name: "paymentRecord",
+    components:{
+      company
+    },
   data() {
     return {
+      enterpriseId:"",
       total: 0, //数据总条数
       currentPage: 1, //当前页数
       pageSize: 10, //每页长度
@@ -274,9 +283,13 @@ export default {
         userId: this.salesman,
         vehicleNo: this.vehicleNo,
         currentPage: this.currentPage,
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
         pageSize: this.pageSize,
       };
       paymentRecord(params,this.headers).then(res=>{
+          setTimeout(() => {
+            window.onload()
+          }, 10)
           this.loading = false
           this.total = res.data.total
           res.data.records.map(item=>{
@@ -314,15 +327,16 @@ export default {
     },
     // 重置
     reset() {
-      this.contactsPhoneNumber= null,
-      this.customerContacts = null,
-      this.contractCode = null,//合同编号
-      this.vehicleNo = null,//车牌号
-      this.auditStatus = null,//缴费审核状态
-      this.paymentChannel = null,//缴费渠道
-      this.salesman = null,//所属业务员
-      this.payTime = null,//缴费时段
-      this.currentPage = 1,
+      this.enterpriseId="";
+      this.contactsPhoneNumber= null;
+      this.customerContacts = null;
+      this.contractCode = null;//合同编号
+      this.vehicleNo = null;//车牌号
+      this.auditStatus = null;//缴费审核状态
+      this.paymentChannel = null;//缴费渠道
+      this.salesman = null;//所属业务员
+      this.payTime = null;//缴费时段
+      this.currentPage = 1;
       this.pageSize = 10,
       this.getListData();
     },

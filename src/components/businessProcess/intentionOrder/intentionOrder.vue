@@ -319,6 +319,9 @@ export default {
         .then((res) => {
           this.loading = false;
           if (res.status == 0) {
+              setTimeout(() => {
+            window.onload()
+          }, 10)
             this.total = res.data.total;
             this.tableData = res.data.records;
           } else {

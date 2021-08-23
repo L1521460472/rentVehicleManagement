@@ -1,6 +1,6 @@
 <template>
   <div id="addCustomerInfo">
-    <div class="header">
+    <div class="header scoped">
       <span>{{showMes}}</span>
     </div>
     <div class="footer" v-if="international.title">
@@ -10,58 +10,32 @@
         </div>
         <div class="footerNav" >
           <el-form ref="form" :model="form" label-width="130px" label-position="right">
-            <el-form-item
-              class="formItem"
-              prop="customerType"
-              :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'change'}]"
-              label="客户类型"
-            >
+            <el-form-item class="formItem" prop="customerType"
+              :rules="[{ required: true,message:'内容不能为空', trigger: 'change'}]"
+              label="客户类型">
               <el-select  size="small" :disabled="disabled" v-model="form.customerType" @change="changeCustomerType" placeholder>
-                <el-option
-                  v-for="item in customerTypeList"
-                  :key="item.id"
-                  :label="item.value"
-                  :value="item.id"
-                ></el-option>
+                <el-option v-for="item in customerTypeList" :key="item.id" :label="item.value" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              class="formItem"
-              :class="showCompany ? '':'closeCompany'"
-              prop="customerName"
-              :rules="[{ required: required,message:international.global.global_contNotEmpty, trigger: 'blur'}]"
-              label="客户名称"
-            >
+            <el-form-item class="formItem" :class="showCompany ? '':'closeCompany'" prop="customerName"
+              :rules="[{ required: required,message:'内容不能为空', trigger: 'blur'}]"
+              label="客户名称" >
               <el-input maxlength="100" :disabled="disabled" size="small" v-model="form.customerName"></el-input>
             </el-form-item>
-            <el-form-item
-              class="formItem"
-              :class="showCompany ? '':'closeCompany'"
-              prop="busilicNo"
-              label="营业执照号"
-            >
+            <el-form-item class="formItem" :class="showCompany ? '':'closeCompany'" prop="busilicNo" label="营业执照号">
               <el-input maxlength="100" :disabled="disabled" size="small" v-model="form.busilicNo"></el-input>
             </el-form-item>
-            <el-form-item
-              class="formItem"
-              prop="contact"
-              :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'blur'}]"
-              label="联系人姓名"
-            >
+            <el-form-item class="formItem" prop="contact"
+              :rules="[{ required: true,message:'内容不能为空', trigger: 'blur'}]"
+              label="联系人姓名">
               <el-input maxlength="100" :disabled="disabled" size="small" v-model="form.contact"></el-input>
             </el-form-item>
-            <el-form-item
-              class="formItem"
-              prop="phone"
-              :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'blur'}]"
-              label="联系人电话"
-            >
+            <el-form-item class="formItem" prop="phone"
+              :rules="[{ required: true,message:'内容不能为空', trigger: 'blur'}]"
+              label="联系人电话">
               <el-input maxlength="100" :disabled="disabled" size="small" v-model="form.phone"></el-input>
             </el-form-item>
-            <el-form-item
-              class="formItem"
-              label="客户来源"
-            >
+            <el-form-item class="formItem" label="客户来源">
               <span class="customerSource">{{form.source}}</span>
             </el-form-item>
           </el-form>
@@ -70,88 +44,46 @@
           <span>附件资料</span>
         </div>
         <div class="footerNav">
-          <el-form  :model="form" label-width="130px" label-position="right">
-            <el-form-item
-              class="formItem"
-              label="客户-身份证号码"
-              >
+          <el-form  :model="form" label-width="130px" label-position="right" style="margin-left: 20px;">
+            <el-form-item class="formItem" label="客户-身份证号码">
               <el-input maxlength="100" :disabled="disabled" size="small" v-model="form.customerIdNumber"></el-input>
             </el-form-item>
-            <el-form-item
-              class="formItem"
-              label="客户-驾驶证号码" 
-              >
+            <el-form-item class="formItem" label="客户-驾驶证号码">
               <el-input maxlength="100" :disabled="disabled" size="small" v-model="form.customerDriverNumber"></el-input>
             </el-form-item>
           </el-form>
           <div class="attachment">
             <div class="attachmentLeft">
-              <el-upload
-                class="upload"
-                action="/vehicle-service/efileInfo/uploadImgFile?fileType=0"
-                :headers="headers"
-                :disabled="disabled"
-                :limit="1"
-                :on-exceed="handleExceed"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove1"
-                :on-success="handleUploadSuccess1"
-                :file-list="imgIdcardProsList" 
-                list-type="picture-card"
-                >
+              <el-upload class="upload" action="/vehicle-service/efileInfo/uploadImgFile?fileType=0"
+                :headers="headers" :disabled="disabled" :limit="1" :on-exceed="handleExceed"
+                :on-preview="handlePreview" :on-remove="handleRemove1" :on-success="handleUploadSuccess1"
+                :file-list="imgIdcardProsList"  list-type="picture-card">
                 <span :class="disabled ? 'disabled_txt':'upload_txt'">身份证正面</span>
               </el-upload>
             </div>
             <div class="attachmentRight">
-              <el-upload
-                class="upload"
-                action="/vehicle-service/efileInfo/uploadImgFile?fileType=6"
-                :headers="headers"
-                :limit="1"
-                :disabled="disabled"
-                :on-exceed="handleExceed"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove2"
-                :on-success="handleUploadSuccess2"
-                :file-list="imgDriverLicenseList" 
-                list-type="picture-card"
-                >
+              <el-upload class="upload" action="/vehicle-service/efileInfo/uploadImgFile?fileType=6"
+                :headers="headers" :limit="1" :disabled="disabled" :on-exceed="handleExceed"
+                :on-preview="handlePreview" :on-remove="handleRemove2" :on-success="handleUploadSuccess2"
+                :file-list="imgDriverLicenseList"  list-type="picture-card">
                 <span :class="disabled ? 'disabled_txt':'upload_txt'">驾驶证</span>
               </el-upload>
             </div>
           </div>
           <div class="attachment">
             <div class="attachmentLeft">
-              <el-upload
-                class="upload"
-                action="/vehicle-service/efileInfo/uploadImgFile?fileType=0"
-                :headers="headers"
-                :limit="1"
-                :disabled="disabled"
-                :on-exceed="handleExceed"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove3"
-                :on-success="handleUploadSuccess3"
-                :file-list="imgIdcardConsList" 
-                list-type="picture-card"
-                >
+              <el-upload class="upload" action="/vehicle-service/efileInfo/uploadImgFile?fileType=0"
+                :headers="headers" :limit="1" :disabled="disabled" :on-exceed="handleExceed"
+                :on-preview="handlePreview" :on-remove="handleRemove3" :on-success="handleUploadSuccess3"
+                :file-list="imgIdcardConsList"  list-type="picture-card">
                 <span :class="disabled ? 'disabled_txt':'upload_txt'">身份证反面</span>
               </el-upload>
             </div>
             <div class="attachmentRight" :class="showCompany ? '':'closeCompany'">
-              <el-upload
-                class="upload"
-                action="/vehicle-service/efileInfo/uploadImgFile?fileType=1"
-                :headers="headers"
-                :limit="1"
-                :disabled="disabled"
-                :on-exceed="handleExceed"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove4"
-                :on-success="handleUploadSuccess4"
-                :file-list="imgEfileBusilicList" 
-                list-type="picture-card"
-                >
+              <el-upload class="upload" action="/vehicle-service/efileInfo/uploadImgFile?fileType=1"
+                :headers="headers" :limit="1" :disabled="disabled" :on-exceed="handleExceed" :on-preview="handlePreview"
+                :on-remove="handleRemove4" :on-success="handleUploadSuccess4" :file-list="imgEfileBusilicList"
+                list-type="picture-card">
                 <span :class="disabled ? 'disabled_txt':'upload_txt'">营业执照</span>
               </el-upload>
             </div>
@@ -161,29 +93,97 @@
             <img width="100%" :src="dialogImageUrl" alt="">
           </el-dialog>
         </div>
+        <div class="footerTitle">
+          <span>发票信息</span><img @click="expand(1)" src="../../../assets/展开.svg" class="expand" title="点击展开/收起"/>
+        </div>
+        <div :class="isclose?'footerNav footerNav3':'footerNav footerNav2'">
+         <div class="myform">
+           <div class="fitem" style="margin-left: 20px;">
+              <label><span style="color: red;">*</span>发票抬头</label>
+               <el-input maxlength="100" :disabled="disabled2" size="small" v-model="fapiaodata.invoiceTitle"></el-input>
+            </div>
+           <div class="fitem">
+             <label><span v-if="showCompany" style="color: red;">*</span>纳税人识别号/统一社会信用代码</label>
+              <el-input maxlength="100" :disabled="disabled2" size="small" v-model="fapiaodata.taxIdeNum"></el-input>
+           </div>
+         </div>
+         <div class="myform">
+           <div class="fitem" style="margin-left: 20px;">
+              <label>企业地址</label>
+               <el-input maxlength="100" :disabled="disabled2" size="small" v-model="fapiaodata.enterpriseAddr"></el-input>
+            </div>
+           <div class="fitem">
+             <label>企业电话</label>
+              <el-input maxlength="100" :disabled="disabled2" size="small" v-model="fapiaodata.enterprisePhone"></el-input>
+           </div>
+         </div>
+         <div class="myform">
+           <div class="fitem" style="margin-left: 20px;">
+              <label>公司开户行</label>
+               <el-input maxlength="100" :disabled="disabled2" size="small" v-model="fapiaodata.enterpriseBank"></el-input>
+            </div>
+           <div class="fitem">
+             <label>开户行账号</label>
+              <el-input maxlength="100" :disabled="disabled2" size="small" v-model="fapiaodata.enterpriseAccount"></el-input>
+           </div>
+         </div>
+        </div>
+        <div class="footerTitle" :class="isclose?'footerTitle':'footerTitle footerTitle2'">
+          <span>邮寄信息</span>
+        </div>
+        <div :class="isclose?'footerNav footerNav4':'footerNav footerNav2'">
+          <div class="myform">
+            <div class="fitem" style="margin-left: 20px;display: flex;">
+               <label style="width: 86px;">邮寄地址</label>
+                <el-input type="textarea"
+                 :disabled="disabled2" size="small" v-model="fapiaodata.mailingAddr"></el-input>
+             </div>
+          </div>
+          <div class="myform">
+            <div class="fitem" style="margin-left: 20px;">
+               <label style="width: 70px;">收件人</label>
+                <el-input maxlength="100" :disabled="disabled2" size="small" v-model="fapiaodata.addressee"></el-input>
+             </div>
+          </div>
+          <div class="myform">
+            <div class="fitem" style="margin-left: 20px;">
+               <label style="width: 70px;">联系电话</label>
+                <el-input maxlength="100" :disabled="disabled2" size="small" v-model="fapiaodata.telephone"></el-input>
+             </div>
+          </div>
+        </div>
       </div>
       <div class="footerButton">
-        <el-button type="primary" size="small" v-if="!disabled" @click="$route.query.from == 'add' ? addConfirm():editConfirm()">提交</el-button>
-        <el-button size="small" @click="cancel" v-if="!disabled">{{international.global.global_cancel}}</el-button>
-        <el-button type="primary" size="small" v-if="disabled" @click="cancel" class="back">返回</el-button>
+        <el-button type="primary" size="small" v-if="!disabled2"
+        @click="$route.query.from == 'add' ? addConfirm():editConfirm()">提交</el-button>
+        <el-button size="small" @click="cancel" v-if="!disabled2">取消</el-button>
+        <el-button type="primary" size="small" v-if="disabled3" @click="cancel" class="back">返回</el-button>
       </div>
     </div>
   </div>
 </template>
 <script>
 import {addCustomerInfo,getCustomerDetail,editCustomerInfo} from "../../../api/businessProcess/api";
-import {
-  getCookie,
-  setCookie,
-  removeCookie,
-  getMenuBtnList,
-  regexpMobile,
-  regexpidCard
-} from "../../../public";
+import { getCookie, setCookie, removeCookie, getMenuBtnList, regexpMobile, regexpidCard} from "../../../public";
 export default {
   name: "addCustomerInfo",
   data() {
     return {
+      isclose:true,
+      istaxIdeNum:false,
+      isinvoiceTitle:true,
+      fapiaodata:{
+        invoiceTitle:"",
+        taxIdeNum:"",
+        enterpriseAddr:"",
+        enterprisePhone:"",
+        enterpriseBank:"",
+        enterpriseAccount:"",
+        mailingAddr:"",
+        addressee:"",
+        telephone:"",
+        invoiceId:null
+      },
       form: {
         customerType:2,//客户类型
         customerName:'',//客户名称
@@ -195,12 +195,10 @@ export default {
         customerDriverNumber:'',//客户驾驶证号
         customerSourceStr:'',
       }, //新增数据
-      customerTypeList:[
-        {
+      customerTypeList:[{
           id:1,
           value:'个人'
-        },
-        {
+        },{
           id:2,
           value:'企业'
         }
@@ -219,7 +217,9 @@ export default {
       international: {},
       dialogVisible:false,
       dialogImageUrl:'',
-      disabled:false,//是否禁用输入框
+      disabled:false,//是否禁用输入框,
+      disabled2:false,//控制提交，取消按钮
+      disabled3:false,//控制提交，取消按钮
       headers: {
         Authorization: getCookie("HTBD_PASS"),
         language: this.$store.state.language,
@@ -227,6 +227,28 @@ export default {
     };
   },
   methods: {
+    expand(){
+      this.isclose=!this.isclose
+    },
+    checkfapiao(){
+      if(!this.fapiaodata.invoiceTitle.replace(' ','').replace('　','')){
+        this.$message.error({
+            message:'发票抬头不能为空',
+            center:true
+        })
+        return false
+      }
+      if(this.istaxIdeNum){
+        if(!this.fapiaodata.taxIdeNum.replace(' ','').replace('　','')){
+          this.$message.error({
+              message:'纳税人识别号/统一社会信用代码不能为空',
+              center:true
+          })
+          return false
+        }
+      }
+      return true
+    },
     addConfirm() {
       this.$refs.form.validate((valid) => {
         if (valid) {
@@ -256,6 +278,10 @@ export default {
                 return
             }
           }
+
+          if(!this.checkfapiao()){
+            return
+          }
           let params = {
             busilicNo: this.form.busilicNo,
             customerSource: 1,
@@ -268,8 +294,9 @@ export default {
             customerName: this.form.customerName,
             customerType: this.form.customerType,
             personInCharge: this.form.contact,
-            phoneNumber: this.form.phone          
+            phoneNumber: this.form.phone
           };
+          Object.assign(params,this.fapiaodata)
           addCustomerInfo(params, this.headers).then((res) => {
               if (res.status == 0) {
                 this.$store.commit("changeIsStatus", true);
@@ -320,6 +347,9 @@ export default {
                 return
             }
           }
+          if(!this.checkfapiao()){
+            return
+          }
           let params = {
             id:this.$route.query.id,
             busilicNo: this.form.busilicNo,
@@ -333,8 +363,9 @@ export default {
             customerName: this.form.customerName,
             customerType: this.form.customerType,
             personInCharge: this.form.contact,
-            phoneNumber: this.form.phone          
+            phoneNumber: this.form.phone
           };
+          Object.assign(params,this.fapiaodata)
           editCustomerInfo(params, this.headers).then((res) => {
               if (res.status == 0) {
                 this.$store.commit("changeIsStatus", true);
@@ -462,13 +493,28 @@ export default {
         this.idcardConsIdList = [],//身份证反面id
         this.imgIdcardConsList = [],//身份证反面图片地址
         this.idcardProsIdList = [],//身份证正面id
-        this.imgIdcardProsList = []//身份证正面图片地址
+        this.imgIdcardProsList = [],//身份证正面图片地址
+        this.istaxIdeNum=false
+        this.isinvoiceTitle=false
+        this.isclose=false
+        for(let item in this.fapiaodata){
+          this.fapiaodata[item]=""
+        }
+        this.invoiceId=null//发票信息
     } else {
       this.showMes = "修改客户信息";
       getCustomerDetail({id:this.$route.query.id},this.headers).then(res=>{
         if(res.status == 0){
-          this.disabled = res.data.customerSource == 2 ? true:false
-          this.showCompany = res.data.customerType == 2 ? true:false
+            setTimeout(() => {
+            window.onload()
+          }, 10)
+          this.disabled=res.data.isCanEditFlag==1?true:false
+          // if(res.data.customerSource==2){
+          //   this.disabled=true;
+          //   this.disabled2=true;
+          //   this.disabled3=true;
+          // }
+          this.istaxIdeNum = this.showCompany = res.data.customerType == 2 ? true:false
           this.required = res.data.customerType == 1 ? false:true
           this.form.customerType = res.data.customerType,//客户类型
           this.form.customerName = res.data.customerName,//客户名称
@@ -482,6 +528,11 @@ export default {
           this.imgIdcardConsList = res.data.ls_IdcardConsIdAddr || [],//身份证反面图片地址
           this.imgDriverLicenseList = res.data.ls_DriverLicenseIdAddr || [],//驾驶证图片地址
           this.imgEfileBusilicList = res.data.ls_EfileBusilicIdAddr || []//营业执照图片地址
+          this.invoiceId=res.data.invoiceId//fapiao id
+
+          for(let item in this.fapiaodata){
+            this.fapiaodata[item]=res.data[item]
+          }
           if(res.data.ls_IdcardProsIdAddr){
             this.idcardProsIdList = []//身份证正面id
             res.data.ls_IdcardProsIdAddr.map(item=>{
@@ -508,6 +559,8 @@ export default {
           }
           if(this.$route.query.from == "detail"){
             this.disabled = true
+            this.disabled2 = true
+            this.disabled3=true
           }
 
         }else{
@@ -531,6 +584,9 @@ export default {
     internationalTitle() {
       return this.$store.state.languageTitle;
     },
+    isshowCompany(){
+      return this.showCompany
+    }
   },
   watch: {
     // 监听国际化标题和按钮变化
@@ -541,6 +597,17 @@ export default {
       immediate: true,
       deep: true,
     },
+    isshowCompany:{
+      handler(){
+        if(this.showCompany){
+          console.log(this.showCompany)
+          this.istaxIdeNum=true
+        }
+        else{
+          this.istaxIdeNum=false
+        }
+      }
+    }
   },
 };
 </script>
@@ -574,20 +641,44 @@ export default {
   height: 40px;
   line-height: 40px;
   box-sizing: border-box;
-  padding-left: 40px;
+  padding-left: 16px;
   background-color: #f5f7fa;
+ transition: height .4s;
 }
 .footerTitle span {
   color: #368cfe;
   font-family: Microsoft YaHei;
   font-weight: regular;
   font-size: 16px;
+  display: inline-block;
+  border-left: 2px solid #368cfe;
+  height: 18px;
+  line-height: 18px;
+  padding-left: 8px;
 }
 .footerNav {
   width: 100%;
   box-sizing: border-box;
   margin-top: 20px;
   overflow: hidden;
+}
+.footerNav3{
+  height: 171px;
+  transition: height,opacity .4s,.4s;
+}
+.footerNav4{
+  height: 218px;
+  transition: height,opacity .4s,.4s;
+}
+.footerTitle2{
+  height: 0px;
+  opacity: 0;
+  transition: height .4s;
+}
+.footerNav2{
+  height: 0px;
+  opacity: 0;
+  transition: height .4s;
 }
 .last_footerNav{
   overflow: initial;
@@ -596,6 +687,7 @@ export default {
   width: 100%;
   height: calc(100% - 56px);
   overflow: auto;
+  overflow-y: scroll;
 
 }
 .el-form {
@@ -714,5 +806,40 @@ export default {
 }
 .el-dialog__body img{
   display: block;
+}
+.fitem{
+  width: 360px;
+  font-size: 14px;
+}
+.myform{
+  display: flex;
+  margin-bottom: 22px;
+}
+.myform:last-child{
+  margin-bottom: 60px;
+}
+.fitem label{
+  margin-right: 8px;
+  font-size: 14px;
+  text-align: right;
+  display: inline-block;
+}
+.fitem .el-input{
+  width: 275px!important;
+}
+.fitem label:first-child{
+  width: 70px;
+}
+.myform .fitem:last-child label:first-child{
+  width: 218px;
+}
+.myform .fitem:last-child{
+  width: 573px;
+}
+.expand{
+  width: 15px;
+  margin-left: 40%;
+  cursor: pointer;
+  vertical-align: middle;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div id="languageTranslation" v-loading="loading"  element-loading-text="loading">
         <div class="header" v-if="international.global">
-            <div class="headerTop">
+            <div class="headerTop scoped">
                 <div class="nav">
                     <span class="demonstration">{{international.content.content_languageTranslation_referenceLanguage}}</span>
                     <el-select size="small" clearable  v-model="baseLang" value-key="value" placeholder="" style="width:150px">

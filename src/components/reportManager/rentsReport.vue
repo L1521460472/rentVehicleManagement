@@ -4,7 +4,11 @@
     v-loading="loading"
   >
     <div class="header">
-      <div class="headerTop">
+      <div class="headerTop scoped">
+      <div class="nav">
+          <span class="demonstration">所属公司</span>
+          <company v-model="enterpriseId"></company>
+      </div>
         <div class="nav">
           <span class="demonstration">合同编号</span>
           <el-input v-model="contractCode" size="small" maxlength="50" placeholder></el-input>
@@ -72,7 +76,7 @@
     </div>
     <div class="footer">
       <div class="footerTable">
-        <div class="footer_informatian">
+        <div class="">
           <el-table
             :data="dataList"
             border
@@ -86,6 +90,7 @@
             <el-table-column prop width="60" label="序号" align="center">
               <template slot-scope="scope">{{ scope.$index + (currentPage - 1) * pageSize + 1 }}</template>
             </el-table-column> -->
+          <el-table-column prop="enterpriseName" label="所属公司" width="140" show-overflow-tooltip></el-table-column>
             <el-table-column prop="contractCode" width="150" label="合同编号"></el-table-column>
             <el-table-column prop="contactsName" width="100" label="承租方联系人"></el-table-column>
             <el-table-column prop="startDate" width="100" label="租赁开始日"></el-table-column>
@@ -100,7 +105,7 @@
             <el-table-column prop="lateFee" width="110" label="滞纳金累计"></el-table-column>
             <el-table-column prop="currentPeriods" width="80" label="当前期数"></el-table-column>
             <el-table-column prop="contractStatus" min-width="100" label="合同状态"></el-table-column>
-            <el-table-column prop="userName" width="80" label="业务员"></el-table-column>
+            <el-table-column prop="userName" width="150" label="业务员"></el-table-column>
           </el-table>
         </div>
         <div class="footer_page">
@@ -136,10 +141,15 @@
 <script>
 import axios from "axios";
 import { getCookie, formatDate, getMenuBtnList } from "../../public";
+import company from "@/components/aacommon/getEnterpriseBox.vue"
 export default {
   name: "rentsReport",
+    components:{
+      company
+    },
   data() {
     return {
+      enterpriseId:"",
       rentsReportUrl:'/vehicle-service/contractRentCollectionInfo/collectionReport',//查询列表数据接口
       rentsReportTotalCountUrl:'/vehicle-service/contractRentCollectionInfo/collectionReportSummary',//底部统计接口
       exporturl:'/vehicle-service/contractRentCollectionInfo/exportCollectionReport',//导出
@@ -177,7 +187,7 @@ export default {
       total: 0,
       searchBtn:false,//查询按钮是否有权限显示
       exportBtn:false,//导出按钮是否有权限显示
-      tableHeight: window.innerHeight - 460 +'',
+      tableHeight: window.innerHeight - 370 +'',
       headers: {
         Authorization: getCookie("HTBD_PASS"),
         language: this.$store.state.language,
@@ -215,6 +225,7 @@ export default {
         planPaymentEndDate=formatDate(this.jihuadateValue[1],'yyyy-MM-dd')
       }
       return {
+        enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
         contractCode: this.contractCode,
         startDate: startDate,
         endDate: endDate,
@@ -240,6 +251,9 @@ export default {
           //console.log(result.data);
           this.loading=false
           if (result.data.status == 0) {
+            setTimeout(() => {
+            window.onload()
+          }, 10)
             this.dataList = result.data.data.records;
             this.total = result.data.data.total;
             this.currentPage = result.data.data.current;
@@ -314,6 +328,7 @@ export default {
       this.contactsName=""
       this.contactsPhoneNum=""
       this.userId=""
+      this.enterpriseId=""
       this.initData();
     },
     handleInsurance() {
@@ -442,7 +457,7 @@ export default {
 <style scoped>
 #header {
   width: 100%;
-  height: calc(100% - 76px);
+  height: calc(100% - 106px);
 }
 .header {
   width: 100%;
@@ -452,11 +467,9 @@ export default {
   margin-bottom: 16px;
 }
 .headerTop {
-  border: 1px solid #e5e5e5;
   box-sizing: border-box;
   overflow: hidden;
   /* padding-bottom: 15px; */
-  margin-bottom: 16px;
 }
 .demonstration {
   display: inline-block;
@@ -529,7 +542,7 @@ export default {
 /* ------------ footer -------------- */
 .footer {
   width: 100%;
-  height: calc(100% - 108px);
+  height: calc(100% - 118px);
   box-sizing: border-box;
   border: 1px solid #e5e5e5;
 }

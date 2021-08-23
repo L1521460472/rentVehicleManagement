@@ -3,8 +3,12 @@
     id="header"
     v-loading="loading"
   >
-    <div class="header">
+    <div class="header scoped">
       <div class="headerTop">
+      <div class="nav">
+          <span class="demonstration">所属公司</span>
+          <company v-model="enterpriseId"></company>
+      </div>
         <div class="nav">
           <span class="demonstration">合同编号</span>
           <el-input v-model="contractCode" size="small" maxlength="50" placeholder></el-input>
@@ -85,39 +89,9 @@
         >
           <i class="iconfont icon-shenhe"></i>审核操作
         </el-button>
-        <!-- <el-button
-          @click="handleEdit"
-          size="small"
-          :class="{ active: !isDisable }"
-          :disabled="isDisable"
-        >
-          <i class="iconfont icon-edit"></i>计划变更
-        </el-button>
-        <el-button
-          @click="handleImport"
-          size="small"
-          :class="{ active: !isDisable }"
-          :disabled="isDisable"
-        >
-          <i class="iconfont icon-edit"></i>计划审核
-        </el-button>
-        <el-button
-          @click="handleExport"
-          size="small"
-          :class="{ active: !isDisable }"
-          :disabled="isDisable"
-        >
-          <i class="iconfont icon-edit"></i>计划查看
-        </el-button>
-        <el-button
-          @click="handleInsurance"
-          size="small"
-        >
-          <i class="iconfont icon-edit"></i>导出
-        </el-button> -->
       </div>
       <div class="footerTable">
-        <div class="footer_informatian">
+        <div class="">
           <el-table
             :data="dataList"
             border
@@ -132,6 +106,7 @@
             <el-table-column prop width="60" label="序号" align="center">
               <template slot-scope="scope">{{ scope.$index + (currentPage - 1) * pageSize + 1 }}</template>
             </el-table-column>
+          <el-table-column prop="enterpriseName" label="所属公司" width="140" show-overflow-tooltip></el-table-column>
             <el-table-column prop="contractCode" width="140" label="合同编号" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="customerContacts" width="110" label="联系人姓名" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="contactsPhoneNumber" label="联系人手机号" width="120" :show-overflow-tooltip="true"></el-table-column>
@@ -177,7 +152,7 @@
             <el-carousel-item v-for="item in imageUrlList" :key="item.id">
               <img class="imgList" :src="item.efileAddr" alt="" srcset="">
             </el-carousel-item>
-          </el-carousel>        
+          </el-carousel>
         </el-dialog>
 
       </div>
@@ -188,10 +163,15 @@
 import axios from "axios";
 import {getImgsrcList} from '../../api/businessProcess/api'
 import { getCookie, dateToString, getMenuBtnList,formatJE } from "../../public";
+import company from "@/components/aacommon/getEnterpriseBox.vue"
 export default {
   name: "payAuditing",
+    components:{
+      company
+    },
   data() {
     return {
+      enterpriseId:"",
       loading: false,
       payType: null,//缴费渠道(1-web后台 2-App提交)
       customerContacts: "", //联系人姓名
@@ -239,7 +219,7 @@ export default {
       dialogVisible:false,
       searchBtn:false, //查询权限按钮
       auditBtn:false, //审核操作权限按钮
-      tableHeight: window.innerHeight - 400 +'',
+      tableHeight: window.innerHeight - 443 +'',
       headers: {
         Authorization: getCookie("HTBD_PASS"),
         language: this.$store.state.language,
@@ -258,7 +238,7 @@ export default {
           contactsPhoneNumber: this.contactsPhoneNumber,
           contractCode: this.contractCode,
           customerContacts: this.customerContacts,
-          enterpriseIdList: null,
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           id: null,
           payType:this.payType,
           rentStartDateStr: this.dateValue[0] ? this.dateValue[0] : "",
@@ -310,7 +290,7 @@ export default {
           contactsPhoneNumber: this.contactsPhoneNumber,
           contractCode: this.contractCode,
           customerContacts: this.customerContacts,
-          enterpriseIdList: null,
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           id: null,
           payType:this.payType,
           rentStartDateStr: this.dateValue[0] ? this.dateValue[0] : "",
@@ -367,7 +347,7 @@ export default {
           contactsPhoneNumber: this.contactsPhoneNumber,
           contractCode: this.contractCode,
           customerContacts: this.customerContacts,
-          enterpriseIdList: null,
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           id: null,
           payType:this.payType,
           rentStartDateStr: this.dateValue[0] ? this.dateValue[0] : "",
@@ -382,6 +362,9 @@ export default {
         .then((result) => {
           this.loading = false
           if (result.data.status == 0) {
+              setTimeout(() => {
+            window.onload()
+          }, 10)
             result.data.data.records.map(item=>{
               item.rentMoney = formatJE(item.rentMoney)
               item.preCollectMoney = formatJE(item.preCollectMoney)
@@ -400,7 +383,7 @@ export default {
           }
         })
         .catch((err) => {
-          console.error(err);
+          console.log(err);
           this.$message({
             message: err.response.data.message,
             center: true,
@@ -409,6 +392,7 @@ export default {
         });
     },
     reset() {
+      this.enterpriseId=""
       this.initData();
       this.auditStatus = "";
       this.contactsPhoneNumber = "";
@@ -442,7 +426,7 @@ export default {
             center:true
           })
         }
-      }).catch(err=>{console.log(err)}) 
+      }).catch(err=>{console.log(err)})
     },
     // 审核操作
     handleAudit() {
@@ -479,7 +463,7 @@ export default {
           contactsPhoneNumber: null,
           contractCode: null,
           customerContacts: null,
-          enterpriseIdList: null,
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
           id: null,
           payType: null,//缴费渠道(1-web后台 2-App提交)
           rentEndDateStr: null,
@@ -575,7 +559,7 @@ export default {
 <style scoped>
 #header {
   width: 100%;
-  height: calc(100% - 76px);
+  height: calc(100% - 120px);
 }
 .header {
   width: 100%;

@@ -1,6 +1,6 @@
 <template>
   <div id="addAppUserSetting">
-    <div class="header">
+    <div class="header scoped">
       <span v-if="international.title">{{ showMes }}</span>
     </div>
     <div class="footer">
@@ -183,6 +183,9 @@ export default {
             console.log(err)
         })
         getStatusList({type:'status'},this.headers).then(res=>{
+            setTimeout(() => {
+            window.onload()
+          }, 10)
             this.statusList = res.data
         }).catch(err=>{
             console.log(err)

@@ -409,29 +409,24 @@ function openNewTab($this,title,url,params){
     $this.$store.dispatch('openNewTab',router)
   }
 }
-// const downloadRes = async (url, name) => {
-//   let response = await fetch(url)
-//   // 内容转变成blob地址
-//   let blob = await response.blob()
-//   // 创建隐藏的可下载链接
-//   let objectUrl = window.URL.createObjectURL(blob)
-//   let a = document.createElement('a')
-//   //地址
-//   a.href = objectUrl
-//   //修改文件名
-//   a.download = name
-//   // 触发点击
-//   document.body.appendChild(a)
-//   a.click()
-//   //移除
-//   setTimeout(() => document.body.removeChild(a), 1000)
-// }
+function newGuid(leng, spreator) {
+			var guid = "";
+			spreator = spreator || guid
+			guid = "g";
+			for (var i = 1; i <= leng; i++) {
+				var n = Math.floor(Math.random() * 16.0).toString(16);
+				guid += n;
+				if ((i == 8) || (i == 12) || (i == 16) || (i == 20))
+					guid += spreator;
+			}
+			return guid;
+		}
 module.exports = {
   setCookie,
   getCookie,
   removeCookie,
   dateToString,
-  getMenuBtnList,
+  getMenuBtnList, 
   regexpCode,
   regexpMobile,
   regexpEmail,
@@ -444,6 +439,7 @@ module.exports = {
   download,
   openNewTab,
   convertObject,
-  debounce
+  debounce,
+  newGuid
   // downloadRes
 };

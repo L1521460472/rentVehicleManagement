@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-    <div class="header">
+    <div class="header scoped">
       <span>{{ showMsg }}</span>
     </div>
     <div class="footer">
@@ -10,6 +10,24 @@
       <div class="footerNav" v-if="international.title">
         <el-form ref="form" :model="form" label-width="130px">
           <div class="formNav">
+            <el-form-item
+              label="车辆种类"
+              prop="vehicleType"
+              :rules="[
+                {
+                  required: true,
+                  message: international.global.global_contNotEmpty,
+                  trigger: 'blur',
+                },
+              ]"
+            >
+              <el-select size="small" v-model="form.vehicleType" class="formItem">
+                <el-option value="2" label="小型汽车"></el-option>
+                <el-option value="1" label="大型汽车"></el-option>
+                <el-option value="52" label="小型新能源汽车"></el-option>
+                <el-option value="51" label="大型新能源汽车"></el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item
               label="品牌"
               prop="brandName"
@@ -365,6 +383,7 @@ export default {
         monthlyRent: "", //月租金
         efileIdCode: "", //图片id
         enabled: "", //车型状态
+        vehicleType:""//车辆类型
       },
       imgIdList: [], //图片id
       international: {},
@@ -595,6 +614,9 @@ export default {
     },
   },
   mounted() {
+      setTimeout(() => {
+            window.onload()
+          }, 10)
     this.$store.commit("changeIsStatus", false);
     if (this.$route.query.form == "add") {
       this.showButton = true;
@@ -615,6 +637,7 @@ export default {
       this.form.batteryCapacity = "";
       this.form.monthlyRent = "";
       this.form.efileIdCode = "";
+      this.form.vehicleType = "";
     } else {
       this.showButton = false;
       this.showMsg = "修改 车型信息";
@@ -646,6 +669,7 @@ export default {
             this.form.chargingTime = result.data.data.chargingTime;
             this.form.batteryCapacity = result.data.data.batteryCapacity;
             this.form.monthlyRent = result.data.data.monthlyRent;
+            this.form.vehicleType = result.data.data.vehicleType;
             //this.form.efileIdCode = result.data.data.efileIdCode;
             this.fileList = result.data.data.ls_EfileIdCodeAddr;
             this.form.efileIdCode = "";

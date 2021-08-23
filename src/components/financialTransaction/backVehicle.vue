@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-    <div class="header">
+    <div class="header scoped">
       <span>{{ showMsg }}</span>
     </div>
     <div class="footer">
@@ -55,16 +55,6 @@
                   @click="downloadAction(item.efileAddr,item.name)"
                 >{{item.name}}</span>
               </div>
-
-              <!-- <el-upload
-                class="upload"
-                disabled
-                action="/vehicle-service/efileInfo/uploadLeaseContractFile?fileType=8"
-                :headers="headers"
-                :file-list="fileList"
-              >
-                <span class="upload_txt">上传</span>
-              </el-upload> -->
             </el-form-item>
             <div class="footerTitle">
               <span>客户信息</span>
@@ -187,41 +177,6 @@
                   ></el-input>
                 </template>
               </el-table-column>
-              <!-- <el-table-column prop="value" label="实际提车日期">
-                <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    disabled
-                    v-model="formContract.vehicleList[scope.$index].startDate"
-                    placeholder
-                  ></el-input>
-                </template>
-              </el-table-column>
-              <el-table-column prop="value" label="应退车日期">
-                <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    disabled
-                    v-model="formContract.vehicleList[scope.$index].endDate1"
-                    placeholder
-                  ></el-input>
-                </template>
-              </el-table-column>
-              <el-table-column prop="value" label="实退车日期">
-                <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    disabled
-                    v-model="formContract.vehicleList[scope.$index].endDate2"
-                    placeholder
-                  ></el-input>
-                </template>
-              </el-table-column>-->
-              <!-- <el-table-column width="60">
-                <template slot-scope="scope">
-                  <el-button size="small" disabled>删除</el-button>
-                </template>
-              </el-table-column>-->
             </el-table>
             <el-form-item class="cctv">
               <el-button type="primary" size="small" @click="handleClick">点击查看合同详情</el-button>
@@ -335,6 +290,7 @@
               <div class="tableList">
                 <li>结算项目</li>
                 <li>已交押金</li>
+                <li>预收款余额</li>
                 <li>欠租金</li>
                 <li>滞纳金</li>
                 <li>违约赔偿金</li>
@@ -353,6 +309,16 @@
                     size="mini"
                     onkeyup="this.value=this.value.replace(/[^\d.\\-]/g,'');"
                     v-model="formBackVehicle.contractDeposit"
+                    @change="changeVehicleRent"
+                  ></el-input>
+                </li>
+                <li>
+                  <el-input
+                    disabled
+                    type="text"
+                    size="mini"
+                    onkeyup="this.value=this.value.replace(/[^\d.\\-]/g,'');"
+                    v-model="formBackVehicle.balance"
                     @change="changeVehicleRent"
                   ></el-input>
                 </li>
@@ -470,6 +436,9 @@
                 <li>
                   <el-input type="text" size="mini" v-model="value20"></el-input>
                 </li>
+                <li>
+                  <el-input type="text" size="mini" v-model="value21"></el-input>
+                </li>
               </div>
             </el-form-item>
             <el-form-item
@@ -503,7 +472,7 @@
             <el-form-item
               label="押金退款日"
               prop="backOffMoneyDate"
-              
+
             >
               <el-date-picker
                 v-model="formBackVehicle.backOffMoneyDate"
@@ -556,6 +525,7 @@ export default {
   data() {
     return {
       formContract: {
+        balance:"",
         id: null,
         //合同信息
         contractCode: null, //合同编号
@@ -642,6 +612,7 @@ export default {
       value18: "", //证件补办备注
       value19: "", //其他款项备注
       value20: "", //结算余款备注
+      value21: "", //
       personWorkload: [], //名字
       backVehicleTypeOptions: [
         {
@@ -709,6 +680,7 @@ export default {
       this.formBackVehicle.remakeList.push(this.value18);
       this.formBackVehicle.remakeList.push(this.value19);
       this.formBackVehicle.remakeList.push(this.value20);
+      this.formBackVehicle.remakeList.push(this.value21);
       this.$refs.formBackVehicle.validate((valid) => {
         if (valid) {
           axios({
@@ -973,6 +945,7 @@ export default {
       this.formBackVehicle.backOffMoney =
         Number(this.formBackVehicle.contractDeposit) +
         Number(this.formBackVehicle.oweRent) +
+        Number(this.formBackVehicle.balance) +
         Number(this.formBackVehicle.lateFee) +
         Number(this.formBackVehicle.damages) +
         Number(this.formBackVehicle.regulationsDeduction) +
@@ -1053,6 +1026,9 @@ export default {
         .then((result) => {
           // console.log(result.data);
           if (result.data.status === 0) {
+              setTimeout(() => {
+            window.onload()
+          }, 10)
             this.vehicleTypeId =
               result.data.data.leaseContractRentRecordVO.vehicleTypeId;
             this.getVehicle();
@@ -1113,8 +1089,10 @@ export default {
             this.formBackVehicle.backOffMoneyDate = result.data.data.backOffMoneyDate;
             this.formBackVehicle.id = result.data.data.id;
             this.fileList1 = result.data.data.fileList ? result.data.data.fileList : [];
+            this.formBackVehicle.balance=result.data.data.balance
 
-            if(result.data.data.remakeList){
+debugger
+            if(result.data.data.remakeList&&result.data.data.remakeList.length>0){
               this.value11 = result.data.data.remakeList[0]; //已交押金备注
               this.value12 = result.data.data.remakeList[1]; //欠租金备注
               this.value13 = result.data.data.remakeList[2]; //滞纳金备注
@@ -1125,7 +1103,6 @@ export default {
               this.value18 = result.data.data.remakeList[7]; //证件补办备注
               this.value19 = result.data.data.remakeList[8]; //其他款项备注
               this.value20 = result.data.data.remakeList[9]; //结算余款备注
-              
             }
 
             this.vehicleDataList = this.mergeTableRow2(this.vehicleDataList, ['billPeriods']);
@@ -1215,7 +1192,7 @@ export default {
   width: 100%;
   height: calc(100% - 26px);
   box-sizing: border-box;
-  border: 1px solid #e5e5e5;
+  border: 1px solid #d3d3d3;
 }
 .banner {
   width: 100%;
@@ -1260,7 +1237,7 @@ export default {
   width: 100%;
   height: 60px;
   box-sizing: border-box;
-  border-top: 1px solid #e5e5e5;
+  border-top: 1px solid #d3d3d3;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1444,18 +1421,18 @@ export default {
 .tableList li {
   width: 400px;
   height: 40px;
-  border-top: 1px solid #e5e5e5;
-  border-right: 1px solid #e5e5e5;
+  border-top: 1px solid #d3d3d3;
+  border-right: 1px solid #d3d3d3;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .tableList:first-child li {
   width: 200px;
-  border-left: 1px solid #e5e5e5;
+  border-left: 1px solid #d3d3d3;
 }
 .tableList li:last-child {
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid #d3d3d3;
 }
 .tableList li .el-input {
   width: 90%;

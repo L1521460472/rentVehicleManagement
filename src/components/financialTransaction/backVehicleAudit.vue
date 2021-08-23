@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-    <div class="header">
+    <div class="header scoped">
       <span>{{ showMsg }}</span>
     </div>
     <div class="footer">
@@ -55,16 +55,6 @@
                   @click="downloadAction(item.efileAddr,item.name)"
                 >{{item.name}}</span>
               </div>
-
-              <!-- <el-upload
-                class="upload"
-                disabled
-                action="/vehicle-service/efileInfo/uploadLeaseContractFile?fileType=8"
-                :headers="headers"
-                :file-list="fileList"
-              >
-                <span class="upload_txt">上传</span>
-              </el-upload>-->
             </el-form-item>
             <div class="footerTitle">
               <span>客户信息</span>
@@ -125,7 +115,6 @@
                 maxlength="100"
                 v-model="formContract.vehicleNum"
               ></el-input>
-              <!-- <el-button type="primary" disabled size="small">增加</el-button> -->
             </el-form-item>
             <el-form-item label="充电桩数">
               <el-input
@@ -187,41 +176,6 @@
                   ></el-input>
                 </template>
               </el-table-column>
-              <!-- <el-table-column prop="value" label="实际提车日期">
-                <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    disabled
-                    v-model="formContract.vehicleList[scope.$index].startDate"
-                    placeholder
-                  ></el-input>
-                </template>
-              </el-table-column>
-              <el-table-column prop="value" label="应退车日期">
-                <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    disabled
-                    v-model="formContract.vehicleList[scope.$index].endDate1"
-                    placeholder
-                  ></el-input>
-                </template>
-              </el-table-column>
-              <el-table-column prop="value" label="实退车日期">
-                <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    disabled
-                    v-model="formContract.vehicleList[scope.$index].endDate2"
-                    placeholder
-                  ></el-input>
-                </template>
-              </el-table-column>-->
-              <!-- <el-table-column width="60">
-                <template slot-scope="scope">
-                  <el-button size="small" disabled>删除</el-button>
-                </template>
-              </el-table-column>-->
             </el-table>
             <el-form-item class="cctv">
               <el-button type="primary" size="small" @click="handleClick">点击查看合同详情</el-button>
@@ -335,6 +289,7 @@
               <div class="tableList">
                 <li>结算项目</li>
                 <li>已交押金</li>
+                <li>预收款余额</li>
                 <li>欠租金</li>
                 <li>滞纳金</li>
                 <li>违约赔偿金</li>
@@ -354,6 +309,16 @@
                     size="mini"
                     onkeyup="this.value=this.value.replace(/[^\d.\\-]/g,'');"
                     v-model="formBackVehicle.contractDeposit"
+                    @change="changeVehicleRent"
+                  ></el-input>
+                </li>
+                <li>
+                  <el-input
+                    type="text"
+                    disabled
+                    size="mini"
+                    onkeyup="this.value=this.value.replace(/[^\d.\\-]/g,'');"
+                    v-model="formBackVehicle.balance"
                     @change="changeVehicleRent"
                   ></el-input>
                 </li>
@@ -479,6 +444,9 @@
                 <li>
                   <el-input type="text" disabled size="mini" v-model="value20"></el-input>
                 </li>
+                <li>
+                  <el-input type="text" disabled size="mini" v-model="value21"></el-input>
+                </li>
               </div>
             </el-form-item>
             <el-form-item
@@ -540,21 +508,6 @@
                   @click="downloadAction(item.efileAddr,item.name)"
                 >{{item.name}}</span>
               </div>
-
-              <!-- <el-upload
-                class="upload"
-                disabled
-                action="/vehicle-service/efileInfo/uploadLeaseContractFile?fileType=8"
-                :headers="headers"
-                :on-remove="handleRemove"
-                :on-success="handleSuccess"
-                :on-error="handleError"
-                :file-list="fileList1"
-                :limit="5"
-                multiple
-              >
-                <span class="upload_txt">上传</span>
-              </el-upload>-->
             </el-form-item>
           </div>
         </el-form>
@@ -702,6 +655,7 @@ export default {
       value18: "", //证件补办备注
       value19: "", //其他款项备注
       value20: "", //结算余款备注
+      value21:"",//
       personWorkload: [], //名字
       backVehicleTypeOptions: [
         {
@@ -784,12 +738,7 @@ export default {
       //取消新增修改
       this.$router.back();
     },
-    handleRemove(file, fileList) {
-      // console.log(file, fileList);
-      // console.log(this.form.efileIdCode)
-      //   var newArr = this.form.efileIdCode.split(",");
-      //   var index = newArr.indexOf(file.response ? file.response.data.id:file.id);
-      //   this.form.efileIdCode = newArr.splice(index,1).join(",");
+    handleRemove(file, fileList) { 
     },
     handlePreview(file) {
       this.dialogImageUrl = file.url;
@@ -903,6 +852,7 @@ export default {
       //计算结算余额
       this.formBackVehicle.backOffMoney =
         Number(this.formBackVehicle.contractDeposit) +
+        Number(this.formBackVehicle.balance) +
         Number(this.formBackVehicle.oweRent) +
         Number(this.formBackVehicle.lateFee) +
         Number(this.formBackVehicle.damages) +
@@ -985,6 +935,9 @@ export default {
         .then((result) => {
           // console.log(result.data);
           if (result.data.status === 0) {
+              setTimeout(() => {
+            window.onload()
+          }, 10)
             this.vehicleTypeId =
               result.data.data.leaseContractRentRecordVO.vehicleTypeId;
             this.getVehicle();
@@ -1047,22 +1000,24 @@ export default {
               result.data.data.otherDeduction; //其他款项金额
 
             // remakeList:[],
-            this.value11 = result.data.data.remakeList[0]; //已交押金备注
-            this.value12 = result.data.data.remakeList[1]; //欠租金备注
-            this.value13 = result.data.data.remakeList[2]; //滞纳金备注
-            this.value14 = result.data.data.remakeList[3]; //违约赔偿金备注
-            this.value15 = result.data.data.remakeList[4]; //违章扣除备注
-            this.value16 = result.data.data.remakeList[5]; //出险保费上浮备注
-            this.value17 = result.data.data.remakeList[6]; //车损外观备注
-            this.value18 = result.data.data.remakeList[7]; //证件补办备注
-            this.value19 = result.data.data.remakeList[8]; //其他款项备注
-            this.value20 = result.data.data.remakeList[9]; //结算余款备注
+            this.value11 = result.data.data.remakeList[0]; 
+            this.value12 = result.data.data.remakeList[1]; 
+            this.value13 = result.data.data.remakeList[2]; 
+            this.value14 = result.data.data.remakeList[3]; 
+            this.value15 = result.data.data.remakeList[4]; 
+            this.value16 = result.data.data.remakeList[5]; 
+            this.value17 = result.data.data.remakeList[6]; 
+            this.value18 = result.data.data.remakeList[7]; 
+            this.value19 = result.data.data.remakeList[8]; 
+            this.value20 = result.data.data.remakeList[9]; 
+            this.value21=result.data.data.remakeList[10];
 
             this.formBackVehicle.backOffType = result.data.data.backOffType; //退车类型
             this.formBackVehicle.backOffDate = result.data.data.backOffDate; //退车日期
             this.formBackVehicle.backOffMoneyDate =
               result.data.data.backOffMoneyDate; //押金退款日
             this.fileList1 = result.data.data.fileList; //附件
+            this.formBackVehicle.balance=result.data.data.balance
 
             this.vehicleDataList = this.mergeTableRow2(this.vehicleDataList, [
               "billPeriods",

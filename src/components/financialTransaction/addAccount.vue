@@ -1,6 +1,6 @@
 <template>
   <div id="addAccount">
-    <div class="header">
+    <div class="header scoped">
       <span >{{ showMes }}</span>
     </div>
     <div class="footer">
@@ -198,6 +198,9 @@ export default {
     // 获取账户详情          
     getAccountDetail(){
         getAccountDetail({id:this.$route.query.id},this.headers).then(res=>{
+            setTimeout(() => {
+            window.onload()
+          }, 10)
             this.showCompany = res.data.bankType==0 ? true:false
             this.required = res.data.bankType==0 ? true:false
             this.form.belongCompany = res.data.enterpriseId;

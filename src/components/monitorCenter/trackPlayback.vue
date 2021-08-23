@@ -25,6 +25,7 @@
             default-expand-all
             node-key="id"
             :props="defaultProps"
+            :default-checked-keys="defualtchecked"
           >
           </el-tree>
         </div>
@@ -56,6 +57,7 @@
               label="车牌号"
               align="center"
               show-overflow-tooltip
+              width="100"
             >
             </el-table-column>
             <el-table-column
@@ -91,7 +93,7 @@
                     clearable
                     :picker-options="pickerOptions"
                     default-time="00:00:00">
-                  </el-date-picker>            
+                  </el-date-picker>
               </div>
               <div class="nav">
                   <span class="demonstration">结束时间<i class="asterisk ">*</i></span>
@@ -119,16 +121,6 @@
               <img id="stop" class="icon_video" src="../../assets/reset.png" alt="">
               <span class="multiples">x {{multiples}}</span>
             </div>
-            <!-- <button id="run2">减速x2</button>
-            <button id="run">开始</button>
-            <button id="run3">加速x2</button>
-            <button id="stop">停止</button>
-            <button id="pause">暂停</button> -->
-            <!-- <hr />
-            <div class="block">
-              <el-slider v-model="value9" :show-tooltip="false" style="width:100%"></el-slider>
-            </div>
-            <hr /> -->
           </div>
       </div>
   </div>
@@ -181,11 +173,12 @@ export default {
         id:'id'
       },
       // value9: 0,//进度条百分比
-      heigth:window.innerHeight - 590 +'',
+      heigth:window.innerHeight - 400 +'',
       headers:{
           Authorization: getCookie("HTBD_PASS"),
           language:this.$store.state.language
-      }//请求头
+      },//请求头
+      defualtchecked:[]
     };
   },
   components: {},
@@ -199,7 +192,20 @@ export default {
       this.handleOpen()
       getEnterpriseTree({},this.headers).then(res=>{
         if(res.status == 0){
+            setTimeout(() => {
+            window.onload()
+          }, 10)
           this.treeData = res.data
+          if(this.treeData&&this.treeData.length>0){
+            let child=this.treeData[0].children
+            if(child&&child.length>0){
+              this.defualtchecked=[child[0].id]
+            }
+            else{
+              this.defualtchecked=[this.treeData[0].id]
+            }
+            this.getEnterpriseCarsList()
+          }
         }
       }).catch(err=>{console.log(err)})
     },
@@ -245,13 +251,13 @@ export default {
       this.getEnterpriseCarsList()
     },
     // 格式化当前日期
-    curentTime(){ 
+    curentTime(){
         let now = new Date();
         let year = now.getFullYear();       //年
         let month = (now.getMonth() + 1 < 10 ? '0'+(now.getMonth() + 1) : now.getMonth() + 1);     //月
         let day = (now.getDate() < 10 ? '0'+(now.getDate()) : now.getDate());            //日
         let clock = year + "-" + month + '-' + day;
-        return(clock); 
+        return(clock);
     },
     rad(d) {
 				return d * Math.PI / 180.0;
@@ -307,7 +313,7 @@ export default {
               message:'暂无车辆的GPS定位数据',
               center:true
             })
-            
+
           }else{
             console.log(res.data);
             this.gpsArr = res.data;
@@ -758,12 +764,12 @@ export default {
 }
 .drawerTop {
   width: 100%;
-  height: 380px;
+  height: 190px;
   border-bottom: 1px solid #efefef;
 }
 .drawerFooter {
   width: 100%;
-  height: calc(100% - 380px);
+  height: calc(100% - 188px);
 }
 .nav_left {
   width: 300px;

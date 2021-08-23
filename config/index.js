@@ -2,7 +2,8 @@
 // Template version: 1.3.1
 // see http://vuejs-templates.github.io/webpack for documentation.
 const path = require('path')
-const serverIp='http://172.18.11.130:8200'
+// const serverIp='http://172.18.11.120:8200'
+const serverIp='http://172.18.11.145:8200'
 
 module.exports = {
   dev: {
@@ -77,7 +78,7 @@ module.exports = {
      * Source Maps
      */
 
-    productionSourceMap: true,
+    productionSourceMap: false,
     // https://webpack.js.org/configuration/devtool/#production
     devtool: '#source-map',
 

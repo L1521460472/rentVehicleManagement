@@ -1,6 +1,6 @@
 <template>
   <div id="addDepartment">
-    <div class="header">
+    <div class="header scoped">
       <span v-if="international.title">{{ showMes }}</span>
     </div>
     <div class="footer">
@@ -274,6 +274,9 @@ export default {
         this.form.address = null;
       }else{
         getDepartmentDetail({id:this.$route.query.id},this.headers).then(res=>{
+            setTimeout(() => {
+            window.onload()
+          }, 10)
             this.form.departmentName = res.data.departmentName;
             this.form.parentDepartment = res.data.parentId == 0 ? null:res.data.parentId;
             this.form.belong = res.data.enterpriseId;

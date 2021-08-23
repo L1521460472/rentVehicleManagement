@@ -1,6 +1,6 @@
 <template>
   <div id="addOrganization">
-    <div class="header">
+    <div class="header scoped">
       <span v-if="international.title">{{ showMes }}</span>
     </div>
     <div class="footer">
@@ -58,14 +58,6 @@
                 </el-form-item>
                 <el-form-item class="formItem" :label="international.content.content_organization_principal">
                     <el-input maxlength="100" size="small"  v-model="form.principal"></el-input>
-                    <!-- <el-select size="small" v-model="form.principal"  placeholder=""  >
-                        <el-option
-                        v-for="item in managementUserlist"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id">
-                        </el-option>
-                    </el-select> -->
                 </el-form-item>
                 <el-form-item
                 :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'change'}]"
@@ -82,6 +74,15 @@
                 </el-form-item>
                 <el-form-item class="formItem" label="可开账号个数">
                     <el-input maxlength="100" size="small"  v-model="form.openAccounts" onkeyup="value=value.replace(/[^\d]/g,'')"></el-input>
+                </el-form-item>
+                <el-form-item class="formItem"
+                prop="dueDate"
+                :rules="[{ required: true,message:'内容不能为空', trigger: 'change'}]"
+                label="到期时间">
+                     <el-date-picker v-model="form.dueDate" type="date" placeholder="选择日期"> </el-date-picker>
+                </el-form-item>
+                <el-form-item class="formItem" prop="systemTitle"  label="企业标题">
+                      <el-input maxlength="100" size="small"  v-model="form.systemTitle"></el-input>
                 </el-form-item>
                 <el-form-item class="formItem" label="公司logo">
                   <el-upload ref="logo"
@@ -105,12 +106,6 @@
                           </span>
                      </div>
                   </el-upload>
-                </el-form-item>
-                <el-form-item class="formItem"
-                prop="dueDate"
-                :rules="[{ required: true,message:'内容不能为空', trigger: 'change'}]"
-                label="到期时间">
-                     <el-date-picker v-model="form.dueDate" type="date" placeholder="选择日期"> </el-date-picker>
                 </el-form-item>
         </el-form>
         <div class="footerButton">
@@ -148,7 +143,8 @@ export default {
             address:null,
             openAccounts:null,
             logoAddress:null,
-            dueDate:""
+            dueDate:"",
+            systemTitle:""
         },//新增数据
         statusList:[],//状态列表
         belongList:[],//机构归属列表
@@ -182,13 +178,16 @@ export default {
                 }
                 // 联系电话正则验证
                 if(this.form.mobile){
-                    if(!regexpMobile(this.form.mobile)){
-                        this.$message.error({
-                            message:'联系电话格式不确',
-                            center:true
-                        })
-                        return
-                    }
+                   let phones=this.form.mobile.replace('，',",").split(',')
+                   for(let phone of phones){
+                     if(!regexpMobile(phone)){
+                         this.$message.error({
+                             message:'联系电话格式不确，多个电话号码请用逗号（,）隔开',
+                             center:true
+                         })
+                         return
+                     }
+                   }
                 }
                 // 邮箱正则验证
                 if(this.form.email){
@@ -223,7 +222,8 @@ export default {
                     enterpriseType: 2,
                     openAccounts:this.form.openAccounts?Number(this.form.openAccounts):null,
                     logoAddress:this.imgList.length>0?this.imgList[0].url:"",
-                    dueDate:formatDate(this.form.dueDate,"yyyy-MM-dd")
+                    dueDate:formatDate(this.form.dueDate,"yyyy-MM-dd"),
+                    systemTitle:this.form.systemTitle
                 }
                 addOrganization(params,this.headers).then(res=>{
                     if(res.status == 0){
@@ -260,12 +260,15 @@ export default {
                 }
                 // 联系电话正则验证
                 if(this.form.mobile){
-                    if(!regexpMobile(this.form.mobile)){
-                        this.$message.error({
-                            message:'联系电话格式不确',
-                            center:true
-                        })
-                        return
+                    let phones=this.form.mobile.replace('，',",").split(',')
+                    for(let phone of phones){
+                      if(!regexpMobile(phone)){
+                          this.$message.error({
+                              message:'联系电话格式不确，多个电话号码请用逗号（,）隔开',
+                              center:true
+                          })
+                          return
+                      }
                     }
                 }
                 // 邮箱正则验证
@@ -301,7 +304,8 @@ export default {
                     rentStatus:this.form.rentStatus,
                     openAccounts:this.form.openAccounts?Number(this.form.openAccounts):null,
                     logoAddress:this.imgList.length>0?this.imgList[0].url:"",
-                    dueDate:formatDate(this.form.dueDate,"yyyy-MM-dd")
+                    dueDate:formatDate(this.form.dueDate,"yyyy-MM-dd"),
+                    systemTitle:this.form.systemTitle
                 }
                 editOrganization(params,this.headers).then(res=>{
                     this.showEditToast = false
@@ -394,8 +398,12 @@ export default {
         this.form.logoAddress="";
         this.imgList=[];
         this.form.dueDate="";
+        this.form.systemTitle="";
       }else{
         getOrganizationDetail({id:this.$route.query.id},this.headers).then(res=>{
+            setTimeout(() => {
+            window.onload()
+          }, 10)
             this.form.enterpriseName = res.data.enterpriseName;
             this.form.enterpriseCode = res.data.enterpriseCode;
             this.form.belong = res.data.parentId;
@@ -407,7 +415,8 @@ export default {
             this.form.email = res.data.email;
             this.form.openAccounts=res.data.openAccounts;
             this.form.logoAddress=res.data.logoAddress;
-            if(res.data.logoAddress){              
+            this.form.systemTitle=res.data.systemTitle;
+            if(res.data.logoAddress){
               this.imgList.push({name:'logo',url:res.data.logoAddress});
             }
             this.form.dueDate=res.data.dueDate;

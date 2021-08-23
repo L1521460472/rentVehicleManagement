@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-    <div class="header">
+    <div class="header scoped">
       <span>{{ showMsg }}</span>
     </div>
     <div class="footer">
@@ -187,43 +187,8 @@
                   ></el-input>
                 </template>
               </el-table-column>
-              <!-- <el-table-column prop="value" label="实际提车日期">
-                <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    disabled
-                    v-model="formContract.vehicleList[scope.$index].startDate"
-                    placeholder
-                  ></el-input>
-                </template>
-              </el-table-column>
-              <el-table-column prop="value" label="应退车日期">
-                <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    disabled
-                    v-model="formContract.vehicleList[scope.$index].endDate1"
-                    placeholder
-                  ></el-input>
-                </template>
-              </el-table-column>
-              <el-table-column prop="value" label="实退车日期">
-                <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    disabled
-                    v-model="formContract.vehicleList[scope.$index].endDate2"
-                    placeholder
-                  ></el-input>
-                </template>
-              </el-table-column>-->
-              <!-- <el-table-column width="60">
-                <template slot-scope="scope">
-                  <el-button size="small" disabled>删除</el-button>
-                </template>
-              </el-table-column>-->
             </el-table>
-            <el-form-item class="cctv">
+            <el-form-item class="cctv cctv2">
               <el-button type="primary" size="small" @click="handleClick">点击查看合同详情</el-button>
             </el-form-item>
             <div class="footerTitle">
@@ -260,6 +225,9 @@
                 <el-table-column prop="preCollectMoney" width="100" label="预收款" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column prop="writeOffMoney" width="100" label="已核销金额" :show-overflow-tooltip="true"></el-table-column>
               </el-table>
+              <el-form-item class="cctv cctv2">
+                <el-button type="primary" size="small" @click="onsfk">预收款管理</el-button>
+              </el-form-item>
             </div>
             <div class="footerTitle">
               <span>回款记录-执行表</span>
@@ -321,35 +289,41 @@
                     <el-table-column prop="rentTimeStr" label="核销时间" width="90"></el-table-column>
                     <el-table-column prop="collectionCode" label="对应缴费记录" min-width="140"></el-table-column>
                   </el-table>
-                </el-tab-pane>   
-              </el-tabs> 
+                </el-tab-pane>
+              </el-tabs>
             </el-form-item>
           </div>
         </el-form>
       </div>
       <!-- 查看附件 -->
-      <el-dialog :visible.sync="dialogVisible" width="500px">
-        <el-carousel trigger="click" height="400px">
-          <el-carousel-item v-for="item in imageUrlList" :key="item.id">
-            <img class="imgList" :src="item.efileAddr" alt srcset />
-          </el-carousel-item>
-        </el-carousel>
-      </el-dialog>
+      <div class="showimage" style="position: absolute;width: 0px; height: 0px">
+       <el-image ref="showimage" style="width: 0px; height: 0px" :src="currentimage"  :preview-src-list="imageUrlList"></el-image>
+      </div>
       <div class="footerButton">
         <!-- <el-button type="primary" size="small" @click="confirm">确定</el-button> -->
         <el-button size="small" @click="cancel">返回</el-button>
       </div>
     </div>
+    <!-- 预收款提交 -->
+    <el-dialog :visible.sync="showysk" width="70%" top="40px" ref="eldialog" :lock-scroll="true" :close-on-click-modal="false"
+    :close-on-press-escape="false" :before-close="beforclose">
+      <submitAdvancesReceived ref="submitAdvancesReceived" :contractid="contrackid" @closedialog="closedialog"></submitAdvancesReceived>
+    </el-dialog>
   </div>
 </template>
 <script>
 import axios from "axios";
 import {getImgsrcList} from '../../api/businessProcess/api'
 import { getCookie, dateToString, getMenuBtnList ,formatJE,download} from "../../public";
+import submitAdvancesReceived from "@/components/businessProcess/contractProduce/submitAdvancesReceived.vue"
 export default {
+  components:{submitAdvancesReceived},
   name: "lookContractPayment",
   data() {
     return {
+      contrackid:"",
+      currentimage:"",
+      showysk:false,
       formContract: {
         id: null,
         //合同信息
@@ -433,6 +407,18 @@ export default {
     };
   },
   methods: {
+    closedialog(){
+      this.contrackid="";
+      this.showysk=false;
+    },
+    beforclose(done){
+       this.contrackid=""
+       done()
+    },
+    onsfk(){
+        this.showysk=true
+        this.contrackid=this.formContract.id
+    },
     confirm() {
       //确定
     },
@@ -509,7 +495,11 @@ export default {
               center:true
             })
           }else{
-            this.dialogVisible =true
+            this.imageUrlList =this.imageUrlList.map((item)=>{
+              return item.efileAddr
+            })
+            this.currentimage=this.imageUrlList[0]
+            this.$refs.showimage.$el.children[0].click()
           }
         }else{
           this.$message.error({
@@ -517,7 +507,7 @@ export default {
             center:true
           })
         }
-      }).catch(err=>{console.log(err)}) 
+      }).catch(err=>{console.log(err)})
     },
     getInitData() {
       //跳转查看合同缴费记录
@@ -531,6 +521,9 @@ export default {
         .then((result) => {
           // console.log(result.data);
           if (result.data.status === 0) {
+              setTimeout(() => {
+            window.onload()
+          }, 10)
             this.vehicleTypeId = result.data.data.vehicleTypeId;
             this.getVehicle();
 
@@ -666,7 +659,7 @@ export default {
         if (index === 0) {
           sums[index] = "合计";
           return;
-        }   
+        }
         //calcProp 为需要计算的列的prop值的集合
         const calcProp = ["adjustedPaybackMoney" ,"lateFee" ,"uncollectionMoney" ,"writeOffMoney"];
         if (calcProp.includes(column.property)) {
@@ -796,12 +789,19 @@ export default {
   },
   mounted() {
     this.getInitData();
+    this.formContract.id=this.$route.query.id
+    this.$refs.eldialog.$el.children[0].style.height="calc(100% - 90px)"
   },
   computed: {},
   watch: {},
 };
 </script>
 <style scoped>
+  /deep/ .el-dialog__body{
+    margin-top: -44px!important;
+    overflow: auto;
+    height: calc(100% + 30px);
+  }
 #header {
   width: 100%;
   height: calc(100% - 76px);
@@ -1015,7 +1015,7 @@ export default {
   color: #0000ff;
   cursor: pointer;
 }
-#header >>> .el-dialog__body {
+/* #header >>> .el-dialog__body {
   padding: 0;
 }
 #header >>> .el-dialog__header {
@@ -1032,26 +1032,19 @@ export default {
 }
 #header >>> .el-carousel__button {
   width: 12px;
-}
-.imgList {
+} */
+/* .imgList {
   width: 100%;
   height: 400px;
   display: block;
-}
+} */
 .imgSrc {
   float: left;
   margin-left: 10px;
   width: 60px;
   height: 60px;
 }
-/* #header >>> .el-dialog__body {
-  padding: 20px;
+/deep/ .cctv2 > .el-form-item__content{
+  margin-left: 38px!important;
 }
-#header >>> .el-dialog__header {
-  padding: 0;
-}
-#header >>> .el-dialog__headerbtn {
-  top: 3px;
-  right: 3px;
-} */
 </style>

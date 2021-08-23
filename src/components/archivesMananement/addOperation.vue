@@ -1,6 +1,6 @@
 <template>
   <div id="addOperation">
-    <div class="header">
+    <div class="header scoped">
       <span v-if="international.title">{{ showMes }}</span>
     </div>
     <div class="footer">
@@ -293,6 +293,9 @@ export default {
         this.form.address = null;
       }else{
         getOrganizationDetail({id:this.$route.query.id},this.headers).then(res=>{
+            setTimeout(() => {
+            window.onload()
+          }, 10)
             this.form.enterpriseName = res.data.enterpriseName;
             this.form.enterpriseCode = res.data.enterpriseCode;
             this.form.belong = res.data.parentId;

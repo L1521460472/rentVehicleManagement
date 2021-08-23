@@ -1,0 +1,613 @@
+<template>
+  <div class="mycenter">
+    <div class="center">保养管理-核实</div>
+    <div class="container scoped">
+        <div class="item" style="margin-bottom: 40px;">
+          <label style="font-size: 21px;margin-right: 18px;">车牌号码</label>
+          <el-input v-model="data.maintainManagement.vehicleNo" :disabled="true" style="width: 200px;"></el-input>
+        </div>
+        <div class="item">
+          <div class="itemtitle">车辆信息</div>
+          <div class="itemcontant">
+              <div class="itemitem">
+                <div class="itemitem-1">合同编号</div>
+                <div class="itemitem-r">
+                  <el-input v-model="data.queryContractInfoByVehicleIdVO.contractCode" :disabled="true"></el-input>
+                </div>
+              </div>
+              <div class="itemitem">
+                <div class="itemitem-1">所属业务员</div>
+                <div class="itemitem-r">
+                  <el-input v-model="data.queryContractInfoByVehicleIdVO.contacts" :disabled="true"></el-input>
+                </div>
+              </div>
+              <div class="itemitem">
+                <div class="itemitem-1">保单编号</div>
+                <div class="itemitem-r">
+                  <el-input v-model="data.queryContractInfoByVehicleIdVO.policyNo" :disabled="true"></el-input>
+                </div>
+              </div>
+              <div class="itemitem">
+                <div class="itemitem-1">客户联系人</div>
+                <div class="itemitem-r">
+                  <el-input v-model="data.queryContractInfoByVehicleIdVO.contacts" :disabled="true"></el-input>
+                </div>
+              </div>
+              <div class="itemitem">
+                <div class="itemitem-1">联系人电话</div>
+                <div class="itemitem-r">
+                  <el-input v-model="data.queryContractInfoByVehicleIdVO.contactNumber" :disabled="true"></el-input>
+                </div>
+              </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="itemtitle">保养信息</div>
+          <div class="itemcontant">
+              <div class="itemitem">
+                <div class="itemitem-1"><span class="redstar">*</span>保养时间</div>
+                <div class="itemitem-r">
+                  <el-date-picker style="width:200px"
+                        v-model="data.maintainManagement.maintainTime"
+                        type="datetime"
+                        value-format="yyyy-MM-dd HH:mm:ss"
+                        placeholder="选择日期" :disabled="true">
+                      </el-date-picker>
+                </div>
+              </div>
+              <br>
+              <div class="itemitem">
+                <div class="itemitem-1"><span class="redstar">*</span>保养时里程</div>
+                <div class="itemitem-r" >
+                  <el-input v-model="data.maintainManagement.maintainMileage" :disabled="true"></el-input>
+                </div> km
+              </div>
+              <br>
+              <div class="itemitem">
+                <div class="itemitem-1">维修厂名称</div>
+                <div class="itemitem-r">
+                  <el-input v-model="data.maintainManagement.repairer" :disabled="true"></el-input>
+                </div>
+              </div>
+              <br>
+              <div class="itemitem2">
+                <div class="itemitem-1" >基础维护</div>
+                <div class="itemitem-r2">
+                  <div class="itemcontant2">
+                    <div class="itemitem" style="width: 250px;" v-for="item in changguiitems" :key="item.type">
+                      <div class="itemitem-1 itemitem-12">
+                         <el-checkbox v-model="item.checked" ref='changguiitems' :disabled="true">{{item.name}}</el-checkbox>
+                      </div>
+                      <div class="itemitem-r itemitem-r3">
+                        <div :class="item.checked?'itemitem-r3-v4':'itemitem-r3-v'">
+                          <el-input style="width: 100px;" v-model="item.count" :disabled="true"></el-input> 元
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="itemitem2">
+                <div class="itemitem-1" >深度维护</div>
+                <div class="itemitem-r2">
+                  <div class="itemcontant2">
+                    <div class="itemitem"  style="width: 250px;" v-for="item in qitaweixiuitems" :key="item.type">
+                      <div class="itemitem-1 itemitem-12">
+                        <el-checkbox v-model="item.checked" :disabled="true">{{item.name}}</el-checkbox>
+                      </div>
+                      <div class="itemitem-r itemitem-r3">
+                         <div :class="item.checked?'itemitem-r3-v4':'itemitem-r3-v'">
+                          <el-input style="width: 100px;" v-model="item.count" :disabled="true"></el-input> 元
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="itemitem2">
+                <div class="itemitem-1" >清洁保养</div>
+                <div class="itemitem-r2">
+                  <div class="itemcontant2">
+                    <div class="itemitem"  style="width: 250px;" v-for="item in cleanList" :key="item.type">
+                      <div class="itemitem-1 itemitem-12">
+                        <el-checkbox v-model="item.checked" disabled >{{item.name}}</el-checkbox>
+                      </div>
+                      <div class="itemitem-r itemitem-r3">
+                        <div :class="item.checked?'itemitem-r3-v4':'itemitem-r3-v'">
+                          <el-input  style="width: 100px;" disabled v-model="item.count" @change='checkmoney(item,"count")'></el-input> 元
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="itemitem2">
+                <div class="itemitem-1" style="width:79px">自定义<br>维修项目</div>
+                <div class="itemitem-r2">
+                  <div class="itemcontant2">
+                    <div class="itemitem-14">
+                        <div class="zidingyiitem" v-for="(item,index) in zidingyiitems" :key="item.id">
+                          <el-input v-model="item.name" :disabled="true"></el-input>
+                          <el-input class="last-child" v-model="item.count" :disabled="true"></el-input> 元
+                        </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="itemcontant">
+              <div class="itemitem">
+                <div class="itemitem-1" style="text-align:right;width: 110px;">费用合计</div>
+                <div class="itemitem-r">
+                  <el-input v-model="data.maintainManagement.totalFee" :disabled="true"
+                  style="width:200px;margin-right:5px;"></el-input>元
+                </div>
+              </div>
+              <br>
+              <div class="itemitem">
+                <div class="itemitem-1" style="text-align:right;width: 110px;">实际支付费用</div>
+                <div class="itemitem-r">
+                  <el-input v-model="data.maintainManagement.payFee" :disabled="true"
+                  style="width:200px;margin-right:5px"></el-input>元
+                </div>
+              </div>
+              <br>
+              <div class="itemitem">
+                <div class="itemitem-1" style="text-align:right;width: 110px;"><span class="redstar">*</span>下次保养日期</div>
+                <div class="itemitem-r">
+                  <el-date-picker style="width:200px"
+                    disabled  
+                    v-model="data.maintainManagement.nextMaintainTime"
+                    type="datetime"
+                    value-format="yyyy-MM-dd HH:mm:ss"
+                    placeholder="选择日期">
+                  </el-date-picker>
+                </div>
+              </div>
+              <br>
+              <div class="itemitem">
+                <div class="itemitem-1" style="text-align:right;width: 110px;"><span class="redstar">*</span>下次保养时里程</div>
+                <div class="itemitem-r">
+                  <el-input v-model="data.maintainManagement.nextMaintainMileage"  disabled
+                  placeholder="请输入保养时里程" style="width:200px;margin-right:5px"></el-input>km
+                </div>
+              </div>
+              <br>
+              <div class="itemitem">
+                <div class="itemitem-1" style="text-align:right;width: 110px;vertical-align: top;">备注</div>
+                <div class="itemitem-r">
+                  <el-input
+                    disabled
+                    type="textarea"
+                    style="width:500px"
+                    placeholder="请输入备注（100字以内）"
+                    maxlength="100"
+                    :autosize="{ minRows: 4, maxRows: 6 }"
+                    show-word-limit
+                    v-model="data.maintainManagement.remark"
+                  ></el-input>
+                </div>
+              </div>
+              <br>
+              <div class="itemitem" style="margin-bottom: 25px;">
+                <div class="itemitem-1" style="text-align:right;width: 100px;vertical-align: top;">照片</div>
+                <div class="itemitem-r">
+                  <el-upload
+                    action=""
+                    :on-preview="handlePreview"
+                    :file-list="fileList"
+                    :before-remove="handleRemove"
+                    list-type="picture"  >
+                  </el-upload>
+                </div>
+              </div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="itemtitle">核实状态</div>
+          <div class="itemcontant">
+            <div class="itemitem">
+              <div class="itemitem-1" style="padding-left: 5px;">核实结果</div>
+              <div class="itemitem-r">
+                <template>
+                  <el-radio v-model="shenhedata.auditStatus" label="1">通过</el-radio>
+                  <el-radio v-model="shenhedata.auditStatus" label="2">拒绝</el-radio>
+                </template>
+              </div>
+            </div>
+            <br>
+            <div class="itemitem">
+              <div class="itemitem-1" style="vertical-align: top;"><span class="redstar">*</span>核实意见</div>
+              <div class="itemitem-r">
+               <el-input v-model="shenhedata.auditSuggestion"  type="textarea" :rows="4"
+                style="width:500px;" placeholder="请输入核实意见"></el-input>
+              </div>
+            </div>
+            <br>
+            <div class="itemitem" style="margin-bottom: 25px;margin-top: 25px;display: block;">
+              <div style="width: 100%;text-align: center;">
+                <el-button @click="shenhe()" type="primary" >确认</el-button>
+                <el-button @click="cancel()">返回</el-button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <!-- 图片放大弹窗 -->
+    <el-dialog class="imgSrc" :visible.sync="dialogVisible" width="500px">
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog>
+  </div>
+</template>
+
+<script>
+  import { getCookie,formatJE,getMenuBtnList,newGuid} from "@/public";
+  import axios from 'axios';
+  export default{
+    name:'auditUpkeep',
+    data(){
+      return {
+          changguiitems:[
+            {checked:false,type:1,name:'发动机机油',count:null},
+            {checked:false,type:2,name:'机油滤清器',count:null},
+            {checked:false,type:3,name:'空气滤清器',count:null},
+            {checked:false,type:4,name:'火花塞',count:null},
+            {checked:false,type:5,name:'雨刷',count:null},
+            {checked:false,type:6,name:'空调制冷液',count:null},
+            {checked:false,type:7,name:'空调滤清器',count:null},
+            {checked:false,type:8,name:'更换防冻液',count:null},
+            {checked:false,type:9,name:'燃油滤清器',count:null},
+            {checked:false,type:10,name:'Pm2.5滤芯',count:null},
+            {checked:false,type:11,name:'玻璃水',count:null}
+          ],
+          //其他维修(0-无 1-修门窗锁 2-更换大灯 3-更换刹车片 4-更换刹车盘 5-调整更换后视镜 6-修换发动机 7-更换电瓶)
+          qitaweixiuitems:[
+            {checked:false,type:1,name:'刹车油',count:null},
+            {checked:false,type:2,name:'刹车片',count:null},
+            {checked:false,type:3,name:'刹车盘',count:null},
+            {checked:false,type:4,name:'轮胎',count:null},
+            {checked:false,type:5,name:'蓄电池',count:null},
+            {checked:false,type:6,name:'大灯',count:null},
+            {checked:false,type:7,name:'雾灯',count:null}
+          ],
+          cleanList:[
+            {checked:false,type:1,name:'发动机清洗',count:null},
+            {checked:false,type:2,name:'燃油系统养护',count:null},
+            {checked:false,type:3,name:'刹车系统养护',count:null},
+            {checked:false,type:4,name:'空调管路清洗',count:null},
+            {checked:false,type:5,name:'冷却系统养护',count:null},
+            {checked:false,type:6,name:'水箱清洗',count:null},
+            {checked:false,type:7,name:'进气系统清洗',count:null},
+            {checked:false,type:8,name:'三元催化清洗',count:null},
+            {checked:false,type:9,name:'喷油嘴清洗',count:null},
+            {checked:false,type:10,name:'底盘装甲',count:null},
+            {checked:false,type:11,name:'润滑系统清洗',count:null},
+            {checked:false,type:12,name:'节气门清洗',count:null},
+          ],
+          zidingyiitems:[],
+          btn1:false,
+          headers: {
+            Authorization: getCookie("HTBD_PASS"),
+            language: this.$store.state.language,
+          },
+          data:{
+             adds:[],
+             queryContractInfoByVehicleIdVO:{},
+             maintainManagement:{},
+             maintainManagementCustomrepairList:[],
+             maintainManagementDetailList:[],
+             maintainManagementOtherrepairList:[]
+          },
+          vehicledata:[],
+          fileList:[],
+          indexkey:-1,
+          dialogImageUrl:'',
+          dialogVisible:false,
+          shenhedata:{
+            auditStatus: '1',
+            auditSuggestion: "",
+            id: null
+          }
+      }
+    },
+    methods:{
+      shenhe(){
+          if(!this.shenhedata.auditSuggestion){
+            this.$message.error('请输入核实意见！')
+            return
+          }else{
+             this.$axios.post('/vehicle-service/maintainManagement/maintainAudit',this.shenhedata,{headers:this.headers})
+             .then((res)=>{
+               if(res.data.status==0){
+                 this.$store.commit("changeIsStatus", true);
+                 this.$message.success('核实成功！')
+                 this.$router.back()
+               }
+               else{
+                 this.$message.error(res.data.message)
+               }
+             })
+             .catch((err)=>{
+               this.$message.error(err.message)
+             })
+          }
+          
+      },
+      handleRemove(){
+        return false
+      },
+      // 点击放大图片
+      handlePreview(file) {
+        this.dialogImageUrl = file.url;
+        this.dialogVisible = true;
+      },
+      cancel(){
+        this.$router.back()
+      },
+    },
+    mounted(){
+      this.shenhedata.id=this.$route.query.id
+      this.$axios.get(`/vehicle-service/maintainManagement/queryMaintainRecord?id=${this.$route.query.id}`,{headers:this.headers})
+      .then((res)=>{
+          setTimeout(() => {
+            window.onload()
+          }, 10)
+        let data=res.data.data
+        if(data){
+          if(data.queryContractInfoByVehicleIdVO){
+            this.data.queryContractInfoByVehicleIdVO=data.queryContractInfoByVehicleIdVO
+          }
+          if(data.maintainManagement){
+            this.data.maintainManagement=data.maintainManagement
+            data.maintainManagement.totalFee=formatJE(data.maintainManagement.totalFee)
+            data.maintainManagement.payFee=formatJE(data.maintainManagement.payFee)
+            if(data.maintainManagement.auditStatus==0){
+              data.maintainManagement.auditStatusStr='待核实'
+            }
+            else if(data.maintainManagement.auditStatus==1){
+              data.maintainManagement.auditStatusStr='核实通过'
+            }
+            else{
+              data.maintainManagement.auditStatusStr='核实未通过'
+            }
+          }
+          if(data.maintainManagementCustomList){
+            let datarry = this.data.maintainManagementCustomList=data.maintainManagementCustomList
+            let citems=null
+            for(let item of datarry){
+              this.zidingyiitems.push({name:item.customMaintain,count:formatJE(item.customMaintainCost),id:newGuid(6)})
+            }
+          }
+          if(data.maintainManagementBasicsList){
+            let datarry = this.data.maintainManagementBasicsList=data.maintainManagementBasicsList
+            let citems=null
+            for(let item of datarry){
+              citems=this.changguiitems[item.basicsMaintain-1]
+              if(item.basicsMaintainCost&&item.basicsMaintainCost>0)
+              {
+                citems.count=formatJE(item.basicsMaintainCost)
+                citems.checked=true
+              }
+            }
+          }
+          if(data.maintainManagementDeepList){
+            let datarry = this.data.maintainManagementDeepList=data.maintainManagementDeepList
+            let citems=null
+            for(let item of datarry){
+              citems=this.qitaweixiuitems[item.deepMaintain-1]
+              if(item.deepMaintainCost&&item.deepMaintainCost>0)
+              {
+                 citems.count=formatJE(item.deepMaintainCost)
+                 citems.checked=true
+              }
+            }
+          }
+          if(data.maintainManagementCleanList){
+            let datarry = this.data.maintainManagementCleanList=data.maintainManagementCleanList
+            let citems=null
+            for(let item of datarry){
+              citems=this.cleanList[item.cleanMaintain-1]
+              if(item.cleanMaintainCost&&item.cleanMaintainCost>0)
+              {
+                 citems.count=formatJE(item.cleanMaintainCost)
+                 citems.checked=true
+              }
+            }
+          }
+          if(data.adds){
+            data.adds.map((item)=>{
+              this.fileList.push({name:item.efileName,url:item.url})
+            })
+          }
+        }
+        else{
+          this.$message.error('暂无数据！')
+        }
+      })
+      .catch((err)=>{
+        this.$message.error(err.message)
+      })
+    },
+    computed: {
+      menuDataList() {
+        return this.$store.state.menuData;
+      }
+    },
+    watch:{
+      '$route'(to, from){ this.$router.go(0);  },
+      menuDataList:{
+        handler(data){
+            let btns =  getMenuBtnList(data,"/upkeep")
+            btns.map(item=>{
+              if(item.name == '核实') this.btn1 = true
+            })
+        },
+        immediate:true,
+        deep:true
+      },
+    }
+  }
+</script>
+
+<style scoped>
+  .del{
+    font-size: 18px;
+    font-weight: 600;
+    color: red;
+    text-decoration: none;
+    vertical-align: middle;
+    margin-left: 10px;
+  }
+  .zidingyiitem{
+    margin: 10px 20px;
+    animation-name: zidingyiitem;
+    animation-duration: .5s;
+  }
+  .zidingyiitem2{
+    margin: 10px 20px;
+    animation-name: zidingyiitem2;
+    animation-duration: .5s;
+    margin-left: -600px;
+  }
+  @keyframes zidingyiitem{
+    from{margin-left: -600px;}
+    to{margin-left: 20px;}
+  }
+  @keyframes zidingyiitem2{
+    from{margin-left: 20px;}
+    to{margin-left: -600px;}
+  }
+  .zidingyiitem .el-input,.zidingyiitem2 .el-input{
+    width: 250px;
+  }
+  .zidingyiitem  .last-child,.zidingyiitem2  .last-child{
+    width: 100px!important;
+  }
+  .addnew{
+        width: 90px;
+        margin: 20px;
+        border: 1px solid #40aaff;
+        padding: 5px 8px;
+        border-radius: 5px;
+        cursor: pointer;
+  }
+  .itemitem-14{
+    min-height: 100px;
+    overflow: hidden;
+    transition:height .6s,
+  }
+   .itemitem-r3{
+     vertical-align: middle;
+     overflow: hidden;
+     width: 125px;
+   }
+   .itemitem-r3-v{
+     margin-left: -100px;
+     animation-name: r3;
+     animation-duration: .4s;
+   }
+   .itemitem-r3-v4{
+     margin-left: 0px;
+     animation-name: r4;
+     animation-duration: .4s;
+   }
+   @keyframes r3{
+     from{margin-left: 0px;}
+     to{margin-left: -100px;}
+   }
+   @keyframes r4{
+     from{margin-left: -100px;}
+     to{margin-left: 0px}
+   }
+
+  .itemitem-r3 .el-input{
+    width: 80px;
+  }
+  .itemitem-r2{
+    width: 100%;
+    display: inline-block;
+    flex-grow: 1;
+  }
+  .itemitem-r{
+    display: inline-block;
+  }
+  .itemitem-1{
+    display: inline-block;
+    text-align: left;
+    width: 80px;
+  }
+  .itemitem-12{
+    width: 120px;
+  }
+  .itemitem{
+    padding: 10px 20px;
+    display: inline-block;
+  }
+  .itemitem2{
+    padding: 10px 20px;
+    display: flex;
+  }
+  .itemcontant{
+    margin-top: 20px;
+   border: 1px solid #d3d3d3!important;
+    width: calc(100% - 80px);
+  }
+  .itemcontant2{
+     border: 1px solid #E5E5E5!important;
+      width: 100%;
+      margin-left: 5px;
+  }
+  .mycenter{
+    font-size: 14px;
+     border:1px solid #E5E5E5;
+     padding-bottom: 0px;
+     height: calc(100% - 65px);
+     overflow: auto;
+  }
+  .center{
+        color: #333333;
+        font-family: Microsoft YaHei;
+        font-size: 18px;
+        line-height: 40px;
+        letter-spacing: 0.2px;
+        text-align: left;
+        height: 40px;
+        background-color: rgba(245, 247, 250, 1);
+        padding: 0px 20px;
+  }
+  .item{
+    margin:20px 20px;
+  }
+  .redstar{
+    color: red;
+  }
+  .itemtitle{
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .imgSrc >>> .el-dialog__body {
+    padding: 0;
+  }
+  .imgSrc >>> .el-dialog__header {
+    padding: 0;
+  }
+  .imgSrc >>> .el-dialog__headerbtn {
+    top: -11px;
+    right: -15px;
+    color: #fff;
+    opacity: 1;
+  }
+  /* /deep/ .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner::after {
+      border-color: #606266;
+  }
+  /deep/ .el-checkbox__input.is-disabled+span.el-checkbox__label {
+    color: #606266;
+    cursor: not-allowed;
+}
+/deep/ .el-icon-close{
+  display: none!important;
+} */
+</style>

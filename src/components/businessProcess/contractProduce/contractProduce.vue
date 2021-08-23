@@ -1,6 +1,13 @@
 <template>
+  <!--
+  不要随意进行代码换行，一目十行代码不香吗，一句代码分开几行显示看着都累
+  -->
   <div id="contractProduce" v-loading="loading">
     <div class="headerTop">
+      <div class="nav">
+          <span class="demonstration">所属公司</span>
+          <company v-model="enterpriseId"></company>
+      </div>
       <div class="nav">
         <span class="demonstration">订单编号</span>
         <el-input v-model="orderNo" size="small" maxlength="50" placeholder></el-input>
@@ -16,12 +23,7 @@
       <div class="nav">
         <span class="demonstration">所属业务员</span>
         <el-select v-model="userId" clearable size="small" placeholder>
-          <el-option
-            v-for="item in userIdOptions"
-            :key="item.id"
-            :label="item.salesmanName"
-            :value="item.id"
-          ></el-option>
+          <el-option v-for="item in userIdOptions" :key="item.id"  :label="item.salesmanName" :value="item.id"></el-option>
         </el-select>
       </div>
       <div class="nav">
@@ -35,90 +37,48 @@
       <div class="nav">
         <span class="demonstration">合同状态</span>
         <el-select v-model="contractStatus" clearable size="small" placeholder>
-          <el-option
-            v-for="item in contractStatusOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
+          <el-option v-for="item in contractStatusOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
         </el-select>
       </div>
-      <!-- <div class="nav">
-        <span class="demonstration">当期收款状态</span>
-        <el-select v-model="collectionStatus" clearable size="small" placeholder>
-          <el-option
-            v-for="item in currentCollectionStatus"
-            :key="item.id"
-            :label="item.label"
-            :value="item.id"
-          ></el-option>
-        </el-select>
-      </div> -->
       <div class="nav illegalTime">
         <span class="demonstration">合同时段</span>
-        <el-date-picker
-          size="small"
-          v-model="dateValue"
-          type="daterange"
-          format="yyyy-MM-dd"
-          value-format="yyyy-MM-dd"
-          range-separator="~"
-          start-placeholder
-          clearable
-          end-placeholder
-        ></el-date-picker>
+        <el-date-picker size="small" v-model="dateValue" type="daterange" format="yyyy-MM-dd"
+          value-format="yyyy-MM-dd" range-separator="~" start-placeholder clearable end-placeholder></el-date-picker>
       </div>
       <div class="headerBotton">
         <el-button size="small" type="primary" class="search" v-if="searchBtn" @click="search">查询</el-button>
         <el-button class="reset" size="small" type="primary"  @click="reset">重置</el-button>
-        <el-button class="reset" size="small" type="primary" v-if="taxesBtn"  @click="taxesAction" title="距账单日7天">即将交租合同</el-button>
-        <el-button class="reset" size="small" type="primary" v-if="expireBtn"  @click="expireAction" title="距到期日30天">即将到期合同</el-button>
+        <el-button class="reset" size="small" type="primary" v-if="taxesBtn"
+         @click="taxesAction" title="距账单日7天">即将交租合同</el-button>
+        <el-button class="reset" size="small" type="primary" v-if="expireBtn"
+        @click="expireAction" title="距到期日30天">即将到期合同</el-button>
+        <el-button class="reset" size="small" type="primary" v-if="searchBtn"
+        @click="yajindaijiao" title="查询存在押金未结清（包含未交，待补交）的合同">押金待交</el-button>
       </div>
     </div>
     <div class="footer">
       <div class="footerBottom">
-        <el-button
-          @click="checkContract"
-          size="small"
-          :class="{ 'active': !isDisable }" 
-          :disabled="isDisable"
-          v-if="checkContractBtn"
-        >
-          <i class="iconfont icon-chakan"></i>
-          合同查看
+        <el-button @click="checkContract" size="small" :class="{ 'active': !isDisable }"  :disabled="isDisable" v-if="checkContractBtn">
+          <i class="iconfont icon-chakan"></i> 合同查看
         </el-button>
-        <el-button
-        v-if="paySubmitBtn"
-          @click="rentCollection"
-          size="small"
-          :class="{ 'active': !isDisable }" 
-          :disabled="isDisable"
-        >
-          <i class="iconfont icon-jiaofei"></i>
-          缴费提交
+        <el-button v-if="paySubmitBtn" @click="rentCollection" size="small" :class="{ 'active': !isDisable }"  :disabled="isDisable" >
+          <i class="iconfont icon-jiaofei"></i> <span v-html="paySubmitBtntitle"></span>
         </el-button>
-        <el-button
-          v-if="exportBtn"
-          @click="exportAction"
-          size="small"
-        >
-          <i class="iconfont icon-daochu"></i>
-          导出
+        <el-button @click="onzjdk" size="small" :class="{ 'active': !isDisable }"
+        :disabled="isDisable" v-if="zjdkBtn">
+          <i class="iconfont icon-chakan"></i> 租金抵扣
+        </el-button>
+        <el-button v-if="exportBtn"  @click="exportAction" size="small" >
+          <i class="iconfont icon-daochu"></i> 导出
         </el-button>
       </div>
       <div class="footerTable">
-        <div class="footer_informatian">
-          <el-table
-            :data="tableData"
-            border
-            stripe
-            :header-cell-style="{ background: '#F5F7FA', color: '#333333' }"
-            size="small"
-            style="width: 100%; height: 100%;"
-            :height="tableHeight"
-            @selection-change="handleSelectionChange"
-          >
+        <div class="">
+          <el-table  :data="tableData" border stripe
+            :header-cell-style="{ background: '#F5F7FA', color: '#333333' }" size="small" style="width: 100%; height: 100%;"
+            :height="tableHeight" @selection-change="handleSelectionChange">
             <el-table-column type="selection" prop="id" align="center" width="60"></el-table-column>
+            <el-table-column prop="enterpriseName" label="所属公司" width="140" show-overflow-tooltip></el-table-column>
             <el-table-column prop="orderNo" width="100" label="订单编号" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="userName" width="80" label="业务员" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="contractCode" width="150" label="合同编号" :show-overflow-tooltip="true"></el-table-column>
@@ -139,22 +99,14 @@
             <el-table-column prop="rentMonths" width="80" label="租赁月数" ></el-table-column>
             <el-table-column prop="vehicleNum" width="80" label="车辆数"></el-table-column>
             <el-table-column prop="chargingPileNum" width="80" label="充电桩数"></el-table-column>
-            <!-- <el-table-column prop="deposit" width="110" label="合同总押金"></el-table-column>
-            <el-table-column prop="vehicleRent" width="110" label="合同总月租"></el-table-column> -->
             <el-table-column prop="contractStatusStr" min-width="100" label="合同状态"></el-table-column>
-            <!-- <el-table-column prop="auditStatus" min-width="100" label="缴费审核状态"></el-table-column> -->
           </el-table>
-        </div> 
+        </div>
         <div class="footer_page">
-          <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="currentPage"
-            :page-sizes="[10, 20, 30, 40, 50]"
-            :page-size="pageSize"
-            :pager-count="5"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total"
+          <el-pagination  @size-change="handleSizeChange" @current-change="handleCurrentChange"
+            :current-page="currentPage" :page-sizes="[10, 20, 30, 40, 50]"
+            :page-size="pageSize" :pager-count="5" layout="total, sizes, prev, pager, next, jumper"
+             :total="total"
           ></el-pagination>
         </div>
       </div>
@@ -164,10 +116,16 @@
 <script>
 import {contractProduceData,getSalesmanList,expireContractData,taxesContractData,exportContract} from '../../../api/businessProcess/api'
 import { getCookie, dateToString, getMenuBtnList,formatJE } from "../../../public";
+import axios from 'axios'
+import company from "@/components/aacommon/getEnterpriseBox.vue"
 export default {
   name: "contractProduce",
+    components:{
+      company
+    },
   data() {
     return {
+      enterpriseId:"",
       loading: false,
       orderNo: null, //订单编号
       customerContacts: null, //联系人姓名
@@ -180,10 +138,6 @@ export default {
       dateValue: null, //合同时段
       userIdOptions: [], //所属业务员
       contractStatusOptions: [
-        // {
-        //   value: "0",
-        //   label: "待登记",
-        // },
         {
           value: "1",
           label: "正常进行中",
@@ -225,6 +179,9 @@ export default {
       checkContractBtn:false,//处理按钮是否有权限显示
       paySubmitBtn:false,//审核按钮是否有权限显示
       exportBtn:false,//查看按钮是否有权限显示
+      isdaijiaoyajinchaxun:false,//标记是否待交押金查询
+      paySubmitBtntitle:"缴费提交",//按钮文字
+      zjdkBtn:false,//租金抵扣按钮
       tableHeight: window.innerHeight - 448 +'',
       headers: {
         Authorization: getCookie("HTBD_PASS"),
@@ -233,14 +190,51 @@ export default {
     };
   },
   methods: {
+    checked(){
+      if(this.selectData.length > 1){
+          this.$message.warning({
+              message:'租金抵扣提交不能多选',
+              center:true
+          })
+          return false
+      }
+      if(this.selectData[0].contractStatus == 0 || this.selectData[0].contractStatus == 4){
+          this.$message.warning({
+              message:'该合同状态下不能进行租金抵扣提交操作',
+              center:true
+          })
+          return false
+      }
+      if(this.selectData[0].paymentAuditStatusNum > 0){
+          this.$message.warning({
+              message:'缴费状态为待审核，不能进行租金抵扣提交操作',
+              center:true
+          })
+          return false
+      }
+      return true
+    },
+    //租金抵扣
+    onzjdk(){
+      if(!this.checked()){
+        return
+      }
+      this.$store.commit("changeIsStatus", false);
+      this.$router.push({
+        name: "rentDeduction",
+        params:{id:this.selectData[0].id,collectionType:this.isdaijiaoyajinchaxun?1:0}
+      });
+    },
+    //押金待交查询
+    yajindaijiao(){
+        this.isdaijiaoyajinchaxun=true
+        this.currentPage=1
+        this.belongData = 3
+        this.getListData()
+    },
     //获取所有数据分页信息
     getListData(){
       this.loading = true
-      let query=this.$router.currentRoute.query;  
-      if(query&&query.vehicleNo)
-      {
-        this.vehicleNo=query.vehicleNo;
-      }
       let params = {
         collectionStatus: this.collectionStatus,
         contactsPhoneNumber: this.contactsPhoneNumber,
@@ -253,26 +247,64 @@ export default {
         rentStartDateStr: this.dateValue ? this.dateValue[0] : null,
         userId: this.userId,
         vehicleNo: this.vehicleNo,
+          enterpriseIdList:this.enterpriseId?[this.enterpriseId]:[],
         currentPage: this.currentPage,
-        pageSize: this.pageSize      
+        pageSize: this.pageSize
       }
-      contractProduceData(params,this.headers).then(res=>{
-        this.loading = false
-        this.total = res.data.total
-        res.data.records.map(item=>{
-          item.payMoney = formatJE(item.payMoney)
-          item.payedMoney = formatJE(item.payedMoney)
-          item.uncollectionMoney = formatJE(item.uncollectionMoney)
-          item.latefeeMoney = formatJE(item.latefeeMoney)
+      //正常查询
+      if(!this.isdaijiaoyajinchaxun){
+        contractProduceData(params,this.headers).then(res=>{
+            setTimeout(() => {
+            window.onload()
+          }, 10)
+          this.loading = false
+          this.total = res.data.total
+          res.data.records.map(item=>{
+            item.payMoney = formatJE(item.payMoney)
+            item.payedMoney = formatJE(item.payedMoney)
+            item.uncollectionMoney = formatJE(item.uncollectionMoney)
+            item.latefeeMoney = formatJE(item.latefeeMoney)
+          })
+          this.tableData = res.data.records
+        }).catch(err=>{
+          this.loading = false
+          this.$message.error({
+            message:res.message,
+            center:true
+          })
         })
-        this.tableData = res.data.records
-      }).catch(err=>{
-        this.loading = false
-        this.$message.error({
-          message:res.message,
-          center:true
+      }
+      else{
+        //查询押金待交
+        axios({
+          method: "post",
+          url: "/vehicle-service/leaseContractInfo/depositDelay",
+          headers: this.headers,
+          data:params
         })
-      })
+          .then((res) => {
+              setTimeout(() => {
+            window.onload()
+          }, 10)
+            this.loading = false
+            this.total = res.data.data.total
+            res.data.data.records.map(item=>{
+              item.payMoney = formatJE(item.payMoney)
+              item.payedMoney = formatJE(item.payedMoney)
+              item.uncollectionMoney = formatJE(item.uncollectionMoney)
+              item.latefeeMoney = formatJE(item.latefeeMoney)
+            })
+            this.tableData = res.data.data.records
+          })
+          .catch((err) => {
+           this.loading = false
+           this.$message.error({
+             message:"服务器繁忙，请稍后再试",
+             center:true
+           })
+          });
+      }
+
     },
     // 获取下拉列表信息
     getListInfo(){
@@ -292,10 +324,12 @@ export default {
     search() {
       this.belongData = 0
       this.currentPage =1
+      this.isdaijiaoyajinchaxun=false
       this.getListData()
     },
     // 重置
     reset() {
+      this.enterpriseId="",
       this.contactsPhoneNumber = null;
       this.contractCode = null;
       this.contractStatus = null;
@@ -309,6 +343,7 @@ export default {
       this.belongData = 0
       this.currentPage = 1
       this.pageSize =10
+      this.isdaijiaoyajinchaxun=false
       this.getListData()
     },
     // 即将交租合同数据
@@ -326,7 +361,7 @@ export default {
         userId: this.userId,
         vehicleNo: this.vehicleNo,
         currentPage: this.currentPage,
-        pageSize: this.pageSize      
+        pageSize: this.pageSize
       }
       taxesContractData(params,this.headers).then(res=>{
         this.total = res.data.total
@@ -349,7 +384,7 @@ export default {
         userId: this.userId,
         vehicleNo: this.vehicleNo,
         currentPage: this.currentPage,
-        pageSize: this.pageSize      
+        pageSize: this.pageSize
       }
       expireContractData(params,this.headers).then(res=>{
         this.loading = false
@@ -370,34 +405,16 @@ export default {
           path:'/checkContract',
           query:{id:this.selectData[0].id}
       });
-    }, 
+    },
     // 缴费提交
     rentCollection(){
-      if(this.selectData.length > 1){
-          this.$message.warning({
-              message:'缴费提交不能多选',
-              center:true
-          })
-          return
-      }
-      if(this.selectData[0].contractStatus == 0 || this.selectData[0].contractStatus == 4){
-          this.$message.warning({
-              message:'该合同状态下不能进行缴费提交操作',
-              center:true
-          })
-          return
-      }
-      if(this.selectData[0].paymentAuditStatusNum > 0){
-          this.$message.warning({
-              message:'缴费状态为待审核，不能进行缴费提交操作',
-              center:true
-          })
-          return
+      if(!this.checked()){
+        return
       }
       this.$store.commit("changeIsStatus", false);
       this.$router.push({
-          path:'/payFee',
-          query:{id:this.selectData[0].id}
+          name:'payFee',
+          params:{id:this.selectData[0].id,collectionType:this.isdaijiaoyajinchaxun?1:0}
       });
     },
     // 导出
@@ -445,6 +462,12 @@ export default {
     handleSelectionChange(val) {
       this.selectData = val;
       this.isDisable = this.selectData.length < 1 ? true : false;
+      if(this.isdaijiaoyajinchaxun){
+        this.canyajinbujiao=false
+      }
+      else{
+        this.canyajinbujiao=true
+      }
     },
     //每页多少条
     handleSizeChange(val) {
@@ -471,6 +494,11 @@ export default {
 
   },
   mounted() {
+    let query=this.$router.currentRoute.query;
+    if(query&&query.vehicleNo)
+    {
+      this.vehicleNo=query.vehicleNo;
+    }
     this.getListData()
     this.getListInfo()
   },
@@ -485,6 +513,16 @@ export default {
     }
   },
   watch: {
+    isdaijiaoyajinchaxun:{
+      handler(data){
+        if(this.isdaijiaoyajinchaxun){
+          this.paySubmitBtntitle="补交押金"
+        }
+        else{
+          this.paySubmitBtntitle="缴费提交"
+        }
+      }
+    },
     // 监听菜单按钮变化并控制页面按钮显示
     menuDataList:{
       handler(data){
@@ -496,13 +534,14 @@ export default {
             if(item.name == '合同查看') this.checkContractBtn = true
             if(item.name == '缴费提交') this.paySubmitBtn = true
             if(item.name == '导出') this.exportBtn = true
+            if(item.name == '租金抵扣') this.zjdkBtn = true
           })
       },
       immediate:true,
       deep:true
     },
     "$store.getters.isStatus": function () {
-      if (this.$store.state.isStatus == true &&this.$route.path == "/payFee") {
+      if (this.$store.state.isStatus == true &&(this.$route.path == "/payFee"||this.$route.path == "/rentDeduction")) {
           this.getListData()
       }
     },

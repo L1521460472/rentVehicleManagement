@@ -1,6 +1,10 @@
 <template>
   <div class="box-container" v-loading="loading">
-    <div class="box">
+    <div style="text-align: right;margin-right: -17px;">
+      <span style="font-size: 14px;">所属公司</span>
+      <company v-model="searchdata.enterpriseId" :clearable="false"></company>
+    </div>
+    <div class="box" style="margin-top: 2px;">
       <div class="box-title">工作进度</div>
       <div class="box-item">
         <div class="box-item-tab" style="width: calc(100% - 522px)">
@@ -134,7 +138,7 @@
         <div class="box-item-card" style="background: linear-gradient(129.09deg, #FF4444 0%, #F56C6C 100%);">
           <div class="box-item-card-icon"><img src="../../assets/workdesk/Frame-14.png"></div>
           <div class="box-item-card-title">逾期中</div>
-          <div class="box-item-card-value1">暂无数据</div>
+          <div class="box-item-card-value">{{overdue}}</div>
         </div>
       </div>
     </div>
@@ -200,32 +204,42 @@
     getCookie,
     openNewTab
   } from '../../public.js'
+  import company from "@/components/aacommon/getEnterpriseBox.vue"
   import axios from 'axios';
   export default {
     name: 'businessWorkDesk',
+    components:{
+      company
+    },
     data() {
       return {
+        searchdata:{
+          "enterpriseId":getCookie("UserEnterpriseId"),
+          "years":"",
+           "type":"1"
+        },
         loading:true,
         setreadedUrl:'/vehicle-service/remindMessageRecord/contractPushInfoDetail',
         searchVal: '',
         notifylist: [],
-        customers: '', //全部客户
-        overdueCustomer: '', //逾期客户
-        rentCustomer: '', //在租客户
-        toFollowUp: '', //待跟进
-        total: '', //总数
-        turnover: '', //成交签约
-        turnoverRatio: '', //意向订单成交率
-        expirationContract: '', //即将到期
-        followUp: '', //待我跟进
-        paymentContract: '', //即将缴费
-        maintenanceInVehicle: '', //维修中车辆
-        rentVehicle: '', //在租车辆
-        unRentVehicle: '', //待租车辆
-        vehicleType: '', //车型
-        vehicleUtilization: '', //车辆使用率
-        delay: '', //逾期
-        violation: '', //违章
+        customers: '0', //全部客户
+        overdueCustomer: '0', //逾期客户
+        rentCustomer: '0', //在租客户
+        toFollowUp: '0', //待跟进
+        total: '0', //总数
+        turnover: '0', //成交签约
+        turnoverRatio: '0', //意向订单成交率
+        expirationContract: '0', //即将到期
+        followUp: '0', //待我跟进
+        paymentContract: '0', //即将缴费
+        overdue:'0',//逾期中
+        maintenanceInVehicle: '0', //维修中车辆
+        rentVehicle: '0', //在租车辆
+        unRentVehicle: '0', //待租车辆
+        vehicleType: '0', //车型
+        vehicleUtilization: '0', //车辆使用率
+        delay: '0', //逾期
+        violation: '0', //违章
         ratelist: {
           qbkf_rate: '#36CBC4',
           zzkh_rate: '#36B6FE',
@@ -242,12 +256,17 @@
     methods: {
       initData() {
         axios({
-          method: 'get',
+          method: 'post',
           url: '/vehicle-service/homePage/businessReport',
           headers: this.headers,
+          data:this.searchdata
         }).then((result) => {
           // console.log(result.data);
+          setTimeout(() => {
+            window.onload()
+          }, 10)
           this.loading = false;
+          if(result.data.data.customerOverViewVO){
           this.customers = result.data.data.customerOverViewVO.customers; //全部客户
           this.overdueCustomer = result.data.data.customerOverViewVO.overdueCustomer; //逾期客户
           this.rentCustomer = result.data.data.customerOverViewVO.rentCustomer; //在租客户
@@ -255,16 +274,24 @@
           this.total = result.data.data.customerOverViewVO.total; //总数
           this.turnover = result.data.data.customerOverViewVO.turnover; //成交签约
           this.turnoverRatio = result.data.data.customerOverViewVO.turnoverRatio; //意向订单成交率
-          this.expirationContract = result.data.data.toDoVO.expirationContract; //即将到期
-          this.followUp = result.data.data.toDoVO.followUp; //待我跟进
-          this.paymentContract = result.data.data.toDoVO.paymentContract; //即将缴费
-          this.maintenanceInVehicle = result.data.data.vehicleOverViewVO.maintenanceInVehicle; //维修中车辆
-          this.rentVehicle = result.data.data.vehicleOverViewVO.rentVehicle; //在租车辆
-          this.unRentVehicle = result.data.data.vehicleOverViewVO.unRentVehicle; //待租车辆
-          this.vehicleType = result.data.data.vehicleOverViewVO.vehicleType; //车型
-          this.vehicleUtilization = result.data.data.vehicleOverViewVO.vehicleUtilization; //车辆使用率
+          }
+          if( result.data.data.toDoVO){
+            this.expirationContract = result.data.data.toDoVO.expirationContract; //即将到期
+            this.followUp = result.data.data.toDoVO.followUp; //待我跟进
+            this.paymentContract = result.data.data.toDoVO.paymentContract; //即将缴费
+            this.overdue = result.data.data.toDoVO.overdue; //逾期
+          }
+          if(result.data.data.vehicleOverViewVO){
+            this.maintenanceInVehicle = result.data.data.vehicleOverViewVO.maintenanceInVehicle; //维修中车辆
+            this.rentVehicle = result.data.data.vehicleOverViewVO.rentVehicle; //在租车辆
+            this.unRentVehicle = result.data.data.vehicleOverViewVO.unRentVehicle; //待租车辆
+            this.vehicleType = result.data.data.vehicleOverViewVO.vehicleType; //车型
+            this.vehicleUtilization = result.data.data.vehicleOverViewVO.vehicleUtilization; //车辆使用率
+          }
+          if(result.data.data.violationOrDelayVO){
           this.delay = result.data.data.violationOrDelayVO.delay; //逾期
           this.violation = result.data.data.violationOrDelayVO.violation; //违章
+          }
           this.notifylist = result.data.data.page.records;
         }).catch(err => {
           console.log(err)
@@ -370,6 +397,15 @@
       //     createTimeStr: '2020-09-02 14:32'
       //   })
       // }
+    },
+    watch:{
+      searchdata:{
+        handler(){
+          this.initData()
+        },
+        immediate:true,
+        deep:true
+      }
     }
   }
 </script>

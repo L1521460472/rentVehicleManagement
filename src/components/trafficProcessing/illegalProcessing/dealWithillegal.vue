@@ -1,6 +1,6 @@
 <template>
   <div id="dealWithillegal">
-    <div class="header">
+    <div class="header scoped">
       <span>违章处理</span>
     </div>
     <div class="footer" v-if="international.title">
@@ -291,6 +291,9 @@ export default {
   mounted() {
     getHandleVehicleDetail({id:this.$route.query.id},this.headers).then(res=>{
       if(res.status == 0){
+          setTimeout(() => {
+            window.onload()
+          }, 10)
         this.form.idCar = res.data.vehicleNo,//车牌号
         this.form.illegalTime = res.data.violationTimeStr,//违章时间
         this.form.illegalLocation = res.data.violationPlace,//违章地点

@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-    <div class="header">
+    <div class="header scoped">
       <span>{{ showMsg }}</span>
     </div>
     <div class="footer">
@@ -385,6 +385,9 @@ export default {
     },
   },
   mounted() {
+      setTimeout(() => {
+            window.onload()
+          }, 10)
     this.$store.commit("changeIsStatus", false);
     if (this.$route.query.form == "add" || this.$route.query.form == "addAS") {
       this.initData();

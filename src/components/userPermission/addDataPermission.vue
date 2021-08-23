@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-    <div class="header">
+    <div class="header scoped">
       <span v-if="international.content">{{ showMes }}</span>
     </div>
     <div class="footer">
@@ -1016,6 +1016,9 @@ export default {
     },
   },
   mounted() {
+      setTimeout(() => {
+            window.onload()
+          }, 10)
     this.showButton = true;
   },
   computed: {

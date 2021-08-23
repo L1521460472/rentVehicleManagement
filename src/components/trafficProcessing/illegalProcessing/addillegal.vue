@@ -199,6 +199,9 @@ export default {
   },
   mounted() {
     //   this.$store.commit("changeIsStatus", false)
+    setTimeout(() => {
+            window.onload()
+          }, 10)
     this.getVehicleListData()
     if (this.$route.query.from == "add") {
         this.showMes ='违章登记'

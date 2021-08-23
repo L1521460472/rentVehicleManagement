@@ -72,6 +72,7 @@
       loadmessage(flag, pageSize, currentPage) {
         let nodata = "暂无消息"
         let data = {
+          enterpriseId:getCookie("UserEnterpriseId"),
           currentPage: currentPage | this.currentPage,
           pageSize: pageSize | this.pageSize,
         }
@@ -101,6 +102,9 @@
           .then((result) => {
             this.loading = false
             if (result.data.status == 0) {
+                setTimeout(() => {
+            window.onload()
+          }, 10)
               this.remindData = result.data.data.records;
               if (this.remindData.length == 0) {
                 this.$message({

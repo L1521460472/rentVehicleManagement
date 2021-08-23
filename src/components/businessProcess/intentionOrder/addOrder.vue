@@ -1,6 +1,6 @@
 <template>
   <div id="addOrder">
-    <div class="header">
+    <div class="header scoped">
       <span>{{showMes}}</span>
     </div>
     <div class="footer" v-if="international.title">
@@ -619,6 +619,9 @@ export default {
           getOrderDetail({ id: this.$route.query.id }, this.headers)
             .then((res2) => {
               if (res.status == 0) {
+                  setTimeout(() => {
+            window.onload()
+          }, 10)
                 this.showCompany = res2.data.customerType == 2 ? true : false;
                 this.required = res2.data.customerType == 1 ? false : true;
                 this.form.customerId = res2.data.customerId,

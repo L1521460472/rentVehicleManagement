@@ -1,51 +1,23 @@
 <template>
   <div id="changePassword">
-    <div class="header">
-      <span>修改密码</span>
+    <div style="margin-bottom: 5px;margin-left: 10px;">
+      <span style="color: #F56C6C;">当前密码为系统默认初始密码，请修改密码！（密码组成规则：至少由英文+数字6-16位密码组成。）</span>
     </div>
     <div class="footer">
       <div class="footerNav">
-        <el-form
-          ref="form"
-          :model="form"
-          label-width="125px"
-          class="from"
-          label-position="right"
-        >
-          <el-form-item
-            class="formItem"
-            prop="password"
-            :rules="[
-              { required: true, message: '新密码不能为空', trigger: 'blur' },
-            ]"
-            label="新密码"
-          >
-            <el-input
-              maxlength="8"
-              size="small"
-              v-model="form.password"
-            ></el-input>
+        <el-form ref="form" :model="form" label-width="125px" class="from" label-position="right">
+          <el-form-item class="formItem" prop="password"
+          :rules="[{ required: true, message: '新密码不能为空', trigger: 'blur' }]" label="新密码">
+            <el-input maxlength="8" size="small" v-model="form.password"></el-input>
           </el-form-item>
-          <el-form-item
-            class="formItem"
-            prop="confirmPassword"
-            :rules="[
-              { required: true, message: '确认密码不能为空', trigger: 'blur' },
-            ]"
-            label="确认密码"
-          >
-            <el-input
-              maxlength="8"
-              size="small"
-              v-model="form.confirmPassword"
-            ></el-input>
+          <el-form-item class="formItem" prop="confirmPassword"
+          :rules="[{ required: true, message: '确认密码不能为空', trigger: 'blur' }]" label="确认密码" >
+            <el-input maxlength="8" size="small" v-model="form.confirmPassword"></el-input>
           </el-form-item>
         </el-form>
         <div class="footerButton">
-          <el-button type="primary" size="small" @click="saveAction"
-            >保存</el-button
-          >
-          <el-button size="small" @click="cancel">取消</el-button>
+          <el-button type="primary" size="small" @click="saveAction">保存</el-button>
+          <el-button v-if="!iscomponent" size="small" @click="cancel">取消</el-button>
         </div>
       </div>
     </div>
@@ -71,11 +43,25 @@ export default {
       }, //请求头
     };
   },
+  props:{
+    iscomponent:{
+      type:Boolean,
+      default:false
+    }
+  },
   methods: {
     // 保存
     saveAction() {
       this.$refs.form.validate((valid) => {
         if (valid) {
+          if(!/^[a-zA-Z]\w{5,15}$/.test(this.form.password)){
+            this.$message({
+              message: "密码组成规则：至少由英文+数字6-16位密码组成，请修改",
+              center: true,
+              type: "warning",
+            });
+             return
+          }
           let resetdata = {};
           resetdata.id = this.userId;
           //Bcrypt加密流程
@@ -96,12 +82,13 @@ export default {
           })
             .then((res) => {
              if(res.data.status ===0){
-              this.$message({
-                message: "密码修改成功",
-                center: true,
-                type: "success",
-              });
-              this.$router.push('/login')
+                this.$alert('修改密码成功，请重新登录', '', {
+                    confirmButtonText: '确定',
+                    showClose:false,
+                    callback: action => {
+                      this.$router.push('/login')
+                    }
+                });
              }else{
               this.$message({
                 message: res.data.message,
@@ -127,6 +114,9 @@ export default {
     },
   },
   mounted() {
+      setTimeout(() => {
+            window.onload()
+          }, 10)
     this.form.password = "";
     this.form.confirmPassword = "";
     this.userId = getCookie("userId");

@@ -848,6 +848,9 @@ export default {
         },
       })
         .then((result) => {
+            setTimeout(() => {
+            window.onload()
+          }, 10)
           // console.log(result.data);
           this.addDataList = result.data.data.userDataRoleRuleList;
           this.name = result.data.data.roleName;

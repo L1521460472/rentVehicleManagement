@@ -1,6 +1,6 @@
 <template>
   <div id="checkContract">
-    <div class="header">
+    <div class="header scoped">
       <span>合同查看</span>
     </div>
     <div class="footer" v-if="international.title">
@@ -619,6 +619,9 @@ export default {
     checkContractData({ id: this.$route.query.id }, this.headers)
       .then((res) => {
         if (res.status == 0) {
+            setTimeout(() => {
+            window.onload()
+          }, 10)
           this.form.contractCode = res.data.contractCode, //合同编号
           this.form.rentStartDateStr = res.data.rentStartDateStr, //租赁开始日期
           this.form.rentEndDateStr = res.data.rentEndDateStr, //租赁到期日期

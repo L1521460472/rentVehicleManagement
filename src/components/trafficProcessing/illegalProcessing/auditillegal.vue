@@ -1,6 +1,6 @@
 <template>
   <div id="auditillegal">
-    <div class="header">
+    <div class="header scoped">
       <span>{{showMes}}</span>
     </div>
     <div class="footer" v-if="international.title">
@@ -253,6 +253,9 @@ export default {
     }
   },
   mounted() {
+      setTimeout(() => {
+            window.onload()
+          }, 10)
     if(this.$route.query.from == "audit"){
       this.showMes = '违章审核'
       getAuditVehicleDetail({id:this.$route.query.id},this.headers).then(res=>{

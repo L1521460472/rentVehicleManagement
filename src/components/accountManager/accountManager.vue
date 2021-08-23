@@ -1,7 +1,7 @@
 <template>
   <div id="header">
     <div class="userRight">
-      <div class="header" v-if="international.global">
+      <div class="header scoped" v-if="international.global">
         <div class="headerTop">
           <div class="nav">
             <span>所属公司</span>
@@ -57,7 +57,7 @@
            size="small"> <i class="iconfont icon-gongneng-"></i>分配角色</el-button>
         </div>
         <div class="footerTable">
-          <div class="footer_informatian" v-if="international.field">
+          <div class="" v-if="international.field">
             <el-table ref="multipleTable" size="small" border stripe
               :data="tableData" :header-cell-style="{ background: '#F5F7FA', color: '#333333' }"
               tooltip-effect="dark" style="width: 100%;" @selection-change="handleSelectionChange"
@@ -77,6 +77,12 @@
               <el-table-column prop="loginName" :label="international.field.field_userProfileList_userAccount">
               </el-table-column>
               <el-table-column prop="username" :label="international.field.field_userProfileList_username">
+              </el-table-column>
+              <el-table-column prop="username" label="是否业务员">
+                <template slot-scope='scope'>
+                  <span v-if='scope.row.isSalesman==0'>否</span>
+                  <span v-else>是</span>
+                </template>
               </el-table-column>
               <el-table-column prop="mobile" :label="international.field.field_userProfileList_iphone">
               </el-table-column>
@@ -693,7 +699,7 @@ export default {
 
       axios({//公司
           method: "get",
-          url: "/vehicle-service/comboBoxController/getEnterpriseBox",
+          url: "/vehicle-service/comboBoxController/getEnterpriseBox?flag=2",
           headers: this.headers,
         })
           .then((result) => {
@@ -718,7 +724,6 @@ export default {
 .header {
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid #e5e5e5;
   margin-bottom: 16px;
 }
 .headerTop {
@@ -772,7 +777,6 @@ export default {
 .userRight {
   width: 100%;
   height: 100%;
-  padding-left: 16px;
   box-sizing: border-box;
   float: left;
 }

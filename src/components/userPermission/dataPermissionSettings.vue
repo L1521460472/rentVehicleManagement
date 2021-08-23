@@ -3,7 +3,7 @@
           element-loading-text="loading"
           element-loading-spinner="el-icon-loading">
     <div class="header" v-if="international.global">
-            <div class="headerTop">
+            <div class="headerTop scoped">
         <div class="nav">
           <span>{{
             international.content.content_dataPermissionSettingsList_role
@@ -171,7 +171,7 @@
                 </div>
               </div>
 
-              
+
               <el-table :data="ruleTableData">
                 <el-table-column type="selection" prop="id" min-width="55">
                 </el-table-column>
@@ -377,7 +377,7 @@
         >
       </div>
       <div class="footerTable">
-        <div class="footer_informatian" v-if="international.field">
+        <div class="" v-if="international.field">
           <el-table
           :data="dataList"
           border
@@ -1301,6 +1301,9 @@ export default {
         },
       })
         .then((result) => {
+            setTimeout(() => {
+            window.onload()
+          }, 10)
           // console.log(result.data);
           this.dataList = result.data.data.records;
           this.total = result.data.data.total;

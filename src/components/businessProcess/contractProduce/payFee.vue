@@ -1,7 +1,7 @@
 <template>
   <div id="payFee">
-    <div class="header">
-      <span>缴费提交</span>
+    <div class="header scoped">
+      <span v-html="paytitle"></span>
     </div>
     <div class="footer" v-if="international.title">
       <div class="footerTop">
@@ -38,70 +38,34 @@
         </div>
         <div class="footerNav">
           <el-form ref="form" :model="form" label-width="135px" label-position="right">
-            <el-form-item 
-            :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'change'}]"
-            prop="getFeeTime"
-            class="formItem" 
-            label="收款时间">
-              <el-date-picker
-                size="small"
-                v-model="form.getFeeTime"
-                prefix-icon="el-icon-time2"
-                format="yyyy-MM-dd HH:mm"
-                value-format="yyyy-MM-dd HH:mm"
-                type="datetime"
-                placeholder
-              ></el-date-picker>
+            <el-form-item  :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'change'}]"
+            prop="getFeeTime" class="formItem"  label="收款时间">
+              <el-date-picker size="small" v-model="form.getFeeTime" prefix-icon="el-icon-time2"
+                format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm" type="datetime"></el-date-picker>
             </el-form-item>
-            <el-form-item 
-            :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'blur'}]"
-            class="formItem" 
-            prop="getFee"
-            label="收款金额(元)">
-              <el-input size="small" v-model="form.getFee"></el-input>
+            <el-form-item  :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'blur'}]"
+              class="formItem"  prop="getFee" label="收款金额(元)">
+            <el-input size="small" v-model="form.getFee"></el-input>
             </el-form-item>
-            <el-form-item 
-            :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'change'}]"
-            prop="collectionAccount"
-            class="formItem" 
-            label="收款账户">
+            <el-form-item  :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'change'}]"
+            prop="collectionAccount" class="formItem"  label="收款账户">
               <el-select size="small" filterable v-model="form.belongCompany" placeholder @change="changeCompany">
-                <el-option
-                  v-for="item in companyList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
+                <el-option v-for="item in companyList" :key="item.id" :label="item.name" :value="item.id"></el-option>
               </el-select>
               <el-select size="small" class="select" v-model="form.collectionAccount" placeholder>
-                <el-option
-                  v-for="item in collectionList"
-                  :key="item.id"
-                  :label="item.bankTypeAndOfDeposit"
-                  :value="item.id"
-                ></el-option>
+                <el-option v-for="item in collectionList" :key="item.id" :label="item.bankTypeAndOfDeposit" :value="item.id"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item class="formItem" label="备注">
               <el-input size="small" v-model="form.remark"></el-input>
             </el-form-item>
-            <el-form-item 
+            <el-form-item
             :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'blur'}]"
-            class="formItem" 
+            class="formItem"
             label="附件">
-              <el-upload
-                class="upload"
-                action="/vehicle-service/efileInfo/uploadImgFile?fileType=8"
-                :headers="headers"
-                :limit="3"
-                :on-exceed="handleExceed"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :on-success="handleUploadSuccess"
-                :file-list="imgList"
-                list-type="picture-card"
-                multiple
-              >
+              <el-upload class="upload" action="/vehicle-service/efileInfo/uploadImgFile?fileType=8" :headers="headers"
+                :limit="3" :on-exceed="handleExceed" :on-preview="handlePreview"  :on-remove="handleRemove"
+                :on-success="handleUploadSuccess"  :file-list="imgList" list-type="picture-card"  multiple>
                 <span class="upload_txt">上传附件</span>
               </el-upload>
             </el-form-item>
@@ -115,13 +79,7 @@
             已关联{{selectData.length}}辆车
             <span class="SelectVehicle" @click="selectCar">[点击选择]</span>
           </p>
-          <el-form
-            v-for="item in selectData"
-            :key="item.vehicleId"
-            :model="form"
-            label-width="135px"
-            label-position="right"
-          > 
+          <el-form v-for="item in selectData" :key="item.vehicleId" :model="form" label-width="135px" label-position="right">
             <span class="formItem car">{{item.vehicleNo}}(剩余未回款总额：{{item.uncollectionMoneyTotal}}元)</span>
             <el-form-item class="formItem" label="应收期数">
               <el-input disabled size="small" v-model="item.billPeriods"></el-input>
@@ -142,54 +100,24 @@
       </div>
       <!-- 选择车辆弹窗 -->
       <el-dialog class="selectToast" :visible.sync="showSelectModle" :close-on-click-modal="false" title="选择车辆" top="200px" width="740px">
-          <el-table
-              ref="multipleTable"
-              size="mini"
-              border
-              :data="vehicleList2"
-              tooltip-effect="dark"
-              style="width:100%;"
-              @selection-change="handleSelectionChange"
-              >
+          <el-table ref="multipleTable" size="mini" border :data="vehicleList2" tooltip-effect="dark" style="width:100%;"
+              @selection-change="handleSelectionChange" >
                   <el-table-column type="selection" prop="id" align="center" width="40"></el-table-column>
-                  <el-table-column
-                  prop="vehicleNo"
-                  label="车牌号"
-                  align="center"
-                  width="100">
+                  <el-table-column prop="vehicleNo"  label="车牌号"  align="center" width="100">
                   </el-table-column>
-                  <el-table-column
-                  prop="uncollectionMoneyTotal"
-                  label="剩余未回款总额(元)"
-                  align="center"
-                  width="125">
+                  <el-table-column prop="uncollectionMoneyTotal" label="剩余未回款总额(元)" align="center" width="125">
                   </el-table-column>
-                  <el-table-column
-                  prop="billPeriods"
-                  label="应收期数"
-                  align="center"
-                  width="100">
+                  <el-table-column prop="billPeriods" label="应收期数" align="center" width="100">
                     <template slot-scope="scope">
                       <span v-if="scope.row.billPeriods == 0">押金</span>
                       <span v-else>{{scope.row.billPeriods}}</span>
                     </template>
                   </el-table-column>
-                  <el-table-column
-                  prop="adjustedPaybackMoney"
-                  label="应收金额(元)"
-                  align="center"
-                  width="95">
+                  <el-table-column prop="adjustedPaybackMoney" label="应收金额(元)" align="center" width="95">
                   </el-table-column>
-                  <el-table-column
-                  prop="uncollectionMoney"
-                  label="当期未回款金额(元)"
-                  align="center"
-                  width="125">
+                  <el-table-column prop="uncollectionMoney" label="当期未回款金额(元)" align="center" width="125">
                   </el-table-column>
-                  <el-table-column
-                  label="本次回款金额(元)"
-                  align="center"
-                  min-width="110">
+                  <el-table-column label="本次回款金额(元)" align="center" min-width="110">
                     <template slot-scope="scope">
                       <el-input v-model="scope.row.payfee" size="small" @blur="changeInput($event)"></el-input>
                     </template>
@@ -220,6 +148,7 @@ export default {
   name: "payFee",
   data() {
     return {
+      paytitle:'缴费提交',
       form: {
         contractCode: "", //合同编号
         customerName: "", //承租方姓名
@@ -250,6 +179,7 @@ export default {
       timer: null,
       confirmFee:0,//核销金额
       international: {},
+      collectionType:0,//缴费类型(0-未延期账单缴费 1-延期账单缴费)
       headers: {
         Authorization: getCookie("HTBD_PASS"),
         language: this.$store.state.language,
@@ -291,11 +221,12 @@ export default {
               obj.vehicleRentId = item.vehicleRentId
               vehiclePaymentDtos.push(obj)
             })
+            debugger
             let params = {
-              billPeriods: _this.form.billPeriods, //应收期数
+              billPeriods: _this.collectionType==1?0:_this.form.billPeriods, //应收期数
               collectionAccountId: _this.form.collectionAccount, //收款账户id
               contractCode: _this.form.contractCode, //合同编号
-              contractId: _this.$route.query.id, //合同id
+              contractId: _this.$route.params.id, //合同id
               contractRentId: _this.form.contractRentId, //合同回款计划id
               efileIdList: _this.imgIdList, //附件集合
               payMoney: _this.form.getFee, //缴费金额
@@ -310,13 +241,13 @@ export default {
                 if(res.status == 0){
                   _this.$store.commit("changeIsStatus", true);
                   _this.$message.success({
-                    message:'缴费提交成功',
+                    message:_this.collectionType==1?'补交押金成功':'缴费提交成功',
                     center:true
                   })
                   _this.$router.back();
                 }else{
                   _this.$message.error({
-                    message:'缴费提交失败 ',
+                    message:_this.collectionType==1?'补交押金失败':'缴费提交失败',
                     center:true
                   })
                 }
@@ -441,13 +372,20 @@ export default {
     },
     // 获取缴费详情数据
     getDetail(){
-      payFeeDetail({ id: this.$route.query.id }, this.headers)
+      payFeeDetail({ id: this.$route.params.id,collectionType:this.$route.params.collectionType }, this.headers)
       .then((res) => {
         if (res.status == 0) {
+            setTimeout(() => {
+            window.onload()
+          }, 10)
           this.form.contractCode = res.data.contractCode, //合同编号
           this.form.customerName = res.data.customerName, //承租方姓名
           this.form.uncollectionMoneyTotal = res.data.uncollectionMoneyTotal, //剩余未回款总额
-          this.form.billPeriods = res.data.billPeriods, //应收期数
+          this.form.billPeriods = res.data.billPeriods;//应收期数
+          if(this.collectionType==1)//1 是补交押金
+          {
+            this.form.billPeriods="押金（0期）"
+          }
           this.form.adjustedPaybackMoney = res.data.adjustedPaybackMoney, //应收金额
           this.form.currPeriodUnClooectionMoney =res.data.currPeriodUnClooectionMoney, //当期未回款金额
           this.form.lateFee = res.data.lateFee; //滞纳金
@@ -459,7 +397,6 @@ export default {
               center: true,
             });
           }
-          // this.vehicleList= JSON.parse(JSON.stringify(res2.data.leaseOrderDetailInfoVOS))
         } else {
           this.$message.error({
             message: res.message,
@@ -473,6 +410,12 @@ export default {
     }
   },
   mounted() {
+    if(this.$route.params.collectionType){
+      this.collectionType=this.$route.params.collectionType
+      if(this.collectionType==1){
+        this.paytitle='补交押金'
+      }
+    }
     this.getListInfo()
   },
   computed: {

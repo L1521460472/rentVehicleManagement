@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-    <div class="header">
+    <div class="header scoped">
       <span>{{ showMsg }}</span>
     </div>
     <div class="footer">
@@ -114,6 +114,12 @@
         </div>
         <el-form ref="formContract" :model="formContract" label-width="130px">
           <div class="formNav formNavs" v-if="international.title">
+            <el-form-item label="业务类型" prop="businessType">
+                <el-select :clearable="false" v-model="formContract.businessType" disabled>
+                    <el-option label="月租" :value="2"></el-option>
+                    <el-option label="以租代售" :value="1"></el-option>
+                </el-select>
+            </el-form-item>
             <el-form-item
                 label="合同类型"
                 prop="contractType"
@@ -193,16 +199,6 @@
                   @click="downloadAction(item.efileAddr,item.name)"
                 >{{item.name}}</span>
               </div>
-
-              <!-- <el-upload
-                class="upload"
-                disabled
-                action="/vehicle-service/efileInfo/uploadLeaseContractFile?fileType=8"
-                :headers="headers"
-                :file-list="fileList"
-              >
-                <span class="upload_txt disabled_txt">上传</span>
-              </el-upload> -->
             </el-form-item>
             <div class="footerTitle">
               <span>客户信息</span>
@@ -271,6 +267,18 @@
                 maxlength="100"
                 v-model="formContract.customerAdd"
               ></el-input>
+            </el-form-item>
+            <el-form-item label="是否包买保险" prop="isBuyInsurance"  v-if="showisBuyInsurance"  >
+              <el-select :clearable="false" v-model="formContract.isBuyInsurance" disabled>
+                  <el-option label="是" :value="0"></el-option>
+                  <el-option label="否" :value="1"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="是否包过户费" prop="isTransfer" v-if="showisTransfer" >
+              <el-select :clearable="false" v-model="formContract.isTransfer" disabled>
+                  <el-option label="是" :value="0"></el-option>
+                  <el-option label="否" :value="1"></el-option>
+              </el-select>
             </el-form-item>
             <div class="footerTitle">
               <span>车辆信息</span>
@@ -353,36 +361,6 @@
                   ></el-input>
                 </template>
               </el-table-column>
-              <!-- <el-table-column prop="value" label="实际提车日期">
-                <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    disabled
-                    v-model="formContract.vehicleList[scope.$index].startDate"
-                    placeholder
-                  ></el-input>
-                </template>
-              </el-table-column>
-              <el-table-column prop="value" label="应退车日期">
-                <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    disabled
-                    v-model="formContract.vehicleList[scope.$index].endDate1"
-                    placeholder
-                  ></el-input>
-                </template>
-              </el-table-column>
-              <el-table-column prop="value" label="实退车日期">
-                <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    disabled
-                    v-model="formContract.vehicleList[scope.$index].endDate2"
-                    placeholder
-                  ></el-input>
-                </template>
-              </el-table-column>-->
               <el-table-column width="60">
                 <template slot-scope="scope">
                   <el-button size="small" disabled>删除</el-button>
@@ -434,6 +412,16 @@
             <div class="footerTitle">
               <span>租金计划</span>
             </div>
+            <el-form-item v-if="showdownPayment"
+            label="车辆首付款" prop="downPayment">
+              <el-input class="formItem" disabled
+                maxlength="100" v-model="formContract.downPayment"></el-input>元/辆/月
+            </el-form-item>
+            <el-form-item v-if="latePayment"
+            label="车辆尾付款" prop="latePayment">
+              <el-input class="formItem" disabled
+                maxlength="100" v-model="formContract.latePayment"></el-input>元/辆/月
+            </el-form-item>
             <el-form-item
               label="车辆租金"
               prop="onevehicleRent"
@@ -669,6 +657,11 @@ export default {
   name: "planLook",
   data() {
     return {
+        businessType:2,
+        showisBuyInsurance:false,
+        showisTransfer:false,
+        showdownPayment:false,
+        latePayment:false,
       formVeInformation: {
         //订单信息
         brand: "", //车牌号码
@@ -691,6 +684,12 @@ export default {
         urgentPhoneNumer: null, //紧急联系电话
         efileIdList: [], //合同附件id
         supplefileIdList: [], //合同补充附件Id集合
+        
+        businessType:2,//业务类型 1-以租代售 2-月租
+        isBuyInsurance:null,//是否买保险 0-是 1-否
+        isTransfer:null,//是否包过户 0-是 1-否
+        downPayment:null,//车辆首付款
+        latePayment:null,//车辆尾付款
 
         //客户信息
         customerName: null, //承租方名称
@@ -811,8 +810,24 @@ export default {
         .then((result) => {
           // console.log(result.data);
           if (result.data.status === 0) {
+              setTimeout(() => {
+            window.onload()
+          }, 10)
             this.orderValue = result.data.data.leaseContractOrderVO.orderNumber;
             this.vehicleTypeId = result.data.data.vehicleTypeId;
+
+            this.formContract.businessType= result.data.data.businessType
+            if(this.formContract.businessType==1){
+              this.formContract.isBuyInsurance= result.data.data.isBuyInsurance
+              this.formContract.isTransfer= result.data.data.isTransfer
+              this.formContract.downPayment= result.data.data.downPayment
+              this.formContract.latePayment= result.data.data.latePayment
+              this.showisBuyInsurance=true
+              this.showisTransfer=true
+              this.showdownPayment=true
+              this.latePayment=true
+              this.businessType=1
+            }
 
             this.getVehicle();
 
@@ -869,9 +884,6 @@ export default {
               result.data.data.chargingPileNum; //充电桩数量
             this.formContract.vehicleList =
               result.data.data.leaseContractVehicleInfoVOList; //合同车辆关联
-            // this.formContract.vehicleList.vehicleColor = result.data.data.leaseContractVehicleInfoVOList.vehicleColorName;//车辆颜色
-            // this.formContract.vehicleList.vehicleType = result.data.data.leaseContractVehicleInfoVOList.vehicleTypeName;//车辆颜色
-
             this.formContract.vehicleDeposit = result.data.data.vehicleDeposit; //单车押金
             this.formContract.chargingPileDeposit =
               result.data.data.chargingPileDeposit; //单桩押金

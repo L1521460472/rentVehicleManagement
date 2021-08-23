@@ -25,6 +25,16 @@ const routes = [
     name:'home',
     component:Home,
     children:[
+        {
+            path:'/noticeboard',
+            name:'noticeboard',
+            component:()=>import('../components/noticeboard.vue')
+        },
+      {
+        path: '/theme',
+        name: 'theme',
+        component: () => import('@/theme/theme.vue')
+      },
       {
         path: '/homeIndex',
         name: 'homeIndex',
@@ -191,6 +201,26 @@ const routes = [
         name: 'auditillegal',
         component: () => import('../components/trafficProcessing/illegalProcessing/auditillegal.vue')
       },
+      {
+        path:'/illegalVehicle',
+        name: 'illegalVehicle',
+        component: () => import('../components/trafficProcessing/illegalProcessing/illegalVehicle.vue')
+      },
+      {
+        path:'/illegalbatchQuery',
+        name: 'illegalbatchQuery',
+        component: () => import('../components/trafficProcessing/illegalProcessing/illegalbatchQuery.vue')
+      },
+      {
+        path:'/illegalDetail',
+        name: 'illegalDetail',
+        component: () => import('../components/trafficProcessing/illegalProcessing/illegalDetail.vue')
+      },
+      {
+        path:'/illegalResult',
+        name: 'illegalResult',
+        component: () => import('../components/trafficProcessing/illegalProcessing/illegalResult.vue')
+      },
       // 业务处理
       // 客户信息
       {
@@ -239,11 +269,35 @@ const routes = [
         name: 'checkContract',
         component: () => import('../components/businessProcess/contractProduce/checkContract.vue')
       },
+      // 租金抵扣
+      {
+        path:'/rentDeduction',
+        name: 'rentDeduction',
+        component: () => import('../components/businessProcess/contractProduce/rentDeduction.vue')
+      },
       // 缴费提交
       {
         path:'/payFee',
         name: 'payFee',
         component: () => import('../components/businessProcess/contractProduce/payFee.vue')
+      },
+      // 抵扣审核
+      {
+        path:'/rentAudtingRecord',
+        name: 'rentAudtingRecord',
+        component: () => import('../components/businessProcess/contractProduce/rentAudtingRecord.vue')
+      },
+      // 抵扣审核提交
+      {
+        path:'/rentAudting',
+        name: 'rentAudting',
+        component: () => import('../components/businessProcess/contractProduce/rentAudting.vue')
+      },
+       // 预收款提交记录
+      {
+        path:'/submitAdvancesReceivedRecord',
+        name: 'submitAdvancesReceivedRecord',
+        component: () => import('../components/businessProcess/contractProduce/submitAdvancesReceivedRecord.vue')
       },
       // 重新缴费提交
       {
@@ -278,6 +332,11 @@ const routes = [
         path:'/addVehicleManagement',
         name: 'addVehicleManagement',
         component: () => import('../components/trafficProcessing/vehicleManagement/addVehicleManagement.vue')
+      },
+      {
+        path:'/VehicleManagementDetail',
+        name: 'VehicleManagementDetail',
+        component: () => import('../components/trafficProcessing/vehicleManagement/VehicleManagementDetail.vue')
       },
       {
         path:'/addInsurance',
@@ -354,6 +413,12 @@ const routes = [
         path:'/backVehicle',
         name: 'backVehicle',
         component: () => import('../components/financialTransaction/backVehicle.vue')
+      },
+      //退车结算详情
+      {
+        path:'/backVehicleDetail',
+        name: 'backVehicleDetail',
+        component: () => import('../components/financialTransaction/backVehicleDetail.vue')
       },
       //退车结算审核
       {
@@ -484,7 +549,205 @@ const routes = [
         path:'/roleaddFunSetting',
         name: 'roleaddFunSetting',
         component: () => import('../components/accountManager/roleaddFunSetting.vue')
-      }
+      },
+      //充值页面
+      {
+        path:'/pay',
+        name: 'pay',
+        component: () => import('../components/payCenter/pay.vue')
+      },
+      //在线充值页面
+      {
+        path:'/onlinepay',
+        name: 'onlinepay',
+        component: () => import('../components/payCenter/onlinepay.vue')
+      },
+       //充值记录
+      {
+        path:'/payrecord',
+        name: 'payrecord',
+        component: () => import('../components/payCenter/payrecord.vue')
+      },
+       //扣费记录
+      {
+        path:'/chargerecord',
+        name: 'chargerecord',
+        component: () => import('../components/payCenter/chargerecord.vue')
+      },
+       //用户操作记录
+      {
+        path:'/userOperateLogs',
+        name: 'userOperateLogs',
+        component: () => import('../components/reportManager/userOperateLogs.vue')
+      },
+      //发票管理
+      {
+        path:'/listPage',
+        name: 'listPage',
+        component: () => import('../components/InvoiceRecord/listPage.vue')
+      },
+      //新开发票
+      {
+        path:'/AddInvoice',
+        name: 'AddInvoice',
+        component: () => import('../components/InvoiceRecord/AddInvoice.vue')
+      },
+      //发票记录
+      {
+        path:'/listPageInvoice',
+        name: 'listPageInvoice',
+        component: () => import('../components/InvoiceRecord/listPageInvoice.vue')
+      },
+      //发票记录
+      {
+        path:'/invoiceDetail',
+        name: 'invoiceDetail',
+        component: () => import('../components/InvoiceRecord/invoiceDetail.vue')
+      },
+      //品牌车辆车型数统计报表
+      {
+        path:'/brandVehicleTypeVehicleNum',
+        name: 'brandVehicleTypeVehicleNum',
+        component: () => import('../components/reportManager/brandVehicleTypeVehicleNum.vue')
+      },
+       //存车地点车辆数报表
+      {
+        path:'/parkingLotVehicleNum',
+        name: 'parkingLotVehicleNum',
+        component: () => import('../components/reportManager/parkingLotVehicleNum.vue')
+      },
+       //业务员关联统计报表
+      {
+        path:'/salesManRelationStatistics',
+        name: 'salesManRelationStatistics',
+        component: () => import('../components/reportManager/salesManRelationStatistics.vue')
+      },
+       //渠道账户收款统计报表
+      {
+        path:'/collectionAccountStatistics',
+        name: 'collectionAccountStatistics',
+        component: () => import('../components/reportManager/collectionAccountStatistics.vue')
+      },
+       //锁车记录
+      {
+        path:'/vehicleLockRecord',
+        name: 'vehicleLockRecord',
+        component: () => import('../components/trafficProcessing/vehicleLockRecord/vehicleLockRecord.vue')
+      },
+       //锁车车辆列表
+      {
+        path:'/vehicleLockPageList',
+        name: 'vehicleLockPageList',
+        component: () => import('../components/trafficProcessing/vehicleLockRecord/vehicleLockPageList.vue')
+      },
+       //锁车执行记录
+      {
+        path:'/vehicleLockInfo',
+        name: 'vehicleLockInfo',
+        component: () => import('../components/trafficProcessing/vehicleLockRecord/vehicleLockInfo.vue')
+      },
+       //租金抵扣记录
+      {
+        path:'/queryRentDeduction',
+        name: 'queryRentDeduction',
+        component: () => import('../components/businessProcess/contractProduce/queryRentDeduction.vue')
+      },
+       //企业总体情况
+      {
+        path:'/corporateRanking',
+        name: 'corporateRanking',
+        component: () => import('../components/oprationData/corporateRanking.vue')
+      },
+       //Web事件统计
+      {
+        path:'/totalRechargeStatistics',
+        name: 'totalRechargeStatistics',
+        component: () => import('../components/oprationData/totalRechargeStatistics.vue')
+      },
+      // 公司app
+      {
+        path:'/companyApp',
+        name: 'companyApp',
+        component: () => import('../components/oprationData/companyApp.vue')
+      },
+      // 司机app
+      {
+        path:'/driverApp',
+        name: 'driverApp',
+        component: () => import('../components/oprationData/driverApp.vue')
+      },
+      //车辆过户
+      {
+        path:'/ransferInfo',
+        name: 'ransferInfo',
+        component: () => import('../components/trafficProcessing/vehicleManagement/ransferInfo.vue')
+      },
+      //维修管理
+      {
+        path:'/maintenance',
+        name: 'maintenance',
+        component: () => import('../components/repairManagement/maintenance.vue')
+      },
+      //维修管理-新增
+      {
+        path:'/maintenanceadd',
+        name: 'maintenanceadd',
+        component: () => import('../components/repairManagement/maintenanceadd.vue')
+      },
+      //维修管理-统计
+      {
+        path:'/maintenancestatistics',
+        name: 'maintenancestatistics',
+        component: () => import('../components/repairManagement/maintenancestatistics.vue')
+      },
+      //维修管理-查看
+      {
+        path:'/maintenancedetail',
+        name: 'maintenancedetail',
+        component: () => import('../components/repairManagement/maintenancedetail.vue')
+      },
+      //维修管理-审核
+      {
+        path:'/maintenanceshenhe',
+        name: 'maintenanceshenhe',
+        component: () => import('../components/repairManagement/maintenanceshenhe.vue')
+      },
+      //保养管理
+      {
+        path:'/upkeep',
+        name: 'upkeep',
+        component: () => import('../components/upkeep/upkeep.vue')
+      },
+      //保养管理-新增
+      {
+        path:'/addUpkeep',
+        name: 'addUpkeep',
+        component: () => import('../components/upkeep/addUpkeep.vue')
+      },
+      //保养管理-统计
+      {
+        path:'/upkeepStatistic',
+        name: 'upkeepStatistic',
+        component: () => import('../components/upkeep/upkeepStatistic.vue')
+      },
+      //保养管理-查看
+      {
+        path:'/lookUpkeep',
+        name: 'lookUpkeep',
+        component: () => import('../components/upkeep/lookUpkeep.vue')
+      },
+      //保养管理-审核
+      {
+        path:'/auditUpkeep',
+        name: 'auditUpkeep',
+        component: () => import('../components/upkeep/auditUpkeep.vue')
+      },
+      // 保养提醒设置
+      // {
+      //   path: '/maintenanceRemind',
+      //   name: 'maintenanceRemind',
+      //   component: () => import('../components/maintenanceRemind.vue')
+      // }
     ]
   }
 ]
@@ -492,7 +755,22 @@ const routes = [
 const router = new Router({
   // mode: 'history', // 打包的时候有这句的删掉，没有就不用管
   base: process.env.BASE_URL,
-  routes
+  routes,
+  parseQuery:(query)=>{
+   if(query){
+     return JSON.parse(decodeURIComponent(escape(window.atob(query))))
+   }else{
+     return Object.create(null)
+   }
+  },
+  stringifyQuery:(obj)=>{
+    if(Object.keys(obj).length>0){
+      return `?${window.btoa(unescape(encodeURIComponent(JSON.stringify(obj))))}`
+    }
+    else{
+      return ""
+    }
+  }
 })
 
 router.beforeEach((to, from, next) => {

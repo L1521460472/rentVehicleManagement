@@ -1,7 +1,7 @@
 <template>
     <div id="languageConfiguration" v-loading="loading"  element-loading-text="loading">
         <div class="header" v-if="international.global">
-            <div class="headerTop">
+            <div class="headerTop scoped">
                 <div class="nav">
                     <span class="demonstration">{{international.content.content_languageConfiguration_name}}</span>
                     <el-input size="small" maxlength="50"  v-model="searchCont" :placeholder="international.content.content_languageConfiguration_name"></el-input>

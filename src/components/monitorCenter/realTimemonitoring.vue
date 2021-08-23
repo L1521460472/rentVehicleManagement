@@ -1,21 +1,11 @@
 <template>
   <div id="realTimemonitoring" ref="realTimemonitoring">
-    <!-- <el-button " type="primary" style="margin-left: 16px;">
-  点我打开
-</el-button> -->
     <div class="bar" @click="handleOpen">
       <i class="el-icon-caret-right"></i>
     </div>
 
-    <el-drawer
-      title="我是标题"
-      :visible.sync="drawer"
-      direction="ltr"
-      :modal="false"
-      :wrapperClosable="false"
-      size="300px"
-      :with-header="false"
-    >
+    <el-drawer  :visible.sync="drawer" direction="ltr" :modal="false"
+      :wrapperClosable="false" size="300px" :with-header="false">
       <div class="drawerTop">
         <div class="nav">
           <span>企业</span>
@@ -34,6 +24,7 @@
             node-key="id"
             @check="query"
             :props="defaultProps"
+            :default-checked-keys="defualtchecked"
           >
           </el-tree>
         </div>
@@ -64,21 +55,19 @@
             :height="heigth"
             @selection-change="handleSelectionChange"
           >
-            <el-table-column type="selection" align="center" width="40">
-            </el-table-column>
+            <el-table-column type="selection" align="center" width="40"></el-table-column>
             <el-table-column
               prop="vehicleNo"
               label="车牌号"
               show-overflow-tooltip
-              width="85"
+              width="100"
             >
-              <!-- <template slot-scope="scope">{{ scope.row.vehicleNo }}</template> -->
             </el-table-column>
             <el-table-column
               prop="simNo"
               label="SIM卡号"
               show-overflow-tooltip
-              width="110"
+              width="68"
             >
             </el-table-column>
             <el-table-column
@@ -119,24 +108,9 @@
       </div>
     </el-drawer>
     <div class="bannerRight" ref="bannerRight">
-      <!-- <div class="headerLeft">
-        <el-input
-          v-model="input"
-          size="small"
-          placeholder="搜索车牌号码、车队"
-        ></el-input>
-      </div> -->
       <div class="headerRight">
         <ul>
-          <!-- <li>行驶</li>
-          <li>怠速</li>
-          <li>停车</li>
-          <li>未定位</li>
-          <li>离线</li> -->
           <li>在线/离线( {{ onLineNum }} / {{ offlineNum }} )</li>
-          <!-- <li>告警</li>
-          <li>图片</li>
-          <li>全屏</li> -->
         </ul>
       </div>
       <div id="map" ref="map"></div>
@@ -221,51 +195,6 @@
                 </el-table-column>
               </el-table>
             </el-tab-pane>
-            <!-- <el-tab-pane label="提示信息">
-              <el-table
-                :data="tableData"
-                border
-                size="mini"
-                :header-cell-style="{ background: '#F5F7FA', color: '#333333' }"
-                style="width: 100%;"
-              >
-                <el-table-column prop="date" label="日期" width="180">
-                </el-table-column>
-                <el-table-column prop="name" label="姓名" width="180">
-                </el-table-column>
-                <el-table-column prop="address" label="地址"> </el-table-column>
-              </el-table>
-            </el-tab-pane>
-            <el-tab-pane label="电池电机">
-              <el-table
-                :data="tableData"
-                border
-                size="mini"
-                :header-cell-style="{ background: '#F5F7FA', color: '#333333' }"
-                style="width: 100%;"
-              >
-                <el-table-column prop="date" label="日期" width="180">
-                </el-table-column>
-                <el-table-column prop="name" label="姓名" width="180">
-                </el-table-column>
-                <el-table-column prop="address" label="地址"> </el-table-column>
-              </el-table>
-            </el-tab-pane>
-            <el-tab-pane label="故障报警">
-              <el-table
-                :data="tableData"
-                border
-                size="mini"
-                :header-cell-style="{ background: '#F5F7FA', color: '#333333' }"
-                style="width: 100%;"
-              >
-                <el-table-column prop="date" label="日期" width="180">
-                </el-table-column>
-                <el-table-column prop="name" label="姓名" width="180">
-                </el-table-column>
-                <el-table-column prop="address" label="地址"> </el-table-column>
-              </el-table>
-            </el-tab-pane> -->
           </el-tabs>
           <div class="pos">
             <el-button @click="btn(2)" :icon="icon"></el-button>
@@ -315,7 +244,7 @@ export default {
       str: "",
       vehicleNoStr: "",
       title: "",
-      heigth:window.innerHeight - 590 +'',
+      heigth:window.innerHeight - 400 +'',
       ws: null,
       pageSize: 20,
       currentPage: 1,
@@ -325,6 +254,7 @@ export default {
         Authorization: getCookie("HTBD_PASS"),
         language: this.$store.state.language,
       },
+      defualtchecked:[]
     };
   },
   methods: {
@@ -355,6 +285,7 @@ export default {
       })
         .then((res) => {
           if (res.data.status == 0) {
+              
             this.offlineNum = res.data.data.offlineNum;
             this.onLineNum = res.data.data.onLineNum;
           } else {
@@ -416,11 +347,11 @@ export default {
         const gc = new BMap.Geocoder();
         gc.getLocation(points, function (rs) {
           const addComp = rs.addressComponents;
-          const address = rs.address; //得到当前地址  
+          const address = rs.address; //得到当前地址
           items.address = address;
         });
         return items
-      })   
+      })
       setTimeout(() => {
         this.multipleSelection = arr;
         this.addMarker();
@@ -510,7 +441,7 @@ export default {
         });
       });
       let brr = [];
-      
+
       this.pointList.map((item1)=>{
         let p = wgs84togcj02(item1.lng,item1.lat);
         let bd09 = gcj02tobd09(p[0],p[1]);
@@ -546,11 +477,21 @@ export default {
       this.tableDataList = this.pointList;
       this.map.removeOverlay(this.point)
       this.map.panTo(this.point);
+      console.log(this.map.getCenter())
     },
     addClickHandler(title, content, marker) {
       marker.addEventListener("click", (e) => {
         this.openInfo(title, content, e);
       });
+      var opts = {
+        width: 200, // 信息窗口宽度
+        height: 200, // 信息窗口高度
+        title: title, // 信息窗口标题
+        enableMessage: true, //设置允许信息窗发送短息
+      };
+      var point = new BMap.Point(marker.point.lng, marker.point.lat);
+      var infoWindow = new BMap.InfoWindow(content, opts);
+      this.map.openInfoWindow(infoWindow, point);
     },
     openInfo(title, content, e) {
       var e = e.target;
@@ -589,6 +530,16 @@ export default {
           // console.log(res.data);
           if (res.data.status == 0) {
             this.treeData = res.data.data;
+            if(this.treeData&&this.treeData.length>0){
+              let child=this.treeData[0].children
+              if(child&&child.length>0){
+                this.defualtchecked=[child[0].id]
+              }
+              else{
+                this.defualtchecked=[this.treeData[0].id]
+              }
+              this.query()
+            }
           } else {
             this.$message({
               message: res.data.message,
@@ -628,7 +579,6 @@ export default {
         },
       })
         .then((res) => {
-          console.log(res.data);
           if (res.data.status == 0) {
             this.tableData = res.data.data.list;
             this.total = res.data.data.total;
@@ -796,6 +746,9 @@ export default {
     this.initMap();
     this.getTreeData();
     this.onLogin();
+    setTimeout(() => {
+            window.onload()
+          }, 10)
   },
   // destroyed() {
   //   this.ws.close(); //离开路由之后断开websocket连接
@@ -921,12 +874,12 @@ export default {
 }
 .drawerTop {
   width: 100%;
-  height: 380px;
+  height: 190px;
   border-bottom: 1px solid #efefef;
 }
 .drawerFooter {
   width: 100%;
-  height: calc(100% - 380px);
+  height: calc(100% - 188px);
 }
 .nav {
   width: 300px;

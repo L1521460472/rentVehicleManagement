@@ -1,7 +1,7 @@
 <template>
   <div id="appUserSettings" v-loading="loading"  element-loading-text="loading">
       <div class="header" v-if="international.global">
-        <div class="headerTop">
+        <div class="headerTop scoped">
             <div class="nav">
                 <span class="demonstration">{{international.content.content_appUserSettings_userAccount}}</span>
                 <el-input maxlength="50" size="small" v-model="userAccount" :placeholder="international.content.content_appUserSettings_userAccount"></el-input>
@@ -462,6 +462,9 @@ export default {
                 username: this.userAccount
             }
             getAppUserSettingsData(params,this.headers).then(res=>{
+                setTimeout(() => {
+            window.onload()
+          }, 10)
                 this.loading = false
                 this.total = res.data.total
                 this.tableData = res.data.records

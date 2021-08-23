@@ -1,0 +1,10 @@
+@charset "UTF-8";
+
+
+/* 自定义css */
+.header:not(.scoped),.headerTop:not(.scoped){
+  border: 1px solid #e5e5e5!important;
+}
+.headerTop{
+  border: none!important;
+}

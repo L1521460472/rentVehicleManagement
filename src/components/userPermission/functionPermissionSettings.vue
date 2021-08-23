@@ -1,7 +1,7 @@
 <template>
   <div id="functionPermissionSettings" v-loading="loading"  element-loading-text="loading">
       <div class="header" v-if="international.global">
-        <div class="headerTop">
+        <div class="headerTop scoped">
             <div class="nav">
                 <span class="demonstration">{{international.content.content_functionPermissionSettings_role}}</span>
                 <el-input maxlength="50" size="small" v-model="roleName" :placeholder="international.content.content_functionPermissionSettings_role"></el-input>
@@ -114,17 +114,6 @@
                     min-width="220"
                     show-overflow-tooltip>
                     </el-table-column>
-                    <!-- <el-table-column
-                    :label="international.field.field_functionPermissionSettingsList_handle"
-                    align="center"
-                    min-width="180"
-                    show-overflow-tooltip>
-                        <template slot-scope="scope">
-                            <el-button v-if="editBtn" type="text" size="small" @click="handleEdit(scope.row)">{{international.global.global_edit}}</el-button>
-                            <el-button v-if="deactiveBtn" @click="loseEfficacyStatus(scope.row)" type="text" size="small">{{international.global.global_disabled}}</el-button>
-                            <el-button v-if="activeBtn" @click="changeStatus(scope.row)" type="text" size="small">{{international.global.global_enable}}</el-button>
-                        </template>
-                    </el-table-column> -->
                 </el-table>
             </div>
             <div class="footer_page">
@@ -142,105 +131,30 @@
             </div>
           </div>
       </div>
-      <!-- 新增弹窗 -->
-    <!-- <el-dialog
-        v-if="international.content"
-        :title="international.title.title_functionPermissionSettings_addFunctionRole"
-        :visible.sync="showAddToast"
-        width="800px"
-        >
-        <el-form ref="addform" label-width="140px" :model="addform"  class="from" label-position="right">
-            <div class="formItem">
-                <el-form-item 
-                prop="roleName" 
-                :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'blur'}]"
-                :label="international.content.content_functionPermissionSettings_role" >
-                    <el-input maxlength="100" size="small" style="width:180px;" v-model="addform.roleName"></el-input>
-                </el-form-item>
-                <el-form-item 
-                prop="roleType" 
-                :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'change'}]"
-                :label="international.content.content_functionPermissionSettings_roleType">
-                    <el-select size="small" v-model="addform.roleType" value-key='value'  style="width:180px">
-                        <el-option
-                        v-for="item in roleTypeList"
-                        :key="item.id"
-                        :label="item.value"
-                        :value="item">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-            </div>
-            <div class="formItem">
-                <el-form-item :label="international.content.content_functionPermissionSettings_content">
-                    <el-input maxlength="300" size="small"   style="width:180px" v-model="addform.content"></el-input>
-                </el-form-item>
-            </div>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-            <el-button size="small" type="primary" @click="addConfirm">{{international.global.global_confirm}}</el-button>
-            <el-button size="small"  @click="showAddToast = false">{{international.global.global_cancel}}</el-button>
-        </span>
-    </el-dialog> -->
-    <!-- 编辑弹窗 -->
-    <!-- <el-dialog
-        v-if="international.content"
-        :title="international.title.title_functionPermissionSettings_editFunctionRolr"
-        :visible.sync="showEditToast"
-        width="800px"
-        >
-        <el-form ref="editform" label-width="140px" :model="editform"  class="from" label-position="right">
-            <div class="formItem">
-                <el-form-item 
-                prop="roleName" 
-                :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'blur'}]"
-                :label="international.content.content_functionPermissionSettings_role" >
-                    <el-input maxlength="100" size="small" style="width:180px;" v-model="editform.roleName"></el-input>
-                </el-form-item>
-                <el-form-item 
-                prop="roleTypeStr" 
-                :rules="[{ required: true,message:international.global.global_contNotEmpty, trigger: 'change'}]"
-                :label="international.content.content_functionPermissionSettings_roleType">
-                    <el-select size="small" v-model="editform.roleTypeStr" value-key='value'  style="width:180px">
-                        <el-option
-                        @click.native="changeEditRoleType(item.id)"
-                        v-for="item in roleTypeList"
-                        :key="item.id"
-                        :label="item.value"
-                        :value="item">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-            </div>
-            <div class="formItem">
-                <el-form-item :label="international.content.content_functionPermissionSettings_content">
-                    <el-input maxlength="300" size="small"  style="width:180px" v-model="editform.content"></el-input>
-                </el-form-item>
-            </div>
-        </el-form>
-        <span slot="footer" class="dialog-footer">
-            <el-button size="small" type="primary"  @click="editConfirm">{{international.global.global_confirm}}</el-button>
-            <el-button size="small"  @click="showEditToast = false">{{international.global.global_cancel}}</el-button>
-        </span>
-    </el-dialog> -->
-    <!-- 功能权限分配 -->
     <el-dialog
         v-if="international.content"
         :title="international.global.global_authorityDistribut"
         :visible.sync="showFunctionToast"
         width="60%"
-        >
+        top="4vh">
+        <div style="text-align: right;margin-bottom: 5px;">
+          <span>系统默认角色</span>
+          <el-select :disabled="defaultroledisabled"
+           placeholder="选择系统默认角色" v-model="defaultrole" clearable @change="setdefaultrole">
+            <el-option v-for="(item,index) in defaultroleOptions" :key="index" :value="item.id" :label="item.roleName"></el-option>
+          </el-select>
+        </div>
         <tree-transfer
-        :title="title"
         pid="parentId"
-        :from_data='undistributeList' 
-        :to_data='distributeList' 
-        :defaultProps="{label:'name'}" 
-        @addBtn='addFuncBtn' 
+        :from_data='undistributeList'
+        :to_data='distributeList'
+        :defaultProps="{label:'name'}"
+        @addBtn='addFuncBtn'
         @removeBtn='removeFuncBtn'
-        :mode='mode' 
-        height='450px' 
+        :mode='mode'
+        height='450px'
         openAll
+        :title="['未分配权限','已分配权限']"
         >
         </tree-transfer>
         <span slot="footer" class="dialog-footer" >
@@ -252,6 +166,7 @@
 </template>
 
 <script>
+  import axios  from 'axios'
 import treeTransfer from 'el-tree-transfer'
 import { getCookie, setCookie, removeCookie ,getMenuBtnList} from "../../public";
 import {getFunctionsettingList,funcDeactiveStatus,funcActiveStatus,getFunDeail,addFunSetting,editFunSetting,getTypeList,getLoseEfficacyTip,getUndistribute,getDistribute,distributeFun} from '../../api/userPermissions/api'
@@ -260,6 +175,9 @@ export default {
     components:{ treeTransfer },
     data() {
         return {
+            defaultroledisabled:true,
+            defaultrole:"",
+            defaultroleOptions:[],
             mode: "transfer",
             total:0, //数据总条数
             currentPage:1,//当前页数
@@ -276,11 +194,6 @@ export default {
                 roleType:''
             },//新增数据
             editform:{}, //编辑数据
-            // rules:{
-            //     roleName:[{ required: true,  trigger: 'blur' }],
-            //     roleType:[{ required: true,  trigger: 'change' }],
-            //     roleTypeStr:[{ required: true, trigger: 'change' }]
-            // },
             showAddToast:false, //是否显示新增弹窗
             showEditToast:false,//是否显示编辑弹窗
             loading:false, //是否显示loading
@@ -303,10 +216,42 @@ export default {
             headers:{
                 Authorization: getCookie("HTBD_PASS"),
                 language:this.$store.state.language
-            }//请求头  
+            }//请求头
         }
     },
     methods: {
+        setdefaultrole(){
+          this.$confirm('请确定采用系统默认的角色权限？', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            let params = {roleId:this.defaultrole}
+            // 获取默认角色权限
+            getDistribute(params,this.headers).then(res=>{
+                this.distributeList = res.data
+                let ids = []
+                res.data.map(item=>{
+                    if(item.type == 2){ids.push(Math.abs(item.id))}
+                    item.children.map(item2=>{
+                        if(item2.type == 2){ids.push(Math.abs(item2.id))}
+                        item2.children.map(item3=>{
+                            if(item3.type == 2){ids.push(Math.abs(item3.id))}
+                            item3.children.map(item4=>{
+                                ids.push(Math.abs(item4.id))
+                            })
+                        })
+                    })
+                })
+                this.btnsId = ids
+                this.$alert("已加载系统默认的权限到右边框！")
+            }).catch(err=>{
+                console.log(err)
+            })
+          }).catch(() => {
+            console.log("用户已取消发送锁车")
+          });
+        },
         // 获取分页数据
         getListData(){
             this.loading = true
@@ -318,6 +263,9 @@ export default {
                 roleType:this.roleType.id
             }
             getFunctionsettingList(params,this.headers).then(res=>{
+                setTimeout(() => {
+            window.onload()
+          }, 10)
                 this.loading = false
                 this.total = res.data.total
                 this.tableData = res.data.records
@@ -350,10 +298,6 @@ export default {
         },
         // 新增
         addAction(){
-            // this.addform.content = '',
-            // this.addform.roleName = '',
-            // this.addform.roleType = ''
-            // this.showAddToast = true
             this.$store.commit("changeIsStatus", false);
             this.$router.push({
                 path:'/addFunSetting',
@@ -361,31 +305,6 @@ export default {
             });
 
         },
-        // 新增提交
-        // addConfirm(){
-        //     this.$refs.addform.validate((valid)=>{
-        //         if(valid){
-        //             this.showAddToast = false
-        //             let params = {
-        //                 content: this.addform.content,
-        //                 roleName: this.addform.roleName,
-        //                 roleType: this.addform.roleType.id
-        //             }
-        //             addFunSetting(params,this.headers).then(res=>{
-        //                 if(res.status == 0){
-        //                     this.$message.success(this.international.global.global_addSuccess)
-        //                     this.roleName = '',
-        //                     this.status = ''
-        //                     this.getListData()
-        //                 }else{
-        //                     this.$message.error(this.international.global.global_addFailure)
-        //                 }
-        //             }).catch(err=>{
-        //                 console.log(err)
-        //             })
-        //         }
-        //     })
-        // },
         // 编辑
         handleEdit(row){
             if(this.ids.length == 1){
@@ -402,10 +321,6 @@ export default {
                 })
             }
         },
-        // 编辑时改变角色类型
-        // changeEditRoleType(status){
-        //     this.editform.roleType = status
-        // },
         // 状态激活
         changeStatus(row){
             let params = {ids:this.ids}
@@ -463,32 +378,6 @@ export default {
                 console.log(err)
             })
         },
-        // 编辑确认提交
-        // editConfirm(){
-        //     this.$refs.editform.validate((valid)=>{
-        //         if(valid){
-        //             this.showEditToast =false
-        //             let params = {
-        //                 content: this.editform.content,
-        //                 id: this.editform.id,
-        //                 roleName: this.editform.roleName,
-        //                 roleType: this.editform.roleType
-        //             }
-        //             editFunSetting(params,this.headers).then(res=>{
-        //                 if(res.status == 0){
-        //                     this.$message.success(this.international.global.global_changeSuccess)
-        //                     this.roleName = '',
-        //                     this.status = ''
-        //                     this.getListData()
-        //                 }else{
-        //                     this.$message.success(this.international.global.global_changeFailure)
-        //                 }
-        //             }).catch(err=>{
-        //                 console.log(err)
-        //             })
-        //         }
-        //     })
-        // },
         // 表格选择
         handleSelectionChange(val){
             this.ids = []
@@ -526,10 +415,12 @@ export default {
                         })
                     })
                     this.btnsId = ids
+                    this.defaultroledisabled=false
                 }).catch(err=>{
                     console.log(err)
                 })
                 this.showFunctionToast = true
+                this.defaultrole=""
             }else{
                 this.$message.warning({
                     message:this.international.content.content_functionPermissionSetting_DistributNotMoreChoose,
@@ -649,6 +540,21 @@ export default {
     mounted(){
         this.getListData()
         this.getTypeListData()
+        axios({//获取系统默认角色
+            method: "get",
+            url: "/platform-base-service/platformBaseRole/defaultRolesQuery",
+            headers: this.headers,
+          })
+            .then((result) => {
+              this.defaultroleOptions = result.data.data;
+            })
+            .catch((err) => {
+              this.$message({
+                message: err.message,
+                center: true,
+                type: "error",
+              });
+            });
     }
 }
 </script>

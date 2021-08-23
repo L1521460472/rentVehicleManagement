@@ -1,6 +1,6 @@
 <template>
   <div id="header">
-    <div class="header">
+    <div class="header scoped">
       <span>{{ showMsg }}</span>
     </div>
     <div class="footer">
@@ -10,102 +10,42 @@
         </div>
         <div class="orderNum">
           <span>订单编号</span>
-          <el-input class="formItem" size="small" disabled v-model="orderValue"></el-input>
+          <el-input class="formItem"  disabled v-model="orderValue"></el-input>
         </div>
         <el-form ref="formVeInformation" :model="formVeInformation" label-width="130px">
           <div class="formNav formNavs">
             <el-form-item label="车辆品牌">
-              <el-input
-                class="formItem"
-                size="small"
-                disabled
-                maxlength="100"
-                v-model="formVeInformation.brand"
-              ></el-input>
+              <el-input class="formItem" disabled maxlength="100" v-model="formVeInformation.brand"></el-input>
             </el-form-item>
             <el-form-item label="车型">
-              <el-input
-                class="formItem"
-                size="small"
-                disabled
-                maxlength="100"
-                v-model="formVeInformation.vehicleType"
-              ></el-input>
+              <el-input class="formItem"   disabled maxlength="100" v-model="formVeInformation.vehicleType" ></el-input>
             </el-form-item>
             <el-form-item label="数量">
-              <el-input
-                class="formItem"
-                size="small"
-                disabled
-                maxlength="100"
-                v-model="formVeInformation.number"
-              ></el-input>
+              <el-input class="formItem" disabled maxlength="100" v-model="formVeInformation.number" ></el-input>
             </el-form-item>
             <el-form-item label="租赁时长">
-              <el-input
-                class="formItem"
-                size="small"
-                disabled
-                maxlength="100"
-                v-model="formVeInformation.duration"
-              ></el-input>个月
+              <el-input  class="formItem"      disabled  maxlength="100"  v-model="formVeInformation.duration" ></el-input>个月
             </el-form-item>
             <el-form-item label="客户类型">
-              <el-input
-                class="formItem"
-                size="small"
-                disabled
-                maxlength="100"
-                v-model="formVeInformation.userType"
-              ></el-input>
+              <el-input class="formItem"  disabled  maxlength="100" v-model="formVeInformation.userType" ></el-input>
             </el-form-item>
             <el-form-item label="客户名称">
-              <el-input
-                class="formItem"
-                size="small"
-                disabled
-                maxlength="100"
-                v-model="formVeInformation.userName"
-              ></el-input>
+              <el-input class="formItem" disabled maxlength="100" v-model="formVeInformation.userName" ></el-input>
             </el-form-item>
             <el-form-item label="营业执照号">
-              <el-input
-                class="formItem"
-                size="small"
-                disabled
-                maxlength="100"
-                v-model="formVeInformation.businessNO"
-              ></el-input>
+              <el-input class="formItem"  disabled  maxlength="100" v-model="formVeInformation.businessNO" ></el-input>
             </el-form-item>
             <el-form-item label="联系人姓名">
-              <el-input
-                class="formItem"
-                size="small"
-                disabled
-                maxlength="100"
-                v-model="formVeInformation.contactsName"
-              ></el-input>
+              <el-input class="formItem" disabled maxlength="100" v-model="formVeInformation.contactsName" ></el-input>
             </el-form-item>
             <el-form-item label="联系电话">
-              <el-input
-                class="formItem"
-                size="small"
-                disabled
-                maxlength="100"
-                v-model="formVeInformation.ipone"
-              ></el-input>
+              <el-input class="formItem"  disabled maxlength="100" v-model="formVeInformation.ipone" ></el-input>
             </el-form-item>
             <el-form-item label="分配业务员">
-              <el-input
-                class="formItem"
-                size="small"
-                disabled
-                maxlength="100"
-                v-model="formVeInformation.userid"
-              ></el-input>
+              <el-input class="formItem" disabled maxlength="100" v-model="formVeInformation.userid" ></el-input>
             </el-form-item>
             <el-form-item class="cctv">
-              <el-button type="primary" size="small" @click="handleClick">点击查看订单详情</el-button>
+              <el-button type="primary"  @click="handleClick">点击查看订单详情</el-button>
             </el-form-item>
           </div>
         </el-form>
@@ -114,405 +54,209 @@
         </div>
         <el-form ref="formContract" :model="formContract" label-width="130px">
           <div class="formNav formNavs" v-if="international.title">
-          <el-form-item
-              label="合同类型"
-              prop="contractType"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
-              <el-select clearable v-model="formContract.contractType" size="small" placeholder>
-                <el-option
-                  v-for="item in contractTypes"
-                  :key="item.value"
+          <el-form-item label="业务类型" prop="businessType" :rules="[{required: true,message:'内容不能为空',trigger: 'blur'}]">
+              <el-select :clearable="false" v-model="formContract.businessType"  @change="businessTypeChange">
+                  <el-option label="月租" :value="2"></el-option>
+                  <el-option label="以租代售" :value="1"></el-option>
+              </el-select>
+          </el-form-item>
+          <el-form-item label="合同类型" prop="contractType"
+              :rules="[{required: true,message: '内容不能为空',trigger: 'blur',},]">
+              <el-select clearable v-model="formContract.contractType"  placeholder>
+                <el-option v-for="item in contractTypes" :key="item.value"
                   :label="item.label"
-                  :value="item.value"
-                ></el-option>
+                  :value="item.value"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item
-              label="合同编号"
-              prop="contractCode"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="formContract.contractCode"
-              ></el-input>
+            <el-form-item label="合同编号" prop="contractCode"
+              :rules="[{required: true,message: '内容不能为空',trigger: 'blur',},]" >
+              <el-input class="formItem"  maxlength="100" v-model="formContract.contractCode" ></el-input>
             </el-form-item>
-            <el-form-item
-              label="租赁开始日"
-              prop="rentStartDateStr"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
-              <el-date-picker
-                v-model="formContract.rentStartDateStr"
-                type="date"
-                size="small"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-                placeholder="选择日期"
-              ></el-date-picker>
+            <el-form-item label="租赁开始日" prop="rentStartDateStr"
+            :rules="[{required: true,message: '内容不能为空',trigger: 'blur',},]" >
+              <el-date-picker v-model="formContract.rentStartDateStr" type="date"   format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd" placeholder="选择日期" ></el-date-picker>
             </el-form-item>
-            <el-form-item
-              label="租赁到期日"
-              prop="rentEndDateStr"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
-              <el-date-picker
-                v-model="formContract.rentEndDateStr"
-                type="date"
-                size="small"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-                placeholder="选择日期"
-              ></el-date-picker>
+            <el-form-item label="租赁到期日" prop="rentEndDateStr"
+             :rules="[{required: true,message: '内容不能为空',trigger: 'blur',},]" >
+              <el-date-picker v-model="formContract.rentEndDateStr" type="date"  format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+                placeholder="选择日期" ></el-date-picker>
             </el-form-item>
             <el-form-item
               label="一键呼叫电话"
               prop="urgentPhoneNumer"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
+              :rules="[{required: true,message: '内容不能为空',trigger: 'blur',},]" >
               <el-input
                 class="formItem"
-                size="small"
                 maxlength="100"
-                v-model="formContract.urgentPhoneNumer"
-              ></el-input>
+                v-model="formContract.urgentPhoneNumer"></el-input>
             </el-form-item>
             <el-form-item
               label="合同附件"
               prop="efileIdList"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
+              :rules="[{required: true,message: '内容不能为空',trigger: 'blur',},]"
             >
-              <el-upload
-                class="upload"
-                action="/vehicle-service/efileInfo/uploadLeaseContractFile?fileType=8"
-                :headers="headers"
-                :on-preview="handlePreview"
-                :on-remove="handleRemove"
-                :on-success="handleSuccess"
-                :on-error="handleError"
-                :on-exceed="handleExceed"
-                :file-list="fileList"
-                :limit="5"
-                multiple
-              >
+              <el-upload class="upload"
+                action="/vehicle-service/efileInfo/uploadLeaseContractFile?fileType=8" :headers="headers"
+                :on-preview="handlePreview" :on-remove="handleRemove" :on-success="handleSuccess"
+                :on-error="handleError" :on-exceed="handleExceed" :file-list="fileList" :limit="5" multiple>
                 <span class="upload_txt">上传</span>
               </el-upload>
             </el-form-item>
             <div class="footerTitle">
               <span>客户信息</span>
             </div>
-            <el-form-item
-              label="承租方"
-              prop="customerName"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
+            <el-form-item label="承租方" prop="customerName"
+              :rules="[{required: true,message: '内容不能为空',trigger: 'blur',},]">
               <el-input
                 class="formItem"
-                size="small"
                 maxlength="100"
-                v-model="formContract.customerName"
-              ></el-input>
+                v-model="formContract.customerName"  ></el-input>
             </el-form-item>
-            <el-form-item
-              label="电话"
-              prop="customerPhoneNumber"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
-              <el-input
-                class="formItem"
-                size="small"
+            <el-form-item label="电话" prop="customerPhoneNumber"
+              :rules="[{required: true,message: '内容不能为空',trigger: 'blur',},]" >
+              <el-input  class="formItem"
                 maxlength="100"
                 v-model="formContract.customerPhoneNumber"
               ></el-input>
             </el-form-item>
-            <el-form-item
-              label="联系人姓名"
-              prop="customerContacts"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="formContract.customerContacts"
-              ></el-input>
+            <el-form-item label="联系人姓名" prop="customerContacts"
+            :rules="[{required: true,message: '内容不能为空',trigger: 'blur',},]" >
+              <el-input class="formItem" maxlength="100" v-model="formContract.customerContacts" ></el-input>
             </el-form-item>
             <el-form-item
               label="联系人手机号"
               prop="contactsPhoneNumber"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="formContract.contactsPhoneNumber"
-              ></el-input>
+              :rules="[{required: true,message: '内容不能为空',trigger: 'blur',},]" >
+              <el-input class="formItem"   maxlength="100"  v-model="formContract.contactsPhoneNumber" ></el-input>
             </el-form-item>
-            <el-form-item
-              label="地址"
-              prop="customerAdd"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="formContract.customerAdd"
-              ></el-input>
+            <el-form-item label="地址" prop="customerAdd" :rules="[{required: true,message:'内容不能为空',trigger: 'blur',},]" >
+              <el-input class="formItem"  maxlength="100" v-model="formContract.customerAdd"></el-input>
+            </el-form-item>
+            <el-form-item label="是否包买保险" prop="isBuyInsurance"  v-if="showisBuyInsurance"
+            :rules="[{required: true,message:'内容不能为空',trigger: 'change'}]" >
+              <el-select :clearable="false" v-model="formContract.isBuyInsurance" size="small">
+                  <el-option label="是" :value="0"></el-option>
+                  <el-option label="否" :value="1"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="是否包过户费" prop="isTransfer" v-if="showisTransfer"
+            :rules="[{required: true,message:'内容不能为空',trigger: 'change'}]" >
+              <el-select :clearable="false" v-model="formContract.isTransfer" size="small">
+                  <el-option label="是" :value="0"></el-option>
+                  <el-option label="否" :value="1"></el-option>
+              </el-select>
             </el-form-item>
             <div class="footerTitle">
               <span>车辆信息</span>
             </div>
-            <el-form-item
-              label="车辆数"
-              prop="vehicleNum"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                disabled
-                v-model="formContract.vehicleNum"
-              ></el-input>
-              <el-button type="primary" size="small" @click="addVehicle">增加</el-button>
+            <el-form-item label="车辆数" prop="vehicleNum" :rules="[{required: true,message: '内容不能为空',trigger: 'blur'}]" >
+              <el-input class="formItem"  maxlength="100" disabled v-model="formContract.vehicleNum"></el-input>
+              <el-button type="primary"  @click="addVehicle">增加</el-button>
             </el-form-item>
-            <el-form-item
-              label="充电桩数">
-              <el-input
-                class="formItem"
-                size="small"
-                disabled
-                maxlength="100"
-                v-model="formContract.chargingPileNum"
-              ></el-input>
+            <el-form-item label="充电桩数">
+              <el-input class="formItem"  disabled maxlength="100" v-model="formContract.chargingPileNum"></el-input>
             </el-form-item>
 
             <el-table class="vehicleData" :data="formContract.vehicleList">
               <el-table-column prop="name" label="*车牌号">
                 <template slot-scope="scope">
-                  <el-select
-                    v-model="formContract.vehicleList[scope.$index].vehicleNo"
-                    size="small"
-                    filterable
-                    @change="handleChangevehicleNo(scope.$index,scope.row)"
-                    placeholder
-                  >
-                    <el-option
-                      v-for="item in vehicleNoOptions"
-                      :key="item.id"
-                      :label="item.vehicleNo"
-                      :value="item.vehicleNo"
-                    ></el-option>
+                  <el-select v-model="formContract.vehicleList[scope.$index].vehicleNo"  filterable
+                    @change="handleChangevehicleNo(scope.$index,scope.row)">
+                    <el-option v-for="item in vehicleNoOptions" :key="item.id"
+                     :label="item.vehicleNo" :value="item.vehicleNo"></el-option>
                   </el-select>
                 </template>
               </el-table-column>
               <el-table-column prop="vehicleColor" label="颜色">
                 <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    disabled
-                    v-model="formContract.vehicleList[scope.$index].vehicleColor"
-                    placeholder
-                  ></el-input>
+                  <el-input    disabled  v-model="formContract.vehicleList[scope.$index].vehicleColor" ></el-input>
                 </template>
               </el-table-column>
               <el-table-column prop="value" label="车型">
                 <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    disabled
-                    v-model="formContract.vehicleList[scope.$index].vehicleType"
-                    placeholder
-                  ></el-input>
+                  <el-input disabled v-model="formContract.vehicleList[scope.$index].vehicleType"></el-input>
                 </template>
               </el-table-column>
               <el-table-column prop="value" label="*充电桩数">
                 <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    v-model="formContract.vehicleList[scope.$index].chargingPileNum"
+                  <el-input  v-model="formContract.vehicleList[scope.$index].chargingPileNum"
                     onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
                     @change="handleChangechargingPileNum"
-                    @blur="changeChargingPileDeposit"
-                    placeholder
-                  ></el-input>
+                    @blur="changeChargingPileDeposit" ></el-input>
                 </template>
               </el-table-column>
-              <!-- <el-table-column prop="value" label="实际提车日期">
-                <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    disabled
-                    v-model="formContract.vehicleList[scope.$index].startDate"
-                    placeholder=""
-                  ></el-input>
-                </template>
-              </el-table-column>
-              <el-table-column prop="value" label="应退车日期">
-                <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    disabled
-                    v-model="formContract.vehicleList[scope.$index].endDate1"
-                    placeholder=""
-                  ></el-input>
-                </template>
-              </el-table-column>
-              <el-table-column prop="value" label="实退车日期">
-                <template slot-scope="scope">
-                  <el-input
-                    size="small"
-                    disabled
-                    v-model="formContract.vehicleList[scope.$index].endDate2"
-                    placeholder=""
-                  ></el-input>
-                </template>
-              </el-table-column>-->
               <el-table-column width="60">
                 <template slot-scope="scope">
-                  <el-button size="small" @click="deleteRow(scope.$index)">删除</el-button>
+                  <el-button  @click="deleteRow(scope.$index)">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
             <div class="footerTitle">
               <span>押金信息</span>
             </div>
-            <el-form-item
-              label="车辆押金"
-              prop="vehicleDeposit"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
-              <el-input
-                class="formItem"
-                size="small"
-                @change="changeChargingPileDeposit"
-                onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
-                maxlength="100"
-                v-model="formContract.vehicleDeposit"
-              ></el-input>元/辆
+            <el-form-item label="车辆押金" prop="vehicleDeposit" :rules="[{required: true,message: '内容不能为空',trigger: 'blur',},]" >
+              <el-input class="formItem"  @change="changeChargingPileDeposit" onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
+                maxlength="100" v-model="formContract.vehicleDeposit"></el-input>元/辆
             </el-form-item>
-            <el-form-item
-              label="充电桩押金"
-              prop="chargingPileDeposit"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
-              <el-input
-                class="formItem"
-                size="small"
-                @change="changeChargingPileDeposit"
-                onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
-                maxlength="100"
-                v-model="formContract.chargingPileDeposit"
-              ></el-input>元/个
+            <el-form-item label="充电桩押金" prop="chargingPileDeposit"
+              :rules="[{required: true,message: '内容不能为空',trigger: 'blur',},]">
+              <el-input  class="formItem"  @change="changeChargingPileDeposit" onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
+                maxlength="100" v-model="formContract.chargingPileDeposit" ></el-input>元/个
             </el-form-item>
-            <el-form-item
-              label="合同总押金">
-              <el-input
-                class="formItem"
-                size="small"
-                disabled
-                maxlength="100"
-                v-model="formContract.deposit"
-              ></el-input> 元
+            <el-form-item label="合同总押金">
+              <el-input class="formItem"   disabled  maxlength="100" v-model="formContract.deposit"></el-input> 元
             </el-form-item>
             <div class="footerTitle">
               <span>租金计划</span>
             </div>
-            <el-form-item
-              label="车辆租金"
-              prop="onevehicleRent"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
+            <el-form-item v-if="showdownPayment"
+            label="车辆首付款" prop="downPayment" :rules="[{required: true,message: '内容不能为空',trigger: 'blur'}]">
+              <el-input class="formItem" onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
+                maxlength="100" v-model="formContract.downPayment"></el-input>元/辆/月
+            </el-form-item>
+            <el-form-item v-if="latePayment"
+            label="车辆尾付款" prop="latePayment" :rules="[{required: true,message: '内容不能为空',trigger: 'blur'}]">
+              <el-input class="formItem" onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
+                maxlength="100" v-model="formContract.latePayment"></el-input>元/辆/月
+            </el-form-item>
+            <el-form-item label="车辆租金" prop="onevehicleRent" :rules="[{required: true,message: '内容不能为空',trigger: 'blur'}]">
+              <el-input class="formItem" @change="changeVehicleRent" onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
+                maxlength="100" v-model="formContract.onevehicleRent"></el-input>元/辆/月
+            </el-form-item>
+            <el-form-item label="充电桩租金" prop="onechargingPileRent"
+              :rules="[{required: true,message: '内容不能为空',trigger: 'blur',},]" >
               <el-input
                 class="formItem"
-                size="small"
                 @change="changeVehicleRent"
                 onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
                 maxlength="100"
-                v-model="formContract.onevehicleRent"
-              ></el-input>元/辆/月
+                v-model="formContract.onechargingPileRent" ></el-input>元/个/月
             </el-form-item>
-            <el-form-item
-              label="充电桩租金"
-              prop="onechargingPileRent"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
-              <el-input
-                class="formItem"
-                size="small"
-                @change="changeVehicleRent"
-                onkeyup="this.value=this.value.replace(/[^\d.]/g,'');"
-                maxlength="100"
-                v-model="formContract.onechargingPileRent"
-              ></el-input>元/个/月
+            <el-form-item label="合同月租">
+              <el-input  class="formItem"   disabled maxlength="100" v-model="formContract.vehicleRent" ></el-input> 元
             </el-form-item>
-            <el-form-item
-              label="合同月租">
-              <el-input
-                class="formItem"
-                size="small"
-                disabled
-                maxlength="100"
-                v-model="formContract.vehicleRent"
-              ></el-input> 元
+            <el-form-item label="租赁月数"  prop="rentMonths"
+              :rules="[{required: true,message: '内容不能为空',trigger: 'blur',},]" >
+              <el-input class="formItem" maxlength="100" v-model="formContract.rentMonths" ></el-input>月
             </el-form-item>
-            <el-form-item
-              label="租赁月数"
-              prop="rentMonths"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="formContract.rentMonths"
-              ></el-input>月
+            <el-form-item label="首次回款日期" prop="payRentDateStr"
+              :rules="[{required: true,message: '内容不能为空',trigger: 'blur',},]" >
+              <el-date-picker v-model="formContract.payRentDateStr" type="date"  format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+                placeholder="选择日期"></el-date-picker>
             </el-form-item>
-            <el-form-item
-              label="首次回款日期"
-              prop="payRentDateStr"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
-              <el-date-picker
-                v-model="formContract.payRentDateStr"
-                type="date"
-                size="small"
-                format="yyyy-MM-dd"
-                value-format="yyyy-MM-dd"
-                placeholder="选择日期"
-              ></el-date-picker>
-            </el-form-item>
-            <el-form-item
-              label="逾期滞纳金费率"
-              prop="lateFeeRate"
-              :rules="[{required: true,message: international.global.global_contNotEmpty,trigger: 'blur',},]"
-            >
-              <el-input
-                class="formItem"
-                size="small"
-                maxlength="100"
-                v-model="formContract.lateFeeRate"
-              ></el-input> &nbsp;‰
+            <el-form-item label="逾期滞纳金费率" prop="lateFeeRate"
+              :rules="[{required: true,message: '内容不能为空',trigger: 'blur',},]" >
+              <el-input class="formItem"  maxlength="100" v-model="formContract.lateFeeRate" ></el-input> &nbsp;‰
             </el-form-item>
             <el-form-item class="cctv">
-              <el-button type="primary" size="small" @click="confirmTable">生成回款计划表</el-button>
+              <el-button type="primary"  @click="confirmTable">生成回款计划表</el-button>
             </el-form-item>
             <el-form-item class="cctv1">
               <el-tabs :tab-position="tabPosition" type="border-card" style="height: 500px;">
                 <el-tab-pane label="汇总">
-                  <el-table
-                    :data="formContract.leaseContractGenerateTableVO.aggregation"
-                    border
-                    show-summary
-                    size="small"
-                    style="width: 100%;"
-                    height="470"
-                  >
+                  <el-table :data="formContract.leaseContractGenerateTableVO.aggregation" border show-summary
+                    style="width: 100%;" height="470" >
                     <el-table-column prop="billPeriods" label="期数" width="80"></el-table-column>
                     <el-table-column prop="planPaybackDateStr" label="计划回款日" width="100"></el-table-column>
                     <el-table-column prop="vehicleRent" label="车辆租金(汇总)" width="105"></el-table-column>
@@ -520,15 +264,10 @@
                     <el-table-column prop="planPaybackMoney" label="计划回款金额(汇总)" width="125"></el-table-column>
                     <el-table-column prop="adjustedPaybackDateStr" label="手动调整后还款日" width="150">
                       <template slot-scope="scope">
-                        <el-date-picker
-                          @change="handleChangeDate(scope.$index,scope.row)"
+                        <el-date-picker @change="handleChangeDate(scope.$index,scope.row)"
                           v-model="formContract.leaseContractGenerateTableVO.aggregation[scope.$index].adjustedPaybackDateStr"
-                          type="date"
-                          size="small"
-                          format="yyyy-MM-dd"
-                          value-format="yyyy-MM-dd"
-                          placeholder="选择日期" vehicleRent chargingPileRent planPaybackMoney adjustedPaybackMoney
-                        ></el-date-picker>
+                          type="date"   format="yyyy-MM-dd" value-format="yyyy-MM-dd"
+                          placeholder="选择日期" vehicleRent chargingPileRent planPaybackMoney adjustedPaybackMoney ></el-date-picker>
                       </template>
                     </el-table-column>
                     <el-table-column prop="adjustedPaybackMoney" label="手动调整后金额" width="110"></el-table-column>
@@ -542,16 +281,13 @@
                 <el-tab-pane
                   v-for="(item,index) in formContract.leaseContractGenerateTableVO.vehicleMap"
                   :label="formContract.leaseContractGenerateTableVO.vehicleMap[index][0].vehicleNo"
-                  :key="index"
-                >
+                  :key="index"  >
                   <el-table
                     :data="formContract.leaseContractGenerateTableVO.vehicleMap[index]"
                     border
                     show-summary
-                    size="small"
                     style="width: 100%;"
-                    height="470"
-                  >
+                    height="470"  >
                     <el-table-column prop="billPeriods" label="期数" width="80"></el-table-column>
                     <el-table-column prop="planPaybackDateStr" label="计划回款日" width="100"></el-table-column>
                     <el-table-column prop="vehicleRent" label="车辆租金" width="105"></el-table-column>
@@ -562,22 +298,15 @@
                       <template slot-scope="scope">
                         <el-input
                           class="formItem"
-                          size="small"
                           maxlength="100"
                           @change="handleChangeMoney(scope.$index,scope.row)"
-                          v-model="formContract.leaseContractGenerateTableVO.vehicleMap[index][scope.$index].adjustedPaybackMoney"
-                        ></el-input>
+                          v-model="formContract.leaseContractGenerateTableVO.vehicleMap[index][scope.$index].adjustedPaybackMoney" ></el-input>
                       </template>
                     </el-table-column>
                     <el-table-column label="备注信息" min-width="120">
                       <template slot-scope="scope">
-                        <el-input
-                          class="formItem"
-                          size="small"
-                          maxlength="50"
-                          @change="handleChangeRemark(scope.$index,scope.row)"
-                          v-model="formContract.leaseContractGenerateTableVO.vehicleMap[index][scope.$index].remark"
-                        ></el-input>
+                        <el-input class="formItem"   maxlength="50" @change="handleChangeRemark(scope.$index,scope.row)"
+                          v-model="formContract.leaseContractGenerateTableVO.vehicleMap[index][scope.$index].remark" ></el-input>
                       </template>
                     </el-table-column>
                   </el-table>
@@ -585,31 +314,18 @@
               </el-tabs>
             </el-form-item>
             <el-form-item label="合同补充附件">
-              <el-upload
-                class="upload"
-                action="/vehicle-service/efileInfo/uploadLeaseContractFile?fileType=8"
-                :headers="headers"
-                :on-preview="handlePreview1"
-                :on-remove="handleRemove1"
-                :on-success="handleSuccess1"
-                :on-error="handleError1"
-                :file-list="fileList1"
-                multiple
-              >
+              <el-upload class="upload" action="/vehicle-service/efileInfo/uploadLeaseContractFile?fileType=8"
+                :headers="headers" :on-preview="handlePreview1" :on-remove="handleRemove1" :on-success="handleSuccess1"
+                :on-error="handleError1" :file-list="fileList1" multiple >
                 <span class="upload_txt">上传</span>
               </el-upload>
             </el-form-item>
-            <!-- <el-form-item class="cctv">
-              <el-button type="primary" size="small" @click="handleClick"
-                >提交审核</el-button
-              >
-            </el-form-item>-->
           </div>
         </el-form>
       </div>
       <div class="footerButton">
-        <el-button type="primary" size="small" @click="confirm">确定</el-button>
-        <el-button size="small" @click="cancel">返回</el-button>
+        <el-button type="primary"  @click="confirm">确定</el-button>
+        <el-button  @click="cancel">返回</el-button>
       </div>
     </div>
   </div>
@@ -621,6 +337,11 @@ export default {
   name: "planRegister",
   data() {
     return {
+      businessType:2,
+      showisBuyInsurance:false,
+      showisTransfer:false,
+      showdownPayment:false,
+      latePayment:false,
       formVeInformation: {
         //订单信息
         brand: "", //车牌号码
@@ -652,6 +373,11 @@ export default {
         customerAdd: null, //承租方地址
 
         contractType:null,//合同类型
+        businessType:2,//业务类型 1-以租代售 2-月租
+        isBuyInsurance:null,//是否买保险 0-是 1-否
+        isTransfer:null,//是否包过户 0-是 1-否
+        downPayment:null,//车辆首付款
+        latePayment:null,//车辆尾付款
 
         //车辆信息
         vehicleNum: 1, //租车数量
@@ -720,6 +446,39 @@ export default {
     };
   },
   methods: {
+    businessTypeChange(){
+      if(this.formContract.businessType==1)
+      {
+          this.formContract.isBuyInsurance= 1
+          this.formContract.isTransfer= 1
+          this.formContract.downPayment= ""
+          this.formContract.latePayment= ""
+
+          this.showisBuyInsurance=true
+          this.showisTransfer=true
+          this.showdownPayment=true
+          this.latePayment=true
+          this.businessType=1
+          this.vehicleNoOptions.length=0
+          this.formContract.vehicleList.length=0
+          this.formContract.vehicleNum=0
+          this.getVehicle()
+          this.addVehicle()
+      }
+      else{
+		this.formContract.isBuyInsurance= 2
+        this.showisBuyInsurance=false
+        this.showisTransfer=false
+        this.showdownPayment=false
+        this.latePayment=false
+        this.businessType=2
+        this.vehicleNoOptions.length=0
+        this.formContract.vehicleList.length=0
+        this.formContract.vehicleNum=0
+        this.getVehicle()
+        this.addVehicle()
+      }
+    },
     addVehicleInfo() {
       //新增车辆信息
       axios({
@@ -739,12 +498,10 @@ export default {
             this.$message({
               type: "success",
               message: "保存成功!",
-              center: true,
             });
           } else {
             this.$message({
               message: result.data.message,
-              center: true,
               type: "error",
             });
           }
@@ -753,7 +510,6 @@ export default {
           console.error(err);
           this.$message({
             message: err.response.data.message,
-            center: true,
             type: "error",
           });
         });
@@ -771,17 +527,15 @@ export default {
         endDate2: null,
       });
     },
+    //规则删除
     deleteRow(index) {
-      //规则删除
       this.formContract.vehicleNum--;
       this.formContract.vehicleList.splice(index, 1);
     },
+    //确定提交
     confirm() {
-      //确定
       var arr = [];
-        this.formContract.vehicleList.map((item) => {
-          arr.push(item.id);
-        });
+        this.formContract.vehicleList.map((item) => { arr.push(item.id); });
         var nary = arr.sort();
         if(arr.length>1){
           for (var j = 0; j < arr.length; j++) {
@@ -789,7 +543,6 @@ export default {
               this.$message({
                 type: "error",
                 message: "车牌号相同不能提交!",
-                center: true,
               });
               return;
             }
@@ -798,7 +551,6 @@ export default {
       if(this.formContract.leaseContractGenerateTableVO.aggregation.length == 0){
         this.$message({
           message: '未生成回款计划表不能提交登记!',
-          center: true,
           type: "error",
         });
         return
@@ -819,33 +571,19 @@ export default {
             data: params,
           })
             .then((result) => {
-              // console.log(result.data);
               this.$store.commit("changeIsStatus", true);
               if (result.data.status === 0) {
-                this.$message({
-                  type: "success",
-                  message: this.international.global.global_addSuccess,
-                  center: true,
-                });
+                this.$message({ type: "success", message: this.international.global.global_addSuccess});
                 this.$router.back();
               } else {
-                this.$message({
-                  message: result.data.message,
-                  center: true,
-                  type: "error",
-                });
+                this.$message({ message: result.data.message, center: true, type: "error"});
               }
             })
             .catch((err) => {
-              console.error(err);
-              this.$message({
-                message: err.response.data.message,
-                center: true,
-                type: "error",
-              });
+              this.$message({ message: err.response.data.message,  type: "error"});
             });
-        } else {
-          console.log("error submit!!");
+        }
+        else {
           return false;
         }
       });
@@ -873,11 +611,6 @@ export default {
       });
     },
     handleRemove(file, fileList) {
-      // console.log(file, fileList);
-      // console.log(this.form.efileIdCode)
-      //   var newArr = this.form.efileIdCode.split(",");
-      //   var index = newArr.indexOf(file.response ? file.response.data.id:file.id);
-      //   this.form.efileIdCode = newArr.splice(index,1).join(",");
     },
     handlePreview(file) {
       this.dialogImageUrl = file.url;
@@ -911,15 +644,8 @@ export default {
       return isImage && isLt2M;
     },
     handleRemove1(file, fileList) {
-      // console.log(file, fileList);
-      // console.log(this.form.efileIdCode)
-      //   var newArr = this.form.efileIdCode.split(",");
-      //   var index = newArr.indexOf(file.response ? file.response.data.id:file.id);
-      //   this.form.efileIdCode = newArr.splice(index,1).join(",");
     },
     handlePreview1(file) {
-      //   this.dialogImageUrl = file.url;
-      //   this.dialogVisible = true;
     },
     handleSuccess1(response, file, fileList) {
       if(response.status == 0){
@@ -931,7 +657,6 @@ export default {
       }else{
         this.$message.error({
           message:'附件上传失败请重新上传！',
-          center:true
         })
       }
     },
@@ -939,10 +664,6 @@ export default {
       this.$error("上传失败,请重新上传图片!");
     },
     handleBeforeUpload1(file) {
-      // const isImage = file.type.includes("image");
-      // if (!isImage) {
-      //   this.$message.error("上传文件类型必须是图片!");
-      // }
       const isLt2M = file.size / 1024 / 1024 < 20;
       if (!isLt2M) {
         this.$message.error("上传图片大小不能超过 20MB!");
@@ -952,7 +673,6 @@ export default {
     handleExceed(){
       this.$message({
         message: "最多上传5个附件!",
-        center: true,
         type: "error",
       });
     },
@@ -960,28 +680,19 @@ export default {
       //合同查询车辆
       axios({
         method: "get",
-        url:
-          "/vehicle-service/comboBoxController/contractSearchVehicle?vehicleTypeId="+this.vehicleTypeId, //
-        headers: this.headers,
-      })
+        url:"/vehicle-service/comboBoxController/contractSearchVehicle?vehicleTypeId="+this.vehicleTypeId+"&businessType="+this.businessType,headers: this.headers})
         .then((result) => {
-          // console.log(result.data);
           if (result.data.status === 0) {
             this.vehicleNoOptions = result.data.data;
           } else {
             this.$message({
-              message: result.data.message,
-              center: true,
-              type: "error",
+              message: result.data.message,  type: "error",
             });
           }
         })
         .catch((err) => {
-          console.error(err);
           this.$message({
-            message: err.response.data.message,
-            center: true,
-            type: "error",
+            message: err.response.data.message,  type: "error",
           });
         });
     },
@@ -989,8 +700,7 @@ export default {
       //获取车牌
       axios({
         method: "get",
-        url:
-          "/vehicle-service/comboBoxController/contractSearchVehicle?vehicleTypeId=" + this.vehicleTypeId + "&vehicleNo=" +
+        url: "/vehicle-service/comboBoxController/contractSearchVehicle?vehicleTypeId=" + this.vehicleTypeId + "&vehicleNo=" +
           row.vehicleNo, //+this.vehicleTypeId
         headers: this.headers,
       })
@@ -1005,20 +715,12 @@ export default {
             row.endDate1 = result.data.data[0].endDate1;
             row.endDate2 = result.data.data[0].endDate2;
           } else {
-            this.$message({
-              message: result.data.message,
-              center: true,
-              type: "error",
-            });
+            this.$message({  message: result.data.message,  type: "error",  });
           }
         })
         .catch((err) => {
           console.error(err);
-          this.$message({
-            message: err.response.data.message,
-            center: true,
-            type: "error",
-          });
+          this.$message({ message: err.response.data.message,  type: "error", });
         });
     },
     handleChangechargingPileNum() {
@@ -1028,15 +730,11 @@ export default {
         this.formContract.chargingPileNum += Number(res.chargingPileNum);
       });
     },
+    //生成计划表
     confirmTable() {
-      //生成计划表
       for(var i = 0; i<this.formContract.vehicleList.length;i++){
         if(this.formContract.vehicleList[i].vehicleNo == '' || this.formContract.vehicleList[i].vehicleNo == null){
-          this.$message({
-            message: "车牌号没有选择!",
-            center: true,
-            type: "error",
-          });
+          this.$message({ message: "车牌号没有选择!",  type: "error", });
           return
         }
       }
@@ -1047,68 +745,36 @@ export default {
         var nary = arr.sort();
         for (var j = 0; j < arr.length; j++) {
           if (nary[j] == nary[j + 1]) {
-            this.$message({
-              type: "error",
-              message: "车牌号相同不能提交!",
-              center: true,
-            });
+            this.$message({ type: "error", message: "车牌号相同不能提交!", });
             return;
           }
         }
       if(this.formContract.rentStartDateStr == '' || this.formContract.rentStartDateStr == null){
-        this.$message({
-            message: "请填写起租日期!",
-            center: true,
-            type: "error",
-          });
+          this.$message({ message: "请填写起租日期!",  type: "error", });
           return
       }
       if(this.formContract.vehicleDeposit == '' || this.formContract.vehicleDeposit == null){
-        this.$message({
-            message: "请填写单车押金!",
-            center: true,
-            type: "error",
-          });
+          this.$message({ message: "请填写单车押金!",  type: "error" });
           return
       }
       if(this.formContract.chargingPileDeposit == '' || this.formContract.chargingPileDeposit == null){
-        this.$message({
-            message: "请填写单桩押金!",
-            center: true,
-            type: "error",
-          });
+          this.$message({  message: "请填写单桩押金!",  type: "error", });
           return
       }
       if(this.formContract.onevehicleRent == '' || this.formContract.onevehicleRent == null){
-        this.$message({
-            message: "请填写单车租金!",
-            center: true,
-            type: "error",
-          });
+          this.$message({  message: "请填写单车租金!",  type: "error", });
           return
       }
       if(this.formContract.onechargingPileRent == '' || this.formContract.onechargingPileRent == null){
-        this.$message({
-            message: "请填写单桩租金!",
-            center: true,
-            type: "error",
-          });
+          this.$message({ message: "请填写单桩租金!",  type: "error", });
           return
       }
       if(this.formContract.rentMonths == '' || this.formContract.rentMonths == null){
-        this.$message({
-            message: "请填写租赁月数!",
-            center: true,
-            type: "error",
-          });
+          this.$message({ message: "请填写租赁月数!",  type: "error", });
           return
       }
       if(this.formContract.payRentDateStr == '' || this.formContract.payRentDateStr == null){
-        this.$message({
-            message: "请填写首次还款日期!",
-            center: true,
-            type: "error",
-          });
+          this.$message({ message: "请填写首次还款日期!",  type: "error", });
           return
       }
       axios({
@@ -1119,196 +785,127 @@ export default {
       })
         .then((result) => {
           if (result.data.status === 0) {
-            // result.data.data.aggregation.map(item=>{
-
-            // })
-
-            this.formContract.leaseContractGenerateTableVO.aggregation =
-              result.data.data.aggregation;
-
-            this.formContract.leaseContractGenerateTableVO.vehicleMap =
-              result.data.data.vehicleMap;
-
+            this.formContract.leaseContractGenerateTableVO.aggregation = result.data.data.aggregation;
+            this.formContract.leaseContractGenerateTableVO.vehicleMap = result.data.data.vehicleMap;
             this.formContract.leaseContractGenerateTableVO.aggregation[0].billPeriods = '押金';
-            // console.log(this.formContract.leaseContractGenerateTableVO.aggregation[0].billPeriods)
             Object.keys(this.formContract.leaseContractGenerateTableVO.vehicleMap).forEach((key) => {
               this.formContract.leaseContractGenerateTableVO.vehicleMap[key][0].billPeriods = '押金';
             });
           } else {
-            this.$message({
-              message: result.data.message,
-              center: true,
-              type: "error",
-            });
+            this.$message({ message: result.data.message,  type: "error" });
           }
         })
         .catch((err) => {
-          console.error(err);
-          this.$message({
-            message: err.response.data.message,
-            center: true,
-            type: "error",
-          });
+            this.$message({ message: err.response.data.message, type: "error"  });
         });
     },
+    //改变日期
     handleChangeDate(index, row) {
-      //改变日期
       Object.keys(
-        this.formContract.leaseContractGenerateTableVO.vehicleMap
-      ).forEach((key) => {
-        // console.log(key,this.formContract.leaseContractGenerateTableVO.vehicleMap[key]);
-        this.formContract.leaseContractGenerateTableVO.vehicleMap[key][
-          index
-        ].adjustedPaybackDateStr = this.formContract.leaseContractGenerateTableVO.aggregation[
-          index
-        ].adjustedPaybackDateStr;
-      });
+        this.formContract.leaseContractGenerateTableVO.vehicleMap).forEach((key) => {
+            this.formContract.leaseContractGenerateTableVO.vehicleMap[key][index].adjustedPaybackDateStr = this.formContract.leaseContractGenerateTableVO.aggregation[index].adjustedPaybackDateStr;
+        });
     },
+    //改变金额
     handleChangeMoney(index, row) {
-      //改变金额
-      this.formContract.leaseContractGenerateTableVO.aggregation[
-        index
-      ].adjustedPaybackMoney = 0;
-      Object.keys(
-        this.formContract.leaseContractGenerateTableVO.vehicleMap
-      ).forEach((key) => {
-        // console.log(key,this.formContract.leaseContractGenerateTableVO.vehicleMap[key]);
-        this.formContract.leaseContractGenerateTableVO.aggregation[
-          index
-        ].adjustedPaybackMoney += Number(
-          this.formContract.leaseContractGenerateTableVO.vehicleMap[key][index]
-            .adjustedPaybackMoney
-        );
+      this.formContract.leaseContractGenerateTableVO.aggregation[index].adjustedPaybackMoney = 0;
+      Object.keys(this.formContract.leaseContractGenerateTableVO.vehicleMap).forEach((key) => {
+            this.formContract.leaseContractGenerateTableVO.aggregation[index].adjustedPaybackMoney += Number(this.formContract.leaseContractGenerateTableVO.vehicleMap[key][index].adjustedPaybackMoney);
       });
     },
+    //改变备注
     handleChangeRemark(index, row) {
-      //改变备注
       var arr = [];
-      this.formContract.leaseContractGenerateTableVO.aggregation[index].remark =
-        "";
-      Object.keys(
-        this.formContract.leaseContractGenerateTableVO.vehicleMap
-      ).forEach((key) => {
-        // console.log(key,this.formContract.aggregation[index].remark)
-        arr.push(
-          this.formContract.leaseContractGenerateTableVO.vehicleMap[key][index]
-            .remark
-        );
-        this.formContract.leaseContractGenerateTableVO.aggregation[
-          index
-        ].remark = arr.join(",");
-      });
+      this.formContract.leaseContractGenerateTableVO.aggregation[index].remark = "";
+      Object.keys(this.formContract.leaseContractGenerateTableVO.vehicleMap)
+      .forEach((key) => {
+            arr.push(this.formContract.leaseContractGenerateTableVO.vehicleMap[key][index].remark);
+            this.formContract.leaseContractGenerateTableVO.aggregation[index].remark = arr.join(",");
+        });
     },
+    //跳转计划登记
     getInitData() {
-      //跳转计划登记
-      axios({
-        method: "get",
-        url:
-          "/vehicle-service/leaseContractInfo/goPlanRegisterPage?id=" +
-          this.$route.query.id,
-        headers: this.headers,
-      })
+      axios({ method: "get", url:"/vehicle-service/leaseContractInfo/goPlanRegisterPage?id=" +this.$route.query.id, headers: this.headers})
         .then((result) => {
           if (result.data.status === 0) {
+              setTimeout(() => {
+            window.onload()
+          }, 10)
             this.orderValue = result.data.data.leaseContractOrderVO.orderNumber;
             this.orderId = result.data.data.orderId;
             this.vehicleTypeId = result.data.data.vehicleTypeId;
+            this.formContract.businessType= result.data.data.businessType
+            if(this.formContract.businessType==1){
+              this.formContract.isBuyInsurance= result.data.data.isBuyInsurance
+              this.formContract.isTransfer= result.data.data.isTransfer
+              this.formContract.downPayment= result.data.data.downPayment
+              this.formContract.latePayment= result.data.data.latePayment
+              this.showisBuyInsurance=true
+              this.showisTransfer=true
+              this.showdownPayment=true
+              this.latePayment=true
+              this.businessType=1
+            }
             this.getVehicle();
-
-            this.formVeInformation.brand =
-              result.data.data.leaseContractOrderVO.brandName; //车辆品牌
-            this.formVeInformation.vehicleType =
-              result.data.data.leaseContractOrderVO.vehicleTypeName; //车型
-            this.formVeInformation.number =
-              result.data.data.leaseContractOrderVO.number; //数量
-            this.formVeInformation.duration =
-              result.data.data.leaseContractOrderVO.leaseDuration; //时长
-            this.formVeInformation.userType =
-              result.data.data.leaseContractOrderVO.customerTypeStr; //客户类型
-            this.formVeInformation.userName =
-              result.data.data.leaseContractOrderVO.customerName; //客户名称
-            this.formVeInformation.businessNO =
-              result.data.data.leaseContractOrderVO.busilicNo; //营业执照号
-            this.formVeInformation.contactsName =
-              result.data.data.leaseContractOrderVO.personInCharge; //联系人姓名
-            this.formVeInformation.ipone =
-              result.data.data.leaseContractOrderVO.phoneNumber; //联系电话
-            this.formVeInformation.userid =
-              result.data.data.leaseContractOrderVO.userName; //分配业务员
-
             this.formContract.contractCode = result.data.data.contractCode; //合同编号
             this.formContract.contractType = result.data.data.contractType;
-            this.formContract.rentStartDateStr =
-              result.data.data.rentStartDateStr; //起租日期
+            this.formContract.rentStartDateStr = result.data.data.rentStartDateStr; //起租日期
             this.formContract.rentEndDateStr = result.data.data.rentEndDateStr; //止租日期
-            this.formContract.urgentPhoneNumer =
-              result.data.data.urgentPhoneNumer; //紧急联系电话
-            this.formContract.supplefileIdList =
-              result.data.data.supplefileIdList; //合同附件
-
+            this.formContract.urgentPhoneNumer = result.data.data.urgentPhoneNumer; //紧急联系电话
+            this.formContract.supplefileIdList = result.data.data.supplefileIdList; //合同附件
             this.formContract.customerName = result.data.data.customerName; //承租方名称
-            this.formContract.customerPhoneNumber =
-              result.data.data.customerPhoneNumber; //承租方电话
-            this.formContract.customerContacts =
-              result.data.data.customerContacts; //承租方联系人
-            this.formContract.contactsPhoneNumber =
-              result.data.data.contactsPhoneNumber; //承租方联系人电话
+            this.formContract.customerPhoneNumber = result.data.data.customerPhoneNumber; //承租方电话
+            this.formContract.customerContacts = result.data.data.customerContacts; //承租方联系人
+            this.formContract.contactsPhoneNumber = result.data.data.contactsPhoneNumber; //承租方联系人电话
             this.formContract.customerAdd = result.data.data.customerAdd; //承租方地址
-
-            // this.formContract.vehicleNum = result.data.data.vehicleNum; //租车数量
-            this.formContract.chargingPileNum =result.data.data.chargingPileNum===null ? 0:result.data.data.chargingPileNum;
-               //充电桩数量
-            // this.formContract.vehicleList = result.data.data.vehicleList; //合同车辆关联
-
+            this.formContract.chargingPileNum =result.data.data.chargingPileNum===null ? 0:result.data.data.chargingPileNum; //充电桩数量
             this.formContract.vehicleDeposit = result.data.data.vehicleDeposit; //单车押金
-            this.formContract.chargingPileDeposit =
-              result.data.data.chargingPileDeposit; //单桩押金
+            this.formContract.chargingPileDeposit = result.data.data.chargingPileDeposit; //单桩押金
             this.formContract.deposit = result.data.data.deposit; //合同总押金
-
             this.formContract.onevehicleRent = result.data.data.onevehicleRent; //单车租金
-            this.formContract.onechargingPileRent =
-              result.data.data.onechargingPileRent; //单桩租金
+            this.formContract.onechargingPileRent = result.data.data.onechargingPileRent; //单桩租金
             this.formContract.vehicleRent = result.data.data.vehicleRent; //合同月租金
             this.formContract.rentMonths = result.data.data.rentMonths; //租赁月数
             this.formContract.payRentDateStr = result.data.data.payRentDateStr; //首次还款日期
             this.formContract.lateFeeRate = result.data.data.lateFeeRate; //逾期滞纳金收取标准
+            this.formVeInformation.brand = result.data.data.leaseContractOrderVO.brandName; //车辆品牌
+            this.formVeInformation.vehicleType = result.data.data.leaseContractOrderVO.vehicleTypeName; //车型
+            this.formVeInformation.number = result.data.data.leaseContractOrderVO.number; //数量
+            this.formVeInformation.duration = result.data.data.leaseContractOrderVO.leaseDuration; //时长
+            this.formVeInformation.userType = result.data.data.leaseContractOrderVO.customerTypeStr; //客户类型
+            this.formVeInformation.userName = result.data.data.leaseContractOrderVO.customerName; //客户名称
+            this.formVeInformation.businessNO = result.data.data.leaseContractOrderVO.busilicNo; //营业执照号
+            this.formVeInformation.contactsName = result.data.data.leaseContractOrderVO.personInCharge; //联系人姓名
+            this.formVeInformation.ipone = result.data.data.leaseContractOrderVO.phoneNumber; //联系电话
+            this.formVeInformation.userid = result.data.data.leaseContractOrderVO.userName; //分配业务员
           } else {
-            this.$message({
-              message: result.data.message,
-              center: true,
-              type: "error",
-            });
+            this.$message({ message: result.data.message, type: "error" })
           }
         })
         .catch((err) => {
-          console.error(err);
-          this.$message({
-            message: err.response.data.message,
-            center: true,
-            type: "error",
-          });
+          this.$message({ message: err.response.data.message, center: true, type: "error"})
         });
     },
   },
   mounted() {
     this.getInitData();
   },
+  // 计算国际化标题和按钮
   computed: {
-    // 计算国际化标题和按钮
     internationalTitle() {
-      return this.$store.state.languageTitle;
+      return this.$store.state.languageTitle
     },
   },
+  // 监听国际化标题和按钮变化
   watch: {
-    // 监听国际化标题和按钮变化
     internationalTitle: {
       handler(data) {
-        this.international = data;
+        this.international = data
       },
       immediate: true,
       deep: true,
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>

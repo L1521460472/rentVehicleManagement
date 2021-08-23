@@ -1,9 +1,9 @@
 <template>
   <div id="paymentAccount" v-loading="loading"  element-loading-text="loading">
       <div class="header" >
-        <div class="headerTop">
+        <div class="headerTop scoped">
             <div class="nav">
-                <span class="demonstration">所属门店</span>
+                <span class="demonstration">所属公司</span>
                 <el-select clearable  size="small" v-model="belongCompany"   placeholder="" >
                     <el-option
                     v-for="item in companyList"
@@ -31,6 +31,7 @@
                 <i class="iconfont icon-edit"></i>
                 修改
             </el-button>
+			<a href="javascript:;" style="color: #368cfe;text-decoration: none;font-size: 14px;margin-left: 20px;" @click="jumpto">账户收款统计报表</a>
         </div>
         <div class="bottom">
             <div class="footerTable">
@@ -50,7 +51,7 @@
                     </el-table-column>
                     <el-table-column
                     prop="enterpriseName"
-                    label="所属门店"
+                    label="所属公司"
                     width="140"
                     show-overflow-tooltip>
                     </el-table-column>
@@ -93,7 +94,7 @@
 </template>
 
 <script>
-import { getCookie, setCookie, removeCookie ,getMenuBtnList} from "../../public";
+import { getCookie, setCookie, removeCookie ,getMenuBtnList,openNewTab} from "../../public";
 import {getEnterpriseList,getAccountData} from '../../api/financialProcesses/api'
 export default {
     name:'paymentAccount',
@@ -120,6 +121,9 @@ export default {
         }
     },
     methods: {
+		jumpto(){
+      openNewTab(this,"渠道账户收款统计","/collectionAccountStatistics")
+    },
         // 获取分页数据
         getListData(){
             this.loading = true
@@ -131,6 +135,9 @@ export default {
             }
             getAccountData(params,this.headers).then(res=>{
               if(res.status == 0){
+                  setTimeout(() => {
+            window.onload()
+          }, 10)
                 this.loading = false
                 this.total = res.data.total
                 this.tableData = res.data.records
